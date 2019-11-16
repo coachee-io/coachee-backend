@@ -20,7 +20,7 @@ var _ = API("coachee", func() {
 	})
 })
 
-var certifications = Type("certifications", func() {
+var certification = Type("certifications", func() {
 	Description("represents a coach certification")
 
 	Attribute("id", String)
@@ -28,34 +28,33 @@ var certifications = Type("certifications", func() {
 	Attribute("description", String)
 	Attribute("institution", String)
 	Attribute("month", UInt, func() {
-		Minimum(uint(1))
-		Maximum(uint(12))
+		Minimum(1)
+		Maximum(12)
 	})
-	Attribute("Year", UInt, func() {
-		Minimum(uint(1900))
-		Maximum(uint(2100))
+	Attribute("year", UInt, func() {
+		Minimum(1900)
+		Maximum(2100)
 	})
 
 	Required("title", "description", "institution", "month", "year")
 })
 
-//var hour = Type("hour", UInt, func() {
-//	Minimum(uint(0))
-//	Maximum(uint(24))
-//})
-//
-//var minute = Type("name", UInt, func() {
-//	Minimum(uint(0))
-//	Maximum(uint(59))
-//})
-
 var availability = Type("availability", func() {
 	Description("represents a coach availability")
 
 	Attribute("id", String)
-	Attribute("weekDay", String)
-	Attribute("startHour", UInt)
-	Attribute("endHour", UInt)
+	Attribute("weekDay", UInt, func() {
+		Minimum(0)
+		Maximum(6)
+	})
+	Attribute("start", UInt, func() {
+		Minimum(0)
+		Maximum(1440)
+	})
+	Attribute("end", UInt, func() {
+		Minimum(0)
+		Maximum(1440)
+	})
 })
 
 var program = Type("program", func() {
@@ -72,9 +71,8 @@ var program = Type("program", func() {
 	Required("name", "sessions", "duration", "description", "totalPrice", "taxPercent")
 })
 
-var coachResult = ResultType("coach", func() {
+var coachResult = Type("coach", func() {
 	Description("represents a coach and all his relevant info")
-	ContentType("application/json")
 
 	Attribute("id", UInt)
 	Attribute("firstName", String)
@@ -84,7 +82,7 @@ var coachResult = ResultType("coach", func() {
 	Attribute("city", String)
 	Attribute("country", String)
 	Attribute("pictureURL", String)
-	Attribute("certifications", ArrayOf(certifications))
+	Attribute("certifications", ArrayOf(certification))
 	Attribute("programs", ArrayOf(program))
 	Attribute("availability", ArrayOf(availability))
 })
@@ -111,4 +109,145 @@ var _ = Service("coachee", func() {
 		})
 	})
 
+	Method("CreateCoach", func() {
+		Description("CreateCoaches creates a base coach")
+		Payload(func() {
+			Attribute("firstName", String)
+			Attribute("lastName", String)
+			Attribute("email", String)
+			Attribute("phone", String)
+			Attribute("tags", String)
+			Attribute("description", String)
+			Attribute("city", String)
+			Attribute("country", String)
+			Attribute("certifications", ArrayOf(certification))
+			Attribute("programs", ArrayOf(program))
+			Attribute("introCall", UInt) // maybe an external scheduler
+
+			Required("firstName", "lastName", "email", "phone", "tags", "description",
+				"certifications", "programs", "introCall")
+		})
+
+		Result(UInt)
+
+		HTTP(func() {
+			POST("/coaches")
+			Response(StatusCreated)
+		})
+	})
+
+	Method("UpdateCoach", func() {
+		Description("UpdateCoaches updates a coach")
+		Payload(func() {
+			Attribute("id", UInt)
+			Attribute("firstName", String)
+			Attribute("lastName", String)
+			Attribute("email", String)
+			Attribute("phone", String)
+			Attribute("tags", String)
+			Attribute("description", String)
+			Attribute("city", String)
+			Attribute("country", String)
+			Attribute("introCall", UInt)
+			Attribute("stripeID", String)
+			Attribute("pictureURL", String)
+
+			Required("id")
+		})
+
+		HTTP(func() {
+			POST("/coaches/{id}")
+			Response(StatusAccepted)
+		})
+	})
+
+	Method("CreateCertification", func() {
+		Description("creates a certification for a coach")
+		Payload(func() {
+			Attribute("id", UInt)
+			Attribute("certification", certification)
+
+			Required("id", "certification")
+		})
+
+		HTTP(func() {
+			PUT("/coaches/{id}/certifications")
+			Response(StatusAccepted)
+		})
+	})
+
+	Method("DeleteCertification", func() {
+		Description("deletes a certification for a coach")
+		Payload(func() {
+			Attribute("id", UInt)
+			Attribute("certID", String)
+
+			Required("id", "certID")
+		})
+
+		HTTP(func() {
+			DELETE("/coaches/{id}/certifications/{certID}")
+			Response(StatusOK)
+		})
+	})
+
+	Method("CreateProgram", func() {
+		Description("creates a program for a coach")
+		Payload(func() {
+			Attribute("id", UInt)
+			Attribute("program", program)
+
+			Required("id", "program")
+		})
+
+		HTTP(func() {
+			PUT("/coaches/{id}/programs")
+			Response(StatusAccepted)
+		})
+	})
+
+	Method("DeleteProgram", func() {
+		Description("deletes a program for a coach")
+		Payload(func() {
+			Attribute("id", UInt)
+			Attribute("programID", String)
+
+			Required("id", "programID")
+		})
+
+		HTTP(func() {
+			DELETE("/coaches/{id}/programs/{programID}")
+			Response(StatusOK)
+		})
+	})
+
+	Method("CreateAvailability", func() {
+		Description("creates an availability for a coach")
+		Payload(func() {
+			Attribute("id", UInt)
+			Attribute("availability", availability)
+
+			Required("id", "availability")
+		})
+
+		HTTP(func() {
+			PUT("/coaches/{id}/availability")
+			Response(StatusAccepted)
+		})
+	})
+
+	Method("DeleteAvailability", func() {
+		Description("deletes an availability for a coach")
+		Payload(func() {
+			Attribute("id", UInt)
+			Attribute("avID", String)
+
+			Required("id", "avID")
+		})
+
+		HTTP(func() {
+			DELETE("/coaches/{id}/availability/{avID}")
+			Response(StatusOK)
+		})
+	})
 })
