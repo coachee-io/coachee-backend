@@ -18,6 +18,11 @@ var _ = API("coachee", func() {
 			URI("grpc://localhost:8080")
 		})
 	})
+
+	HTTP(func() {
+		Consumes("application/json")
+		Produces("application/json")
+	})
 })
 
 var certification = Type("certifications", func() {
