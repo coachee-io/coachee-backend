@@ -1,0 +1,14 @@
+version: '3.3'
+services:
+  mysql:
+    image: mysql:5.7.28
+    hostname: "mysql"
+    environment:
+      - MYSQL_USER=coachee_user
+      - MYSQL_PASSWORD=coachee_pass
+      - MYSQL_DATABASE=coachee_db
+      - MYSQL_ROOT_PASSWORD=coachee_pass
+    volumes:
+      - ./db/init:/docker-entrypoint-initdb.d
+    ports:
+      - 3306:3306

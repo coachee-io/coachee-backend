@@ -20,6 +20,7 @@ import (
 type Server struct {
 	Mounts              []*MountPoint
 	GetCoaches          http.Handler
+	LenCoaches          http.Handler
 	CreateCoach         http.Handler
 	UpdateCoach         http.Handler
 	CreateCertification http.Handler
@@ -58,6 +59,7 @@ func New(
 	return &Server{
 		Mounts: []*MountPoint{
 			{"GetCoaches", "GET", "/coaches/{tag}"},
+			{"LenCoaches", "GET", "/coaches/{tag}/length"},
 			{"CreateCoach", "POST", "/coaches"},
 			{"UpdateCoach", "POST", "/coaches/{id}"},
 			{"CreateCertification", "PUT", "/coaches/{id}/certifications"},
@@ -68,6 +70,7 @@ func New(
 			{"DeleteAvailability", "DELETE", "/coaches/{id}/availability/{avID}"},
 		},
 		GetCoaches:          NewGetCoachesHandler(e.GetCoaches, mux, dec, enc, eh),
+		LenCoaches:          NewLenCoachesHandler(e.LenCoaches, mux, dec, enc, eh),
 		CreateCoach:         NewCreateCoachHandler(e.CreateCoach, mux, dec, enc, eh),
 		UpdateCoach:         NewUpdateCoachHandler(e.UpdateCoach, mux, dec, enc, eh),
 		CreateCertification: NewCreateCertificationHandler(e.CreateCertification, mux, dec, enc, eh),
@@ -85,6 +88,7 @@ func (s *Server) Service() string { return "coachee" }
 // Use wraps the server handlers with the given middleware.
 func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.GetCoaches = m(s.GetCoaches)
+	s.LenCoaches = m(s.LenCoaches)
 	s.CreateCoach = m(s.CreateCoach)
 	s.UpdateCoach = m(s.UpdateCoach)
 	s.CreateCertification = m(s.CreateCertification)
@@ -98,6 +102,7 @@ func (s *Server) Use(m func(http.Handler) http.Handler) {
 // Mount configures the mux to serve the coachee endpoints.
 func Mount(mux goahttp.Muxer, h *Server) {
 	MountGetCoachesHandler(mux, h.GetCoaches)
+	MountLenCoachesHandler(mux, h.LenCoaches)
 	MountCreateCoachHandler(mux, h.CreateCoach)
 	MountUpdateCoachHandler(mux, h.UpdateCoach)
 	MountCreateCertificationHandler(mux, h.CreateCertification)
@@ -132,11 +137,63 @@ func NewGetCoachesHandler(
 	var (
 		decodeRequest  = DecodeGetCoachesRequest(mux, dec)
 		encodeResponse = EncodeGetCoachesResponse(enc)
-		encodeError    = goahttp.ErrorEncoder(enc)
+		encodeError    = EncodeGetCoachesError(enc)
 	)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "GetCoaches")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "coachee")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				eh(ctx, w, err)
+			}
+			return
+		}
+
+		res, err := endpoint(ctx, payload)
+
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				eh(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			eh(ctx, w, err)
+		}
+	})
+}
+
+// MountLenCoachesHandler configures the mux to serve the "coachee" service
+// "LenCoaches" endpoint.
+func MountLenCoachesHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("GET", "/coaches/{tag}/length", f)
+}
+
+// NewLenCoachesHandler creates a HTTP handler which loads the HTTP request and
+// calls the "coachee" service "LenCoaches" endpoint.
+func NewLenCoachesHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	dec func(*http.Request) goahttp.Decoder,
+	enc func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	eh func(context.Context, http.ResponseWriter, error),
+) http.Handler {
+	var (
+		decodeRequest  = DecodeLenCoachesRequest(mux, dec)
+		encodeResponse = EncodeLenCoachesResponse(enc)
+		encodeError    = EncodeLenCoachesError(enc)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "LenCoaches")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "coachee")
 		payload, err := decodeRequest(r)
 		if err != nil {
@@ -184,7 +241,7 @@ func NewCreateCoachHandler(
 	var (
 		decodeRequest  = DecodeCreateCoachRequest(mux, dec)
 		encodeResponse = EncodeCreateCoachResponse(enc)
-		encodeError    = goahttp.ErrorEncoder(enc)
+		encodeError    = EncodeCreateCoachError(enc)
 	)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
@@ -236,7 +293,7 @@ func NewUpdateCoachHandler(
 	var (
 		decodeRequest  = DecodeUpdateCoachRequest(mux, dec)
 		encodeResponse = EncodeUpdateCoachResponse(enc)
-		encodeError    = goahttp.ErrorEncoder(enc)
+		encodeError    = EncodeUpdateCoachError(enc)
 	)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
@@ -288,7 +345,7 @@ func NewCreateCertificationHandler(
 	var (
 		decodeRequest  = DecodeCreateCertificationRequest(mux, dec)
 		encodeResponse = EncodeCreateCertificationResponse(enc)
-		encodeError    = goahttp.ErrorEncoder(enc)
+		encodeError    = EncodeCreateCertificationError(enc)
 	)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
@@ -340,7 +397,7 @@ func NewDeleteCertificationHandler(
 	var (
 		decodeRequest  = DecodeDeleteCertificationRequest(mux, dec)
 		encodeResponse = EncodeDeleteCertificationResponse(enc)
-		encodeError    = goahttp.ErrorEncoder(enc)
+		encodeError    = EncodeDeleteCertificationError(enc)
 	)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
@@ -392,7 +449,7 @@ func NewCreateProgramHandler(
 	var (
 		decodeRequest  = DecodeCreateProgramRequest(mux, dec)
 		encodeResponse = EncodeCreateProgramResponse(enc)
-		encodeError    = goahttp.ErrorEncoder(enc)
+		encodeError    = EncodeCreateProgramError(enc)
 	)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
@@ -444,7 +501,7 @@ func NewDeleteProgramHandler(
 	var (
 		decodeRequest  = DecodeDeleteProgramRequest(mux, dec)
 		encodeResponse = EncodeDeleteProgramResponse(enc)
-		encodeError    = goahttp.ErrorEncoder(enc)
+		encodeError    = EncodeDeleteProgramError(enc)
 	)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
@@ -496,7 +553,7 @@ func NewCreateAvailabilityHandler(
 	var (
 		decodeRequest  = DecodeCreateAvailabilityRequest(mux, dec)
 		encodeResponse = EncodeCreateAvailabilityResponse(enc)
-		encodeError    = goahttp.ErrorEncoder(enc)
+		encodeError    = EncodeCreateAvailabilityError(enc)
 	)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
@@ -548,7 +605,7 @@ func NewDeleteAvailabilityHandler(
 	var (
 		decodeRequest  = DecodeDeleteAvailabilityRequest(mux, dec)
 		encodeResponse = EncodeDeleteAvailabilityResponse(enc)
-		encodeError    = goahttp.ErrorEncoder(enc)
+		encodeError    = EncodeDeleteAvailabilityError(enc)
 	)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))

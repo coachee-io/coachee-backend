@@ -16,6 +16,11 @@ func GetCoachesCoacheePath(tag string) string {
 	return fmt.Sprintf("/coaches/%v", tag)
 }
 
+// LenCoachesCoacheePath returns the URL path to the coachee service LenCoaches HTTP endpoint.
+func LenCoachesCoacheePath(tag string) string {
+	return fmt.Sprintf("/coaches/%v/length", tag)
+}
+
 // CreateCoachCoacheePath returns the URL path to the coachee service CreateCoach HTTP endpoint.
 func CreateCoachCoacheePath() string {
 	return "/coaches"

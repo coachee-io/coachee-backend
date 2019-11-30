@@ -16,6 +16,7 @@ import (
 // Client is the "coachee" service client.
 type Client struct {
 	GetCoachesEndpoint          goa.Endpoint
+	LenCoachesEndpoint          goa.Endpoint
 	CreateCoachEndpoint         goa.Endpoint
 	UpdateCoachEndpoint         goa.Endpoint
 	CreateCertificationEndpoint goa.Endpoint
@@ -27,9 +28,10 @@ type Client struct {
 }
 
 // NewClient initializes a "coachee" service client given the endpoints.
-func NewClient(getCoaches, createCoach, updateCoach, createCertification, deleteCertification, createProgram, deleteProgram, createAvailability, deleteAvailability goa.Endpoint) *Client {
+func NewClient(getCoaches, lenCoaches, createCoach, updateCoach, createCertification, deleteCertification, createProgram, deleteProgram, createAvailability, deleteAvailability goa.Endpoint) *Client {
 	return &Client{
 		GetCoachesEndpoint:          getCoaches,
+		LenCoachesEndpoint:          lenCoaches,
 		CreateCoachEndpoint:         createCoach,
 		UpdateCoachEndpoint:         updateCoach,
 		CreateCertificationEndpoint: createCertification,
@@ -42,13 +44,23 @@ func NewClient(getCoaches, createCoach, updateCoach, createCertification, delete
 }
 
 // GetCoaches calls the "GetCoaches" endpoint of the "coachee" service.
-func (c *Client) GetCoaches(ctx context.Context, p *GetCoachesPayload) (res *Coach, err error) {
+func (c *Client) GetCoaches(ctx context.Context, p *GetCoachesPayload) (res []*Coach, err error) {
 	var ires interface{}
 	ires, err = c.GetCoachesEndpoint(ctx, p)
 	if err != nil {
 		return
 	}
-	return ires.(*Coach), nil
+	return ires.([]*Coach), nil
+}
+
+// LenCoaches calls the "LenCoaches" endpoint of the "coachee" service.
+func (c *Client) LenCoaches(ctx context.Context, p *LenCoachesPayload) (res uint, err error) {
+	var ires interface{}
+	ires, err = c.LenCoachesEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.(uint), nil
 }
 
 // CreateCoach calls the "CreateCoach" endpoint of the "coachee" service.

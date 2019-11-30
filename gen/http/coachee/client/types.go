@@ -16,17 +16,16 @@ import (
 // CreateCoachRequestBody is the type of the "coachee" service "CreateCoach"
 // endpoint HTTP request body.
 type CreateCoachRequestBody struct {
-	FirstName      string                       `form:"firstName" json:"firstName" xml:"firstName"`
-	LastName       string                       `form:"lastName" json:"lastName" xml:"lastName"`
-	Email          string                       `form:"email" json:"email" xml:"email"`
-	Phone          string                       `form:"phone" json:"phone" xml:"phone"`
-	Tags           string                       `form:"tags" json:"tags" xml:"tags"`
-	Description    string                       `form:"description" json:"description" xml:"description"`
-	City           *string                      `form:"city,omitempty" json:"city,omitempty" xml:"city,omitempty"`
-	Country        *string                      `form:"country,omitempty" json:"country,omitempty" xml:"country,omitempty"`
-	Certifications []*CertificationsRequestBody `form:"certifications" json:"certifications" xml:"certifications"`
-	Programs       []*ProgramRequestBody        `form:"programs" json:"programs" xml:"programs"`
-	IntroCall      uint                         `form:"introCall" json:"introCall" xml:"introCall"`
+	FirstName   string  `form:"firstName" json:"firstName" xml:"firstName"`
+	LastName    string  `form:"lastName" json:"lastName" xml:"lastName"`
+	Email       string  `form:"email" json:"email" xml:"email"`
+	Phone       string  `form:"phone" json:"phone" xml:"phone"`
+	Tags        string  `form:"tags" json:"tags" xml:"tags"`
+	Description string  `form:"description" json:"description" xml:"description"`
+	City        *string `form:"city,omitempty" json:"city,omitempty" xml:"city,omitempty"`
+	Country     *string `form:"country,omitempty" json:"country,omitempty" xml:"country,omitempty"`
+	IntroCall   uint    `form:"introCall" json:"introCall" xml:"introCall"`
+	Vat         *string `form:"vat,omitempty" json:"vat,omitempty" xml:"vat,omitempty"`
 }
 
 // UpdateCoachRequestBody is the type of the "coachee" service "UpdateCoach"
@@ -43,12 +42,13 @@ type UpdateCoachRequestBody struct {
 	IntroCall   *uint   `form:"introCall,omitempty" json:"introCall,omitempty" xml:"introCall,omitempty"`
 	StripeID    *string `form:"stripeID,omitempty" json:"stripeID,omitempty" xml:"stripeID,omitempty"`
 	PictureURL  *string `form:"pictureURL,omitempty" json:"pictureURL,omitempty" xml:"pictureURL,omitempty"`
+	Vat         *string `form:"vat,omitempty" json:"vat,omitempty" xml:"vat,omitempty"`
 }
 
 // CreateCertificationRequestBody is the type of the "coachee" service
 // "CreateCertification" endpoint HTTP request body.
 type CreateCertificationRequestBody struct {
-	Certification *CertificationsRequestBody `form:"certification" json:"certification" xml:"certification"`
+	Certification *CertificationRequestBody `form:"certification" json:"certification" xml:"certification"`
 }
 
 // CreateProgramRequestBody is the type of the "coachee" service
@@ -65,22 +65,755 @@ type CreateAvailabilityRequestBody struct {
 
 // GetCoachesResponseBody is the type of the "coachee" service "GetCoaches"
 // endpoint HTTP response body.
-type GetCoachesResponseBody struct {
-	ID             *uint                         `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
-	FirstName      *string                       `form:"firstName,omitempty" json:"firstName,omitempty" xml:"firstName,omitempty"`
-	LastName       *string                       `form:"lastName,omitempty" json:"lastName,omitempty" xml:"lastName,omitempty"`
-	Tags           *string                       `form:"tags,omitempty" json:"tags,omitempty" xml:"tags,omitempty"`
-	Description    *string                       `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
-	City           *string                       `form:"city,omitempty" json:"city,omitempty" xml:"city,omitempty"`
-	Country        *string                       `form:"country,omitempty" json:"country,omitempty" xml:"country,omitempty"`
-	PictureURL     *string                       `form:"pictureURL,omitempty" json:"pictureURL,omitempty" xml:"pictureURL,omitempty"`
-	Certifications []*CertificationsResponseBody `form:"certifications,omitempty" json:"certifications,omitempty" xml:"certifications,omitempty"`
-	Programs       []*ProgramResponseBody        `form:"programs,omitempty" json:"programs,omitempty" xml:"programs,omitempty"`
-	Availability   []*AvailabilityResponseBody   `form:"availability,omitempty" json:"availability,omitempty" xml:"availability,omitempty"`
+type GetCoachesResponseBody []*CoachResponse
+
+// GetCoachesTransientResponseBody is the type of the "coachee" service
+// "GetCoaches" endpoint HTTP response body for the "transient" error.
+type GetCoachesTransientResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
 }
 
-// CertificationsResponseBody is used to define fields on response body types.
-type CertificationsResponseBody struct {
+// GetCoachesNotFoundResponseBody is the type of the "coachee" service
+// "GetCoaches" endpoint HTTP response body for the "notFound" error.
+type GetCoachesNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// GetCoachesValidationResponseBody is the type of the "coachee" service
+// "GetCoaches" endpoint HTTP response body for the "validation" error.
+type GetCoachesValidationResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// GetCoachesUnauthorizedResponseBody is the type of the "coachee" service
+// "GetCoaches" endpoint HTTP response body for the "unauthorized" error.
+type GetCoachesUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// LenCoachesTransientResponseBody is the type of the "coachee" service
+// "LenCoaches" endpoint HTTP response body for the "transient" error.
+type LenCoachesTransientResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// LenCoachesNotFoundResponseBody is the type of the "coachee" service
+// "LenCoaches" endpoint HTTP response body for the "notFound" error.
+type LenCoachesNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// LenCoachesValidationResponseBody is the type of the "coachee" service
+// "LenCoaches" endpoint HTTP response body for the "validation" error.
+type LenCoachesValidationResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// LenCoachesUnauthorizedResponseBody is the type of the "coachee" service
+// "LenCoaches" endpoint HTTP response body for the "unauthorized" error.
+type LenCoachesUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// CreateCoachTransientResponseBody is the type of the "coachee" service
+// "CreateCoach" endpoint HTTP response body for the "transient" error.
+type CreateCoachTransientResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// CreateCoachNotFoundResponseBody is the type of the "coachee" service
+// "CreateCoach" endpoint HTTP response body for the "notFound" error.
+type CreateCoachNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// CreateCoachValidationResponseBody is the type of the "coachee" service
+// "CreateCoach" endpoint HTTP response body for the "validation" error.
+type CreateCoachValidationResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// CreateCoachUnauthorizedResponseBody is the type of the "coachee" service
+// "CreateCoach" endpoint HTTP response body for the "unauthorized" error.
+type CreateCoachUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// UpdateCoachTransientResponseBody is the type of the "coachee" service
+// "UpdateCoach" endpoint HTTP response body for the "transient" error.
+type UpdateCoachTransientResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// UpdateCoachNotFoundResponseBody is the type of the "coachee" service
+// "UpdateCoach" endpoint HTTP response body for the "notFound" error.
+type UpdateCoachNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// UpdateCoachValidationResponseBody is the type of the "coachee" service
+// "UpdateCoach" endpoint HTTP response body for the "validation" error.
+type UpdateCoachValidationResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// UpdateCoachUnauthorizedResponseBody is the type of the "coachee" service
+// "UpdateCoach" endpoint HTTP response body for the "unauthorized" error.
+type UpdateCoachUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// CreateCertificationTransientResponseBody is the type of the "coachee"
+// service "CreateCertification" endpoint HTTP response body for the
+// "transient" error.
+type CreateCertificationTransientResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// CreateCertificationNotFoundResponseBody is the type of the "coachee" service
+// "CreateCertification" endpoint HTTP response body for the "notFound" error.
+type CreateCertificationNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// CreateCertificationValidationResponseBody is the type of the "coachee"
+// service "CreateCertification" endpoint HTTP response body for the
+// "validation" error.
+type CreateCertificationValidationResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// CreateCertificationUnauthorizedResponseBody is the type of the "coachee"
+// service "CreateCertification" endpoint HTTP response body for the
+// "unauthorized" error.
+type CreateCertificationUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// DeleteCertificationTransientResponseBody is the type of the "coachee"
+// service "DeleteCertification" endpoint HTTP response body for the
+// "transient" error.
+type DeleteCertificationTransientResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// DeleteCertificationNotFoundResponseBody is the type of the "coachee" service
+// "DeleteCertification" endpoint HTTP response body for the "notFound" error.
+type DeleteCertificationNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// DeleteCertificationValidationResponseBody is the type of the "coachee"
+// service "DeleteCertification" endpoint HTTP response body for the
+// "validation" error.
+type DeleteCertificationValidationResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// DeleteCertificationUnauthorizedResponseBody is the type of the "coachee"
+// service "DeleteCertification" endpoint HTTP response body for the
+// "unauthorized" error.
+type DeleteCertificationUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// CreateProgramTransientResponseBody is the type of the "coachee" service
+// "CreateProgram" endpoint HTTP response body for the "transient" error.
+type CreateProgramTransientResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// CreateProgramNotFoundResponseBody is the type of the "coachee" service
+// "CreateProgram" endpoint HTTP response body for the "notFound" error.
+type CreateProgramNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// CreateProgramValidationResponseBody is the type of the "coachee" service
+// "CreateProgram" endpoint HTTP response body for the "validation" error.
+type CreateProgramValidationResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// CreateProgramUnauthorizedResponseBody is the type of the "coachee" service
+// "CreateProgram" endpoint HTTP response body for the "unauthorized" error.
+type CreateProgramUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// DeleteProgramTransientResponseBody is the type of the "coachee" service
+// "DeleteProgram" endpoint HTTP response body for the "transient" error.
+type DeleteProgramTransientResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// DeleteProgramNotFoundResponseBody is the type of the "coachee" service
+// "DeleteProgram" endpoint HTTP response body for the "notFound" error.
+type DeleteProgramNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// DeleteProgramValidationResponseBody is the type of the "coachee" service
+// "DeleteProgram" endpoint HTTP response body for the "validation" error.
+type DeleteProgramValidationResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// DeleteProgramUnauthorizedResponseBody is the type of the "coachee" service
+// "DeleteProgram" endpoint HTTP response body for the "unauthorized" error.
+type DeleteProgramUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// CreateAvailabilityTransientResponseBody is the type of the "coachee" service
+// "CreateAvailability" endpoint HTTP response body for the "transient" error.
+type CreateAvailabilityTransientResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// CreateAvailabilityNotFoundResponseBody is the type of the "coachee" service
+// "CreateAvailability" endpoint HTTP response body for the "notFound" error.
+type CreateAvailabilityNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// CreateAvailabilityValidationResponseBody is the type of the "coachee"
+// service "CreateAvailability" endpoint HTTP response body for the
+// "validation" error.
+type CreateAvailabilityValidationResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// CreateAvailabilityUnauthorizedResponseBody is the type of the "coachee"
+// service "CreateAvailability" endpoint HTTP response body for the
+// "unauthorized" error.
+type CreateAvailabilityUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// DeleteAvailabilityTransientResponseBody is the type of the "coachee" service
+// "DeleteAvailability" endpoint HTTP response body for the "transient" error.
+type DeleteAvailabilityTransientResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// DeleteAvailabilityNotFoundResponseBody is the type of the "coachee" service
+// "DeleteAvailability" endpoint HTTP response body for the "notFound" error.
+type DeleteAvailabilityNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// DeleteAvailabilityValidationResponseBody is the type of the "coachee"
+// service "DeleteAvailability" endpoint HTTP response body for the
+// "validation" error.
+type DeleteAvailabilityValidationResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// DeleteAvailabilityUnauthorizedResponseBody is the type of the "coachee"
+// service "DeleteAvailability" endpoint HTTP response body for the
+// "unauthorized" error.
+type DeleteAvailabilityUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// CoachResponse is used to define fields on response body types.
+type CoachResponse struct {
+	ID             *uint                    `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	FirstName      *string                  `form:"firstName,omitempty" json:"firstName,omitempty" xml:"firstName,omitempty"`
+	LastName       *string                  `form:"lastName,omitempty" json:"lastName,omitempty" xml:"lastName,omitempty"`
+	Tags           *string                  `form:"tags,omitempty" json:"tags,omitempty" xml:"tags,omitempty"`
+	Description    *string                  `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
+	City           *string                  `form:"city,omitempty" json:"city,omitempty" xml:"city,omitempty"`
+	Country        *string                  `form:"country,omitempty" json:"country,omitempty" xml:"country,omitempty"`
+	PictureURL     *string                  `form:"pictureURL,omitempty" json:"pictureURL,omitempty" xml:"pictureURL,omitempty"`
+	Certifications []*CertificationResponse `form:"certifications,omitempty" json:"certifications,omitempty" xml:"certifications,omitempty"`
+	Programs       []*ProgramResponse       `form:"programs,omitempty" json:"programs,omitempty" xml:"programs,omitempty"`
+	Availability   []*AvailabilityResponse  `form:"availability,omitempty" json:"availability,omitempty" xml:"availability,omitempty"`
+}
+
+// CertificationResponse is used to define fields on response body types.
+type CertificationResponse struct {
 	ID          *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 	Title       *string `form:"title,omitempty" json:"title,omitempty" xml:"title,omitempty"`
 	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
@@ -89,8 +822,8 @@ type CertificationsResponseBody struct {
 	Year        *uint   `form:"year,omitempty" json:"year,omitempty" xml:"year,omitempty"`
 }
 
-// ProgramResponseBody is used to define fields on response body types.
-type ProgramResponseBody struct {
+// ProgramResponse is used to define fields on response body types.
+type ProgramResponse struct {
 	ID          *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 	Name        *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
 	Sessions    *uint   `form:"sessions,omitempty" json:"sessions,omitempty" xml:"sessions,omitempty"`
@@ -100,16 +833,16 @@ type ProgramResponseBody struct {
 	TaxPercent  *uint   `form:"taxPercent,omitempty" json:"taxPercent,omitempty" xml:"taxPercent,omitempty"`
 }
 
-// AvailabilityResponseBody is used to define fields on response body types.
-type AvailabilityResponseBody struct {
+// AvailabilityResponse is used to define fields on response body types.
+type AvailabilityResponse struct {
 	ID      *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 	WeekDay *uint   `form:"weekDay,omitempty" json:"weekDay,omitempty" xml:"weekDay,omitempty"`
 	Start   *uint   `form:"start,omitempty" json:"start,omitempty" xml:"start,omitempty"`
 	End     *uint   `form:"end,omitempty" json:"end,omitempty" xml:"end,omitempty"`
 }
 
-// CertificationsRequestBody is used to define fields on request body types.
-type CertificationsRequestBody struct {
+// CertificationRequestBody is used to define fields on request body types.
+type CertificationRequestBody struct {
 	ID          *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 	Title       string  `form:"title" json:"title" xml:"title"`
 	Description string  `form:"description" json:"description" xml:"description"`
@@ -132,9 +865,9 @@ type ProgramRequestBody struct {
 // AvailabilityRequestBody is used to define fields on request body types.
 type AvailabilityRequestBody struct {
 	ID      *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
-	WeekDay *uint   `form:"weekDay,omitempty" json:"weekDay,omitempty" xml:"weekDay,omitempty"`
-	Start   *uint   `form:"start,omitempty" json:"start,omitempty" xml:"start,omitempty"`
-	End     *uint   `form:"end,omitempty" json:"end,omitempty" xml:"end,omitempty"`
+	WeekDay uint    `form:"weekDay" json:"weekDay" xml:"weekDay"`
+	Start   uint    `form:"start" json:"start" xml:"start"`
+	End     uint    `form:"end" json:"end" xml:"end"`
 }
 
 // NewCreateCoachRequestBody builds the HTTP request body from the payload of
@@ -150,18 +883,7 @@ func NewCreateCoachRequestBody(p *coachee.CreateCoachPayload) *CreateCoachReques
 		City:        p.City,
 		Country:     p.Country,
 		IntroCall:   p.IntroCall,
-	}
-	if p.Certifications != nil {
-		body.Certifications = make([]*CertificationsRequestBody, len(p.Certifications))
-		for i, val := range p.Certifications {
-			body.Certifications[i] = marshalCoacheeCertificationsToCertificationsRequestBody(val)
-		}
-	}
-	if p.Programs != nil {
-		body.Programs = make([]*ProgramRequestBody, len(p.Programs))
-		for i, val := range p.Programs {
-			body.Programs[i] = marshalCoacheeProgramToProgramRequestBody(val)
-		}
+		Vat:         p.Vat,
 	}
 	return body
 }
@@ -181,6 +903,7 @@ func NewUpdateCoachRequestBody(p *coachee.UpdateCoachPayload) *UpdateCoachReques
 		IntroCall:   p.IntroCall,
 		StripeID:    p.StripeID,
 		PictureURL:  p.PictureURL,
+		Vat:         p.Vat,
 	}
 	return body
 }
@@ -190,7 +913,7 @@ func NewUpdateCoachRequestBody(p *coachee.UpdateCoachPayload) *UpdateCoachReques
 func NewCreateCertificationRequestBody(p *coachee.CreateCertificationPayload) *CreateCertificationRequestBody {
 	body := &CreateCertificationRequestBody{}
 	if p.Certification != nil {
-		body.Certification = marshalCoacheeCertificationsToCertificationsRequestBody(p.Certification)
+		body.Certification = marshalCoacheeCertificationToCertificationRequestBody(p.Certification)
 	}
 	return body
 }
@@ -217,58 +940,1604 @@ func NewCreateAvailabilityRequestBody(p *coachee.CreateAvailabilityPayload) *Cre
 
 // NewGetCoachesCoachOK builds a "coachee" service "GetCoaches" endpoint result
 // from a HTTP "OK" response.
-func NewGetCoachesCoachOK(body *GetCoachesResponseBody) *coachee.Coach {
-	v := &coachee.Coach{
-		ID:          body.ID,
-		FirstName:   body.FirstName,
-		LastName:    body.LastName,
-		Tags:        body.Tags,
-		Description: body.Description,
-		City:        body.City,
-		Country:     body.Country,
-		PictureURL:  body.PictureURL,
-	}
-	if body.Certifications != nil {
-		v.Certifications = make([]*coachee.Certifications, len(body.Certifications))
-		for i, val := range body.Certifications {
-			v.Certifications[i] = unmarshalCertificationsResponseBodyToCoacheeCertifications(val)
+func NewGetCoachesCoachOK(body []*CoachResponse) []*coachee.Coach {
+	v := make([]*coachee.Coach, len(body))
+	for i, val := range body {
+		v[i] = &coachee.Coach{
+			ID:          *val.ID,
+			FirstName:   *val.FirstName,
+			LastName:    *val.LastName,
+			Tags:        *val.Tags,
+			Description: *val.Description,
+			City:        *val.City,
+			Country:     *val.Country,
+			PictureURL:  *val.PictureURL,
 		}
-	}
-	if body.Programs != nil {
-		v.Programs = make([]*coachee.Program, len(body.Programs))
-		for i, val := range body.Programs {
-			v.Programs[i] = unmarshalProgramResponseBodyToCoacheeProgram(val)
+		if val.Certifications != nil {
+			v[i].Certifications = make([]*coachee.Certification, len(val.Certifications))
+			for j, val := range val.Certifications {
+				v[i].Certifications[j] = unmarshalCertificationResponseToCoacheeCertification(val)
+			}
 		}
-	}
-	if body.Availability != nil {
-		v.Availability = make([]*coachee.Availability, len(body.Availability))
-		for i, val := range body.Availability {
-			v.Availability[i] = unmarshalAvailabilityResponseBodyToCoacheeAvailability(val)
+		if val.Programs != nil {
+			v[i].Programs = make([]*coachee.Program, len(val.Programs))
+			for j, val := range val.Programs {
+				v[i].Programs[j] = unmarshalProgramResponseToCoacheeProgram(val)
+			}
+		}
+		if val.Availability != nil {
+			v[i].Availability = make([]*coachee.Availability, len(val.Availability))
+			for j, val := range val.Availability {
+				v[i].Availability[j] = unmarshalAvailabilityResponseToCoacheeAvailability(val)
+			}
 		}
 	}
 	return v
 }
 
-// ValidateGetCoachesResponseBody runs the validations defined on
-// GetCoachesResponseBody
-func ValidateGetCoachesResponseBody(body *GetCoachesResponseBody) (err error) {
+// NewGetCoachesTransient builds a coachee service GetCoaches endpoint
+// transient error.
+func NewGetCoachesTransient(body *GetCoachesTransientResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewGetCoachesNotFound builds a coachee service GetCoaches endpoint notFound
+// error.
+func NewGetCoachesNotFound(body *GetCoachesNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewGetCoachesValidation builds a coachee service GetCoaches endpoint
+// validation error.
+func NewGetCoachesValidation(body *GetCoachesValidationResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewGetCoachesUnauthorized builds a coachee service GetCoaches endpoint
+// unauthorized error.
+func NewGetCoachesUnauthorized(body *GetCoachesUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewLenCoachesTransient builds a coachee service LenCoaches endpoint
+// transient error.
+func NewLenCoachesTransient(body *LenCoachesTransientResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewLenCoachesNotFound builds a coachee service LenCoaches endpoint notFound
+// error.
+func NewLenCoachesNotFound(body *LenCoachesNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewLenCoachesValidation builds a coachee service LenCoaches endpoint
+// validation error.
+func NewLenCoachesValidation(body *LenCoachesValidationResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewLenCoachesUnauthorized builds a coachee service LenCoaches endpoint
+// unauthorized error.
+func NewLenCoachesUnauthorized(body *LenCoachesUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewCreateCoachTransient builds a coachee service CreateCoach endpoint
+// transient error.
+func NewCreateCoachTransient(body *CreateCoachTransientResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewCreateCoachNotFound builds a coachee service CreateCoach endpoint
+// notFound error.
+func NewCreateCoachNotFound(body *CreateCoachNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewCreateCoachValidation builds a coachee service CreateCoach endpoint
+// validation error.
+func NewCreateCoachValidation(body *CreateCoachValidationResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewCreateCoachUnauthorized builds a coachee service CreateCoach endpoint
+// unauthorized error.
+func NewCreateCoachUnauthorized(body *CreateCoachUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewUpdateCoachTransient builds a coachee service UpdateCoach endpoint
+// transient error.
+func NewUpdateCoachTransient(body *UpdateCoachTransientResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewUpdateCoachNotFound builds a coachee service UpdateCoach endpoint
+// notFound error.
+func NewUpdateCoachNotFound(body *UpdateCoachNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewUpdateCoachValidation builds a coachee service UpdateCoach endpoint
+// validation error.
+func NewUpdateCoachValidation(body *UpdateCoachValidationResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewUpdateCoachUnauthorized builds a coachee service UpdateCoach endpoint
+// unauthorized error.
+func NewUpdateCoachUnauthorized(body *UpdateCoachUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewCreateCertificationTransient builds a coachee service CreateCertification
+// endpoint transient error.
+func NewCreateCertificationTransient(body *CreateCertificationTransientResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewCreateCertificationNotFound builds a coachee service CreateCertification
+// endpoint notFound error.
+func NewCreateCertificationNotFound(body *CreateCertificationNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewCreateCertificationValidation builds a coachee service
+// CreateCertification endpoint validation error.
+func NewCreateCertificationValidation(body *CreateCertificationValidationResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewCreateCertificationUnauthorized builds a coachee service
+// CreateCertification endpoint unauthorized error.
+func NewCreateCertificationUnauthorized(body *CreateCertificationUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewDeleteCertificationTransient builds a coachee service DeleteCertification
+// endpoint transient error.
+func NewDeleteCertificationTransient(body *DeleteCertificationTransientResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewDeleteCertificationNotFound builds a coachee service DeleteCertification
+// endpoint notFound error.
+func NewDeleteCertificationNotFound(body *DeleteCertificationNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewDeleteCertificationValidation builds a coachee service
+// DeleteCertification endpoint validation error.
+func NewDeleteCertificationValidation(body *DeleteCertificationValidationResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewDeleteCertificationUnauthorized builds a coachee service
+// DeleteCertification endpoint unauthorized error.
+func NewDeleteCertificationUnauthorized(body *DeleteCertificationUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewCreateProgramTransient builds a coachee service CreateProgram endpoint
+// transient error.
+func NewCreateProgramTransient(body *CreateProgramTransientResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewCreateProgramNotFound builds a coachee service CreateProgram endpoint
+// notFound error.
+func NewCreateProgramNotFound(body *CreateProgramNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewCreateProgramValidation builds a coachee service CreateProgram endpoint
+// validation error.
+func NewCreateProgramValidation(body *CreateProgramValidationResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewCreateProgramUnauthorized builds a coachee service CreateProgram endpoint
+// unauthorized error.
+func NewCreateProgramUnauthorized(body *CreateProgramUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewDeleteProgramTransient builds a coachee service DeleteProgram endpoint
+// transient error.
+func NewDeleteProgramTransient(body *DeleteProgramTransientResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewDeleteProgramNotFound builds a coachee service DeleteProgram endpoint
+// notFound error.
+func NewDeleteProgramNotFound(body *DeleteProgramNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewDeleteProgramValidation builds a coachee service DeleteProgram endpoint
+// validation error.
+func NewDeleteProgramValidation(body *DeleteProgramValidationResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewDeleteProgramUnauthorized builds a coachee service DeleteProgram endpoint
+// unauthorized error.
+func NewDeleteProgramUnauthorized(body *DeleteProgramUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewCreateAvailabilityTransient builds a coachee service CreateAvailability
+// endpoint transient error.
+func NewCreateAvailabilityTransient(body *CreateAvailabilityTransientResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewCreateAvailabilityNotFound builds a coachee service CreateAvailability
+// endpoint notFound error.
+func NewCreateAvailabilityNotFound(body *CreateAvailabilityNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewCreateAvailabilityValidation builds a coachee service CreateAvailability
+// endpoint validation error.
+func NewCreateAvailabilityValidation(body *CreateAvailabilityValidationResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewCreateAvailabilityUnauthorized builds a coachee service
+// CreateAvailability endpoint unauthorized error.
+func NewCreateAvailabilityUnauthorized(body *CreateAvailabilityUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewDeleteAvailabilityTransient builds a coachee service DeleteAvailability
+// endpoint transient error.
+func NewDeleteAvailabilityTransient(body *DeleteAvailabilityTransientResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewDeleteAvailabilityNotFound builds a coachee service DeleteAvailability
+// endpoint notFound error.
+func NewDeleteAvailabilityNotFound(body *DeleteAvailabilityNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewDeleteAvailabilityValidation builds a coachee service DeleteAvailability
+// endpoint validation error.
+func NewDeleteAvailabilityValidation(body *DeleteAvailabilityValidationResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewDeleteAvailabilityUnauthorized builds a coachee service
+// DeleteAvailability endpoint unauthorized error.
+func NewDeleteAvailabilityUnauthorized(body *DeleteAvailabilityUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// ValidateGetCoachesTransientResponseBody runs the validations defined on
+// GetCoaches_transient_Response_Body
+func ValidateGetCoachesTransientResponseBody(body *GetCoachesTransientResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateGetCoachesNotFoundResponseBody runs the validations defined on
+// GetCoaches_notFound_Response_Body
+func ValidateGetCoachesNotFoundResponseBody(body *GetCoachesNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateGetCoachesValidationResponseBody runs the validations defined on
+// GetCoaches_validation_Response_Body
+func ValidateGetCoachesValidationResponseBody(body *GetCoachesValidationResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateGetCoachesUnauthorizedResponseBody runs the validations defined on
+// GetCoaches_unauthorized_Response_Body
+func ValidateGetCoachesUnauthorizedResponseBody(body *GetCoachesUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateLenCoachesTransientResponseBody runs the validations defined on
+// LenCoaches_transient_Response_Body
+func ValidateLenCoachesTransientResponseBody(body *LenCoachesTransientResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateLenCoachesNotFoundResponseBody runs the validations defined on
+// LenCoaches_notFound_Response_Body
+func ValidateLenCoachesNotFoundResponseBody(body *LenCoachesNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateLenCoachesValidationResponseBody runs the validations defined on
+// LenCoaches_validation_Response_Body
+func ValidateLenCoachesValidationResponseBody(body *LenCoachesValidationResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateLenCoachesUnauthorizedResponseBody runs the validations defined on
+// LenCoaches_unauthorized_Response_Body
+func ValidateLenCoachesUnauthorizedResponseBody(body *LenCoachesUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateCreateCoachTransientResponseBody runs the validations defined on
+// CreateCoach_transient_Response_Body
+func ValidateCreateCoachTransientResponseBody(body *CreateCoachTransientResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateCreateCoachNotFoundResponseBody runs the validations defined on
+// CreateCoach_notFound_Response_Body
+func ValidateCreateCoachNotFoundResponseBody(body *CreateCoachNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateCreateCoachValidationResponseBody runs the validations defined on
+// CreateCoach_validation_Response_Body
+func ValidateCreateCoachValidationResponseBody(body *CreateCoachValidationResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateCreateCoachUnauthorizedResponseBody runs the validations defined on
+// CreateCoach_unauthorized_Response_Body
+func ValidateCreateCoachUnauthorizedResponseBody(body *CreateCoachUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateUpdateCoachTransientResponseBody runs the validations defined on
+// UpdateCoach_transient_Response_Body
+func ValidateUpdateCoachTransientResponseBody(body *UpdateCoachTransientResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateUpdateCoachNotFoundResponseBody runs the validations defined on
+// UpdateCoach_notFound_Response_Body
+func ValidateUpdateCoachNotFoundResponseBody(body *UpdateCoachNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateUpdateCoachValidationResponseBody runs the validations defined on
+// UpdateCoach_validation_Response_Body
+func ValidateUpdateCoachValidationResponseBody(body *UpdateCoachValidationResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateUpdateCoachUnauthorizedResponseBody runs the validations defined on
+// UpdateCoach_unauthorized_Response_Body
+func ValidateUpdateCoachUnauthorizedResponseBody(body *UpdateCoachUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateCreateCertificationTransientResponseBody runs the validations
+// defined on CreateCertification_transient_Response_Body
+func ValidateCreateCertificationTransientResponseBody(body *CreateCertificationTransientResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateCreateCertificationNotFoundResponseBody runs the validations defined
+// on CreateCertification_notFound_Response_Body
+func ValidateCreateCertificationNotFoundResponseBody(body *CreateCertificationNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateCreateCertificationValidationResponseBody runs the validations
+// defined on CreateCertification_validation_Response_Body
+func ValidateCreateCertificationValidationResponseBody(body *CreateCertificationValidationResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateCreateCertificationUnauthorizedResponseBody runs the validations
+// defined on CreateCertification_unauthorized_Response_Body
+func ValidateCreateCertificationUnauthorizedResponseBody(body *CreateCertificationUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateDeleteCertificationTransientResponseBody runs the validations
+// defined on DeleteCertification_transient_Response_Body
+func ValidateDeleteCertificationTransientResponseBody(body *DeleteCertificationTransientResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateDeleteCertificationNotFoundResponseBody runs the validations defined
+// on DeleteCertification_notFound_Response_Body
+func ValidateDeleteCertificationNotFoundResponseBody(body *DeleteCertificationNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateDeleteCertificationValidationResponseBody runs the validations
+// defined on DeleteCertification_validation_Response_Body
+func ValidateDeleteCertificationValidationResponseBody(body *DeleteCertificationValidationResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateDeleteCertificationUnauthorizedResponseBody runs the validations
+// defined on DeleteCertification_unauthorized_Response_Body
+func ValidateDeleteCertificationUnauthorizedResponseBody(body *DeleteCertificationUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateCreateProgramTransientResponseBody runs the validations defined on
+// CreateProgram_transient_Response_Body
+func ValidateCreateProgramTransientResponseBody(body *CreateProgramTransientResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateCreateProgramNotFoundResponseBody runs the validations defined on
+// CreateProgram_notFound_Response_Body
+func ValidateCreateProgramNotFoundResponseBody(body *CreateProgramNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateCreateProgramValidationResponseBody runs the validations defined on
+// CreateProgram_validation_Response_Body
+func ValidateCreateProgramValidationResponseBody(body *CreateProgramValidationResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateCreateProgramUnauthorizedResponseBody runs the validations defined
+// on CreateProgram_unauthorized_Response_Body
+func ValidateCreateProgramUnauthorizedResponseBody(body *CreateProgramUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateDeleteProgramTransientResponseBody runs the validations defined on
+// DeleteProgram_transient_Response_Body
+func ValidateDeleteProgramTransientResponseBody(body *DeleteProgramTransientResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateDeleteProgramNotFoundResponseBody runs the validations defined on
+// DeleteProgram_notFound_Response_Body
+func ValidateDeleteProgramNotFoundResponseBody(body *DeleteProgramNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateDeleteProgramValidationResponseBody runs the validations defined on
+// DeleteProgram_validation_Response_Body
+func ValidateDeleteProgramValidationResponseBody(body *DeleteProgramValidationResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateDeleteProgramUnauthorizedResponseBody runs the validations defined
+// on DeleteProgram_unauthorized_Response_Body
+func ValidateDeleteProgramUnauthorizedResponseBody(body *DeleteProgramUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateCreateAvailabilityTransientResponseBody runs the validations defined
+// on CreateAvailability_transient_Response_Body
+func ValidateCreateAvailabilityTransientResponseBody(body *CreateAvailabilityTransientResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateCreateAvailabilityNotFoundResponseBody runs the validations defined
+// on CreateAvailability_notFound_Response_Body
+func ValidateCreateAvailabilityNotFoundResponseBody(body *CreateAvailabilityNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateCreateAvailabilityValidationResponseBody runs the validations
+// defined on CreateAvailability_validation_Response_Body
+func ValidateCreateAvailabilityValidationResponseBody(body *CreateAvailabilityValidationResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateCreateAvailabilityUnauthorizedResponseBody runs the validations
+// defined on CreateAvailability_unauthorized_Response_Body
+func ValidateCreateAvailabilityUnauthorizedResponseBody(body *CreateAvailabilityUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateDeleteAvailabilityTransientResponseBody runs the validations defined
+// on DeleteAvailability_transient_Response_Body
+func ValidateDeleteAvailabilityTransientResponseBody(body *DeleteAvailabilityTransientResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateDeleteAvailabilityNotFoundResponseBody runs the validations defined
+// on DeleteAvailability_notFound_Response_Body
+func ValidateDeleteAvailabilityNotFoundResponseBody(body *DeleteAvailabilityNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateDeleteAvailabilityValidationResponseBody runs the validations
+// defined on DeleteAvailability_validation_Response_Body
+func ValidateDeleteAvailabilityValidationResponseBody(body *DeleteAvailabilityValidationResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateDeleteAvailabilityUnauthorizedResponseBody runs the validations
+// defined on DeleteAvailability_unauthorized_Response_Body
+func ValidateDeleteAvailabilityUnauthorizedResponseBody(body *DeleteAvailabilityUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateCoachResponse runs the validations defined on coachResponse
+func ValidateCoachResponse(body *CoachResponse) (err error) {
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.FirstName == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("firstName", "body"))
+	}
+	if body.LastName == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("lastName", "body"))
+	}
+	if body.Tags == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("tags", "body"))
+	}
+	if body.Description == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("description", "body"))
+	}
+	if body.City == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("city", "body"))
+	}
+	if body.Country == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("country", "body"))
+	}
+	if body.PictureURL == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("pictureURL", "body"))
+	}
 	for _, e := range body.Certifications {
 		if e != nil {
-			if err2 := ValidateCertificationsResponseBody(e); err2 != nil {
+			if err2 := ValidateCertificationResponse(e); err2 != nil {
 				err = goa.MergeErrors(err, err2)
 			}
 		}
 	}
 	for _, e := range body.Programs {
 		if e != nil {
-			if err2 := ValidateProgramResponseBody(e); err2 != nil {
+			if err2 := ValidateProgramResponse(e); err2 != nil {
 				err = goa.MergeErrors(err, err2)
 			}
 		}
 	}
 	for _, e := range body.Availability {
 		if e != nil {
-			if err2 := ValidateAvailabilityResponseBody(e); err2 != nil {
+			if err2 := ValidateAvailabilityResponse(e); err2 != nil {
 				err = goa.MergeErrors(err, err2)
 			}
 		}
@@ -276,9 +2545,9 @@ func ValidateGetCoachesResponseBody(body *GetCoachesResponseBody) (err error) {
 	return
 }
 
-// ValidateCertificationsResponseBody runs the validations defined on
-// certificationsResponseBody
-func ValidateCertificationsResponseBody(body *CertificationsResponseBody) (err error) {
+// ValidateCertificationResponse runs the validations defined on
+// certificationResponse
+func ValidateCertificationResponse(body *CertificationResponse) (err error) {
 	if body.Title == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("title", "body"))
 	}
@@ -317,9 +2586,8 @@ func ValidateCertificationsResponseBody(body *CertificationsResponseBody) (err e
 	return
 }
 
-// ValidateProgramResponseBody runs the validations defined on
-// programResponseBody
-func ValidateProgramResponseBody(body *ProgramResponseBody) (err error) {
+// ValidateProgramResponse runs the validations defined on programResponse
+func ValidateProgramResponse(body *ProgramResponse) (err error) {
 	if body.Name == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
 	}
@@ -341,9 +2609,18 @@ func ValidateProgramResponseBody(body *ProgramResponseBody) (err error) {
 	return
 }
 
-// ValidateAvailabilityResponseBody runs the validations defined on
-// availabilityResponseBody
-func ValidateAvailabilityResponseBody(body *AvailabilityResponseBody) (err error) {
+// ValidateAvailabilityResponse runs the validations defined on
+// availabilityResponse
+func ValidateAvailabilityResponse(body *AvailabilityResponse) (err error) {
+	if body.WeekDay == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("weekDay", "body"))
+	}
+	if body.Start == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("start", "body"))
+	}
+	if body.End == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("end", "body"))
+	}
 	if body.WeekDay != nil {
 		if *body.WeekDay < 0 {
 			err = goa.MergeErrors(err, goa.InvalidRangeError("body.weekDay", *body.WeekDay, 0, true))
@@ -377,9 +2654,9 @@ func ValidateAvailabilityResponseBody(body *AvailabilityResponseBody) (err error
 	return
 }
 
-// ValidateCertificationsRequestBody runs the validations defined on
-// certificationsRequestBody
-func ValidateCertificationsRequestBody(body *CertificationsRequestBody) (err error) {
+// ValidateCertificationRequestBody runs the validations defined on
+// certificationRequestBody
+func ValidateCertificationRequestBody(body *CertificationRequestBody) (err error) {
 	if body.Month < 1 {
 		err = goa.MergeErrors(err, goa.InvalidRangeError("body.month", body.Month, 1, true))
 	}
@@ -398,35 +2675,23 @@ func ValidateCertificationsRequestBody(body *CertificationsRequestBody) (err err
 // ValidateAvailabilityRequestBody runs the validations defined on
 // availabilityRequestBody
 func ValidateAvailabilityRequestBody(body *AvailabilityRequestBody) (err error) {
-	if body.WeekDay != nil {
-		if *body.WeekDay < 0 {
-			err = goa.MergeErrors(err, goa.InvalidRangeError("body.weekDay", *body.WeekDay, 0, true))
-		}
+	if body.WeekDay < 0 {
+		err = goa.MergeErrors(err, goa.InvalidRangeError("body.weekDay", body.WeekDay, 0, true))
 	}
-	if body.WeekDay != nil {
-		if *body.WeekDay > 6 {
-			err = goa.MergeErrors(err, goa.InvalidRangeError("body.weekDay", *body.WeekDay, 6, false))
-		}
+	if body.WeekDay > 6 {
+		err = goa.MergeErrors(err, goa.InvalidRangeError("body.weekDay", body.WeekDay, 6, false))
 	}
-	if body.Start != nil {
-		if *body.Start < 0 {
-			err = goa.MergeErrors(err, goa.InvalidRangeError("body.start", *body.Start, 0, true))
-		}
+	if body.Start < 0 {
+		err = goa.MergeErrors(err, goa.InvalidRangeError("body.start", body.Start, 0, true))
 	}
-	if body.Start != nil {
-		if *body.Start > 1440 {
-			err = goa.MergeErrors(err, goa.InvalidRangeError("body.start", *body.Start, 1440, false))
-		}
+	if body.Start > 1440 {
+		err = goa.MergeErrors(err, goa.InvalidRangeError("body.start", body.Start, 1440, false))
 	}
-	if body.End != nil {
-		if *body.End < 0 {
-			err = goa.MergeErrors(err, goa.InvalidRangeError("body.end", *body.End, 0, true))
-		}
+	if body.End < 0 {
+		err = goa.MergeErrors(err, goa.InvalidRangeError("body.end", body.End, 0, true))
 	}
-	if body.End != nil {
-		if *body.End > 1440 {
-			err = goa.MergeErrors(err, goa.InvalidRangeError("body.end", *body.End, 1440, false))
-		}
+	if body.End > 1440 {
+		err = goa.MergeErrors(err, goa.InvalidRangeError("body.end", body.End, 1440, false))
 	}
 	return
 }

@@ -25,7 +25,7 @@ var _ = API("coachee", func() {
 	})
 })
 
-var certification = Type("certifications", func() {
+var certification = Type("certification", func() {
 	Description("represents a coach certification")
 
 	Attribute("id", String)
@@ -60,6 +60,8 @@ var availability = Type("availability", func() {
 		Minimum(0)
 		Maximum(1440)
 	})
+
+	Required("weekDay", "start", "end")
 })
 
 var program = Type("program", func() {
@@ -90,10 +92,26 @@ var coachResult = Type("coach", func() {
 	Attribute("certifications", ArrayOf(certification))
 	Attribute("programs", ArrayOf(program))
 	Attribute("availability", ArrayOf(availability))
+
+	Required("id", "firstName", "lastName", "tags", "description", "city", "country", "pictureURL")
 })
 
 var _ = Service("coachee", func() {
 	Description("The coachee service performs operations on coachees")
+
+	// error definition
+	Error("transient", func() {
+		Temporary()
+	})
+	Error("notFound")
+	Error("validation")
+	Error("unauthorized")
+	HTTP(func() {
+		Response("transient", StatusInternalServerError)
+		Response("notFound", StatusNotFound)
+		Response("validation", StatusBadRequest)
+		Response("unauthorized", StatusUnauthorized)
+	})
 
 	Method("GetCoaches", func() {
 		Description("GetCoaches returns an array of coaches according to a tag and pagination")
@@ -104,12 +122,27 @@ var _ = Service("coachee", func() {
 			Required("tag")
 		})
 
-		Result(coachResult)
+		Result(ArrayOf(coachResult))
 
 		HTTP(func() {
 			GET("/coaches/{tag}")
 			Param("limit")
 			Param("page")
+			Response(StatusOK)
+		})
+	})
+
+	Method("LenCoaches", func() {
+		Description("LenCoaches returns the amount of coaches with a given tag")
+		Payload(func() {
+			Attribute("tag", String)
+			Required("tag")
+		})
+
+		Result(UInt)
+
+		HTTP(func() {
+			GET("/coaches/{tag}/length")
 			Response(StatusOK)
 		})
 	})
@@ -125,12 +158,10 @@ var _ = Service("coachee", func() {
 			Attribute("description", String)
 			Attribute("city", String)
 			Attribute("country", String)
-			Attribute("certifications", ArrayOf(certification))
-			Attribute("programs", ArrayOf(program))
 			Attribute("introCall", UInt) // maybe an external scheduler
+			Attribute("vat", String)
 
-			Required("firstName", "lastName", "email", "phone", "tags", "description",
-				"certifications", "programs", "introCall")
+			Required("firstName", "lastName", "email", "phone", "tags", "description", "introCall")
 		})
 
 		Result(UInt)
@@ -156,6 +187,7 @@ var _ = Service("coachee", func() {
 			Attribute("introCall", UInt)
 			Attribute("stripeID", String)
 			Attribute("pictureURL", String)
+			Attribute("vat", String)
 
 			Required("id")
 		})

@@ -9,12 +9,16 @@ package coachee
 
 import (
 	"context"
+
+	goa "goa.design/goa/v3/pkg"
 )
 
 // The coachee service performs operations on coachees
 type Service interface {
 	// GetCoaches returns an array of coaches according to a tag and pagination
-	GetCoaches(context.Context, *GetCoachesPayload) (res *Coach, err error)
+	GetCoaches(context.Context, *GetCoachesPayload) (res []*Coach, err error)
+	// LenCoaches returns the amount of coaches with a given tag
+	LenCoaches(context.Context, *LenCoachesPayload) (res uint, err error)
 	// CreateCoaches creates a base coach
 	CreateCoach(context.Context, *CreateCoachPayload) (res uint, err error)
 	// UpdateCoaches updates a coach
@@ -41,7 +45,7 @@ const ServiceName = "coachee"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [9]string{"GetCoaches", "CreateCoach", "UpdateCoach", "CreateCertification", "DeleteCertification", "CreateProgram", "DeleteProgram", "CreateAvailability", "DeleteAvailability"}
+var MethodNames = [10]string{"GetCoaches", "LenCoaches", "CreateCoach", "UpdateCoach", "CreateCertification", "DeleteCertification", "CreateProgram", "DeleteProgram", "CreateAvailability", "DeleteAvailability"}
 
 // GetCoachesPayload is the payload type of the coachee service GetCoaches
 // method.
@@ -51,35 +55,25 @@ type GetCoachesPayload struct {
 	Page  *uint
 }
 
-// Coach is the result type of the coachee service GetCoaches method.
-type Coach struct {
-	ID             *uint
-	FirstName      *string
-	LastName       *string
-	Tags           *string
-	Description    *string
-	City           *string
-	Country        *string
-	PictureURL     *string
-	Certifications []*Certifications
-	Programs       []*Program
-	Availability   []*Availability
+// LenCoachesPayload is the payload type of the coachee service LenCoaches
+// method.
+type LenCoachesPayload struct {
+	Tag string
 }
 
 // CreateCoachPayload is the payload type of the coachee service CreateCoach
 // method.
 type CreateCoachPayload struct {
-	FirstName      string
-	LastName       string
-	Email          string
-	Phone          string
-	Tags           string
-	Description    string
-	City           *string
-	Country        *string
-	Certifications []*Certifications
-	Programs       []*Program
-	IntroCall      uint
+	FirstName   string
+	LastName    string
+	Email       string
+	Phone       string
+	Tags        string
+	Description string
+	City        *string
+	Country     *string
+	IntroCall   uint
+	Vat         *string
 }
 
 // UpdateCoachPayload is the payload type of the coachee service UpdateCoach
@@ -97,13 +91,14 @@ type UpdateCoachPayload struct {
 	IntroCall   *uint
 	StripeID    *string
 	PictureURL  *string
+	Vat         *string
 }
 
 // CreateCertificationPayload is the payload type of the coachee service
 // CreateCertification method.
 type CreateCertificationPayload struct {
 	ID            uint
-	Certification *Certifications
+	Certification *Certification
 }
 
 // DeleteCertificationPayload is the payload type of the coachee service
@@ -141,8 +136,23 @@ type DeleteAvailabilityPayload struct {
 	AvID string
 }
 
+// represents a coach and all his relevant info
+type Coach struct {
+	ID             uint
+	FirstName      string
+	LastName       string
+	Tags           string
+	Description    string
+	City           string
+	Country        string
+	PictureURL     string
+	Certifications []*Certification
+	Programs       []*Program
+	Availability   []*Availability
+}
+
 // represents a coach certification
-type Certifications struct {
+type Certification struct {
 	ID          *string
 	Title       string
 	Description string
@@ -165,7 +175,44 @@ type Program struct {
 // represents a coach availability
 type Availability struct {
 	ID      *string
-	WeekDay *uint
-	Start   *uint
-	End     *uint
+	WeekDay uint
+	Start   uint
+	End     uint
+}
+
+// MakeTransient builds a goa.ServiceError from an error.
+func MakeTransient(err error) *goa.ServiceError {
+	return &goa.ServiceError{
+		Name:      "transient",
+		ID:        goa.NewErrorID(),
+		Message:   err.Error(),
+		Temporary: true,
+	}
+}
+
+// MakeNotFound builds a goa.ServiceError from an error.
+func MakeNotFound(err error) *goa.ServiceError {
+	return &goa.ServiceError{
+		Name:    "notFound",
+		ID:      goa.NewErrorID(),
+		Message: err.Error(),
+	}
+}
+
+// MakeValidation builds a goa.ServiceError from an error.
+func MakeValidation(err error) *goa.ServiceError {
+	return &goa.ServiceError{
+		Name:    "validation",
+		ID:      goa.NewErrorID(),
+		Message: err.Error(),
+	}
+}
+
+// MakeUnauthorized builds a goa.ServiceError from an error.
+func MakeUnauthorized(err error) *goa.ServiceError {
+	return &goa.ServiceError{
+		Name:    "unauthorized",
+		ID:      goa.NewErrorID(),
+		Message: err.Error(),
+	}
 }

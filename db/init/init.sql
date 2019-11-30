@@ -1,0 +1,1 @@
+GRANT ALL ON coachee_db.* TO 'coachee_user'@'%';

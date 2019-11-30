@@ -23,13 +23,13 @@ import (
 //    command (subcommand1|subcommand2|...)
 //
 func UsageCommands() string {
-	return `coachee (get-coaches|create-coach|update-coach|create-certification|delete-certification|create-program|delete-program|create-availability|delete-availability)
+	return `coachee (get-coaches|len-coaches|create-coach|update-coach|create-certification|delete-certification|create-program|delete-program|create-availability|delete-availability)
 `
 }
 
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
-	return os.Args[0] + ` coachee get-coaches --tag "Sint modi facilis eligendi." --limit 1767189905976738343 --page 1589930018771915670` + "\n" +
+	return os.Args[0] + ` coachee get-coaches --tag "Natus a facere dicta." --limit 1834412501867552589 --page 611494967784014313` + "\n" +
 		""
 }
 
@@ -49,6 +49,9 @@ func ParseEndpoint(
 		coacheeGetCoachesTagFlag   = coacheeGetCoachesFlags.String("tag", "REQUIRED", "")
 		coacheeGetCoachesLimitFlag = coacheeGetCoachesFlags.String("limit", "", "")
 		coacheeGetCoachesPageFlag  = coacheeGetCoachesFlags.String("page", "", "")
+
+		coacheeLenCoachesFlags   = flag.NewFlagSet("len-coaches", flag.ExitOnError)
+		coacheeLenCoachesTagFlag = coacheeLenCoachesFlags.String("tag", "REQUIRED", "")
 
 		coacheeCreateCoachFlags    = flag.NewFlagSet("create-coach", flag.ExitOnError)
 		coacheeCreateCoachBodyFlag = coacheeCreateCoachFlags.String("body", "REQUIRED", "")
@@ -83,6 +86,7 @@ func ParseEndpoint(
 	)
 	coacheeFlags.Usage = coacheeUsage
 	coacheeGetCoachesFlags.Usage = coacheeGetCoachesUsage
+	coacheeLenCoachesFlags.Usage = coacheeLenCoachesUsage
 	coacheeCreateCoachFlags.Usage = coacheeCreateCoachUsage
 	coacheeUpdateCoachFlags.Usage = coacheeUpdateCoachUsage
 	coacheeCreateCertificationFlags.Usage = coacheeCreateCertificationUsage
@@ -128,6 +132,9 @@ func ParseEndpoint(
 			switch epn {
 			case "get-coaches":
 				epf = coacheeGetCoachesFlags
+
+			case "len-coaches":
+				epf = coacheeLenCoachesFlags
 
 			case "create-coach":
 				epf = coacheeCreateCoachFlags
@@ -181,6 +188,9 @@ func ParseEndpoint(
 			case "get-coaches":
 				endpoint = c.GetCoaches()
 				data, err = coacheec.BuildGetCoachesPayload(*coacheeGetCoachesTagFlag, *coacheeGetCoachesLimitFlag, *coacheeGetCoachesPageFlag)
+			case "len-coaches":
+				endpoint = c.LenCoaches()
+				data, err = coacheec.BuildLenCoachesPayload(*coacheeLenCoachesTagFlag)
 			case "create-coach":
 				endpoint = c.CreateCoach()
 				data, err = coacheec.BuildCreateCoachPayload(*coacheeCreateCoachBodyFlag)
@@ -223,6 +233,7 @@ Usage:
 
 COMMAND:
     get-coaches: GetCoaches returns an array of coaches according to a tag and pagination
+    len-coaches: LenCoaches returns the amount of coaches with a given tag
     create-coach: CreateCoaches creates a base coach
     update-coach: UpdateCoaches updates a coach
     create-certification: creates a certification for a coach
@@ -245,7 +256,18 @@ GetCoaches returns an array of coaches according to a tag and pagination
     -page UINT: 
 
 Example:
-    `+os.Args[0]+` coachee get-coaches --tag "Sint modi facilis eligendi." --limit 1767189905976738343 --page 1589930018771915670
+    `+os.Args[0]+` coachee get-coaches --tag "Natus a facere dicta." --limit 1834412501867552589 --page 611494967784014313
+`, os.Args[0])
+}
+
+func coacheeLenCoachesUsage() {
+	fmt.Fprintf(os.Stderr, `%s [flags] coachee len-coaches -tag STRING
+
+LenCoaches returns the amount of coaches with a given tag
+    -tag STRING: 
+
+Example:
+    `+os.Args[0]+` coachee len-coaches --tag "Iure assumenda sequi facere ex sed et."
 `, os.Args[0])
 }
 
@@ -257,71 +279,16 @@ CreateCoaches creates a base coach
 
 Example:
     `+os.Args[0]+` coachee create-coach --body '{
-      "certifications": [
-         {
-            "description": "Ex sed et.",
-            "id": "Eos nam aperiam.",
-            "institution": "Eligendi rerum animi tenetur ipsa debitis molestiae.",
-            "month": 1,
-            "title": "Quae iure assumenda sequi.",
-            "year": 2023
-         },
-         {
-            "description": "Ex sed et.",
-            "id": "Eos nam aperiam.",
-            "institution": "Eligendi rerum animi tenetur ipsa debitis molestiae.",
-            "month": 1,
-            "title": "Quae iure assumenda sequi.",
-            "year": 2023
-         }
-      ],
-      "city": "Aut nam eveniet.",
-      "country": "Non saepe ullam eveniet delectus est.",
-      "description": "Doloremque ut reprehenderit.",
-      "email": "Ipsa qui qui alias numquam nulla.",
-      "firstName": "Non ea esse et.",
-      "introCall": 8764910572718661629,
-      "lastName": "Consectetur aut similique omnis pariatur dolores.",
-      "phone": "Consequatur aut et sint.",
-      "programs": [
-         {
-            "description": "Hic eveniet placeat reiciendis cum reiciendis.",
-            "duration": 13130017794459440444,
-            "id": "Enim et quas ex ut.",
-            "name": "Aut voluptatem.",
-            "sessions": 14817489201336631492,
-            "taxPercent": 6813321315917995789,
-            "totalPrice": 2652402719978733960
-         },
-         {
-            "description": "Hic eveniet placeat reiciendis cum reiciendis.",
-            "duration": 13130017794459440444,
-            "id": "Enim et quas ex ut.",
-            "name": "Aut voluptatem.",
-            "sessions": 14817489201336631492,
-            "taxPercent": 6813321315917995789,
-            "totalPrice": 2652402719978733960
-         },
-         {
-            "description": "Hic eveniet placeat reiciendis cum reiciendis.",
-            "duration": 13130017794459440444,
-            "id": "Enim et quas ex ut.",
-            "name": "Aut voluptatem.",
-            "sessions": 14817489201336631492,
-            "taxPercent": 6813321315917995789,
-            "totalPrice": 2652402719978733960
-         },
-         {
-            "description": "Hic eveniet placeat reiciendis cum reiciendis.",
-            "duration": 13130017794459440444,
-            "id": "Enim et quas ex ut.",
-            "name": "Aut voluptatem.",
-            "sessions": 14817489201336631492,
-            "taxPercent": 6813321315917995789,
-            "totalPrice": 2652402719978733960
-         }
-      ],
-      "tags": "Consequatur sed dolorem aut et."
+      "city": "Et veniam.",
+      "country": "Et rem possimus voluptatem possimus omnis sequi.",
+      "description": "Sunt nihil quasi et.",
+      "email": "Cum reiciendis sit atque ab.",
+      "firstName": "Ex ut iure aut.",
+      "introCall": 12914473928902340184,
+      "lastName": "Consequatur modi beatae hic eveniet placeat.",
+      "phone": "Sit velit voluptas et.",
+      "tags": "Minima enim est et quasi dolorum.",
+      "vat": "Qui sequi omnis."
    }'
 `, os.Args[0])
 }
@@ -335,18 +302,19 @@ UpdateCoaches updates a coach
 
 Example:
     `+os.Args[0]+` coachee update-coach --body '{
-      "city": "Veritatis consectetur velit.",
-      "country": "Magnam quidem reprehenderit.",
-      "description": "Et qui sequi omnis et praesentium voluptatum.",
-      "email": "Quasi dolorum consectetur.",
-      "firstName": "Et doloremque.",
-      "introCall": 11500264445055308145,
-      "lastName": "Enim est.",
-      "phone": "Nihil quasi et ab et veniam.",
-      "pictureURL": "Culpa recusandae reiciendis laudantium deserunt reiciendis.",
-      "stripeID": "Illum veritatis nemo.",
-      "tags": "Et rem possimus voluptatem possimus omnis sequi."
-   }' --id 12048739738535841943
+      "city": "Voluptas dolorem sit quod rerum ducimus modi.",
+      "country": "Nisi occaecati recusandae voluptatem dolorem omnis.",
+      "description": "Provident ut corrupti delectus et et.",
+      "email": "Nemo voluptatum.",
+      "firstName": "Temporibus culpa recusandae.",
+      "introCall": 4141457757968715934,
+      "lastName": "Laudantium deserunt.",
+      "phone": "Est quis cum ratione aut ad.",
+      "pictureURL": "Incidunt officiis non dolor dolorum.",
+      "stripeID": "Est voluptates.",
+      "tags": "Iste ut.",
+      "vat": "Tempore eaque natus et."
+   }' --id 10451111800108654738
 `, os.Args[0])
 }
 
@@ -360,14 +328,14 @@ creates a certification for a coach
 Example:
     `+os.Args[0]+` coachee create-certification --body '{
       "certification": {
-         "description": "Ex sed et.",
-         "id": "Eos nam aperiam.",
-         "institution": "Eligendi rerum animi tenetur ipsa debitis molestiae.",
+         "description": "Magni cupiditate nihil.",
+         "id": "Quis molestias.",
+         "institution": "Eius ullam libero officiis.",
          "month": 1,
-         "title": "Quae iure assumenda sequi.",
-         "year": 2023
+         "title": "Iusto facere mollitia ut.",
+         "year": 2044
       }
-   }' --id 2529270235636417785
+   }' --id 3000056767393239932
 `, os.Args[0])
 }
 
@@ -379,7 +347,7 @@ deletes a certification for a coach
     -cert-id STRING: 
 
 Example:
-    `+os.Args[0]+` coachee delete-certification --id 13136875275753942390 --cert-id "Ut dolorum."
+    `+os.Args[0]+` coachee delete-certification --id 17793037588707685072 --cert-id "Occaecati inventore aliquid sit dicta."
 `, os.Args[0])
 }
 
@@ -393,15 +361,15 @@ creates a program for a coach
 Example:
     `+os.Args[0]+` coachee create-program --body '{
       "program": {
-         "description": "Hic eveniet placeat reiciendis cum reiciendis.",
-         "duration": 13130017794459440444,
-         "id": "Enim et quas ex ut.",
-         "name": "Aut voluptatem.",
-         "sessions": 14817489201336631492,
-         "taxPercent": 6813321315917995789,
-         "totalPrice": 2652402719978733960
+         "description": "Qui minima.",
+         "duration": 15144676940072979662,
+         "id": "Officia soluta quo deserunt aperiam.",
+         "name": "Ipsa quas et fuga quod suscipit.",
+         "sessions": 3809913314435961664,
+         "taxPercent": 3227606603590424303,
+         "totalPrice": 9926921952433299070
       }
-   }' --id 9735235544889469039
+   }' --id 2848436428766119512
 `, os.Args[0])
 }
 
@@ -413,7 +381,7 @@ deletes a program for a coach
     -program-id STRING: 
 
 Example:
-    `+os.Args[0]+` coachee delete-program --id 9972917003602442915 --program-id "Dolorem sit quod rerum ducimus."
+    `+os.Args[0]+` coachee delete-program --id 6492338570771336553 --program-id "Dolorem debitis assumenda."
 `, os.Args[0])
 }
 
@@ -427,12 +395,12 @@ creates an availability for a coach
 Example:
     `+os.Args[0]+` coachee create-availability --body '{
       "availability": {
-         "end": 765,
-         "id": "Nisi occaecati recusandae voluptatem dolorem omnis.",
-         "start": 706,
-         "weekDay": 4
+         "end": 160,
+         "id": "Nam facilis aut veritatis aut.",
+         "start": 790,
+         "weekDay": 3
       }
-   }' --id 5939002981155694093
+   }' --id 16322891051095473377
 `, os.Args[0])
 }
 
@@ -444,6 +412,6 @@ deletes an availability for a coach
     -av-id STRING: 
 
 Example:
-    `+os.Args[0]+` coachee delete-availability --id 17367803043890118235 --av-id "Natus et vel doloribus veritatis."
+    `+os.Args[0]+` coachee delete-availability --id 14235296517971296966 --av-id "Blanditiis quidem qui."
 `, os.Args[0])
 }
