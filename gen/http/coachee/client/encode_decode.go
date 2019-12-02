@@ -23,17 +23,7 @@ import (
 // BuildGetCoachesRequest instantiates a HTTP request object with method and
 // path set to call the "coachee" service "GetCoaches" endpoint
 func (c *Client) BuildGetCoachesRequest(ctx context.Context, v interface{}) (*http.Request, error) {
-	var (
-		tag string
-	)
-	{
-		p, ok := v.(*coachee.GetCoachesPayload)
-		if !ok {
-			return nil, goahttp.ErrInvalidType("coachee", "GetCoaches", "*coachee.GetCoachesPayload", v)
-		}
-		tag = p.Tag
-	}
-	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: GetCoachesCoacheePath(tag)}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: GetCoachesCoacheePath()}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		return nil, goahttp.ErrInvalidURL("coachee", "GetCoaches", u.String(), err)
@@ -54,6 +44,9 @@ func EncodeGetCoachesRequest(encoder func(*http.Request) goahttp.Encoder) func(*
 			return goahttp.ErrInvalidType("coachee", "GetCoaches", "*coachee.GetCoachesPayload", v)
 		}
 		values := req.URL.Query()
+		if p.Tag != nil {
+			values.Add("tag", *p.Tag)
+		}
 		if p.Limit != nil {
 			values.Add("limit", fmt.Sprintf("%v", *p.Limit))
 		}
@@ -169,6 +162,133 @@ func DecodeGetCoachesResponse(decoder func(*http.Response) goahttp.Decoder, rest
 		default:
 			body, _ := ioutil.ReadAll(resp.Body)
 			return nil, goahttp.ErrInvalidResponse("coachee", "GetCoaches", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// BuildGetCoachRequest instantiates a HTTP request object with method and path
+// set to call the "coachee" service "GetCoach" endpoint
+func (c *Client) BuildGetCoachRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	var (
+		id uint
+	)
+	{
+		p, ok := v.(*coachee.GetCoachPayload)
+		if !ok {
+			return nil, goahttp.ErrInvalidType("coachee", "GetCoach", "*coachee.GetCoachPayload", v)
+		}
+		id = p.ID
+	}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: GetCoachCoacheePath(id)}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("coachee", "GetCoach", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// DecodeGetCoachResponse returns a decoder for responses returned by the
+// coachee GetCoach endpoint. restoreBody controls whether the response body
+// should be restored after having been read.
+// DecodeGetCoachResponse may return the following errors:
+//	- "transient" (type *goa.ServiceError): http.StatusInternalServerError
+//	- "notFound" (type *goa.ServiceError): http.StatusNotFound
+//	- "validation" (type *goa.ServiceError): http.StatusBadRequest
+//	- "unauthorized" (type *goa.ServiceError): http.StatusUnauthorized
+//	- error: internal error
+func DecodeGetCoachResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body GetCoachResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("coachee", "GetCoach", err)
+			}
+			err = ValidateGetCoachResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("coachee", "GetCoach", err)
+			}
+			res := NewGetCoachCoachOK(&body)
+			return res, nil
+		case http.StatusInternalServerError:
+			var (
+				body GetCoachTransientResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("coachee", "GetCoach", err)
+			}
+			err = ValidateGetCoachTransientResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("coachee", "GetCoach", err)
+			}
+			return nil, NewGetCoachTransient(&body)
+		case http.StatusNotFound:
+			var (
+				body GetCoachNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("coachee", "GetCoach", err)
+			}
+			err = ValidateGetCoachNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("coachee", "GetCoach", err)
+			}
+			return nil, NewGetCoachNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body GetCoachValidationResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("coachee", "GetCoach", err)
+			}
+			err = ValidateGetCoachValidationResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("coachee", "GetCoach", err)
+			}
+			return nil, NewGetCoachValidation(&body)
+		case http.StatusUnauthorized:
+			var (
+				body GetCoachUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("coachee", "GetCoach", err)
+			}
+			err = ValidateGetCoachUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("coachee", "GetCoach", err)
+			}
+			return nil, NewGetCoachUnauthorized(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("coachee", "GetCoach", resp.StatusCode, string(body))
 		}
 	}
 }
@@ -1335,6 +1455,59 @@ func unmarshalProgramResponseToCoacheeProgram(v *ProgramResponse) *coachee.Progr
 // unmarshalAvailabilityResponseToCoacheeAvailability builds a value of type
 // *coachee.Availability from a value of type *AvailabilityResponse.
 func unmarshalAvailabilityResponseToCoacheeAvailability(v *AvailabilityResponse) *coachee.Availability {
+	if v == nil {
+		return nil
+	}
+	res := &coachee.Availability{
+		ID:      v.ID,
+		WeekDay: *v.WeekDay,
+		Start:   *v.Start,
+		End:     *v.End,
+	}
+
+	return res
+}
+
+// unmarshalCertificationResponseBodyToCoacheeCertification builds a value of
+// type *coachee.Certification from a value of type *CertificationResponseBody.
+func unmarshalCertificationResponseBodyToCoacheeCertification(v *CertificationResponseBody) *coachee.Certification {
+	if v == nil {
+		return nil
+	}
+	res := &coachee.Certification{
+		ID:          v.ID,
+		Title:       *v.Title,
+		Description: *v.Description,
+		Institution: *v.Institution,
+		Month:       *v.Month,
+		Year:        *v.Year,
+	}
+
+	return res
+}
+
+// unmarshalProgramResponseBodyToCoacheeProgram builds a value of type
+// *coachee.Program from a value of type *ProgramResponseBody.
+func unmarshalProgramResponseBodyToCoacheeProgram(v *ProgramResponseBody) *coachee.Program {
+	if v == nil {
+		return nil
+	}
+	res := &coachee.Program{
+		ID:          v.ID,
+		Name:        *v.Name,
+		Sessions:    *v.Sessions,
+		Duration:    *v.Duration,
+		Description: *v.Description,
+		TotalPrice:  *v.TotalPrice,
+		TaxPercent:  *v.TaxPercent,
+	}
+
+	return res
+}
+
+// unmarshalAvailabilityResponseBodyToCoacheeAvailability builds a value of
+// type *coachee.Availability from a value of type *AvailabilityResponseBody.
+func unmarshalAvailabilityResponseBodyToCoacheeAvailability(v *AvailabilityResponseBody) *coachee.Availability {
 	if v == nil {
 		return nil
 	}

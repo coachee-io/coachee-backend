@@ -16,6 +16,7 @@ import (
 // Endpoints wraps the "coachee" service endpoints.
 type Endpoints struct {
 	GetCoaches          goa.Endpoint
+	GetCoach            goa.Endpoint
 	LenCoaches          goa.Endpoint
 	CreateCoach         goa.Endpoint
 	UpdateCoach         goa.Endpoint
@@ -31,6 +32,7 @@ type Endpoints struct {
 func NewEndpoints(s Service) *Endpoints {
 	return &Endpoints{
 		GetCoaches:          NewGetCoachesEndpoint(s),
+		GetCoach:            NewGetCoachEndpoint(s),
 		LenCoaches:          NewLenCoachesEndpoint(s),
 		CreateCoach:         NewCreateCoachEndpoint(s),
 		UpdateCoach:         NewUpdateCoachEndpoint(s),
@@ -46,6 +48,7 @@ func NewEndpoints(s Service) *Endpoints {
 // Use applies the given middleware to all the "coachee" service endpoints.
 func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.GetCoaches = m(e.GetCoaches)
+	e.GetCoach = m(e.GetCoach)
 	e.LenCoaches = m(e.LenCoaches)
 	e.CreateCoach = m(e.CreateCoach)
 	e.UpdateCoach = m(e.UpdateCoach)
@@ -63,6 +66,15 @@ func NewGetCoachesEndpoint(s Service) goa.Endpoint {
 	return func(ctx context.Context, req interface{}) (interface{}, error) {
 		p := req.(*GetCoachesPayload)
 		return s.GetCoaches(ctx, p)
+	}
+}
+
+// NewGetCoachEndpoint returns an endpoint function that calls the method
+// "GetCoach" of service "coachee".
+func NewGetCoachEndpoint(s Service) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*GetCoachPayload)
+		return s.GetCoach(ctx, p)
 	}
 }
 

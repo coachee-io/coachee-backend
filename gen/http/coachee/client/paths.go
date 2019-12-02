@@ -12,8 +12,13 @@ import (
 )
 
 // GetCoachesCoacheePath returns the URL path to the coachee service GetCoaches HTTP endpoint.
-func GetCoachesCoacheePath(tag string) string {
-	return fmt.Sprintf("/coaches/%v", tag)
+func GetCoachesCoacheePath() string {
+	return "/coaches"
+}
+
+// GetCoachCoacheePath returns the URL path to the coachee service GetCoach HTTP endpoint.
+func GetCoachCoacheePath(id uint) string {
+	return fmt.Sprintf("/coaches/%v", id)
 }
 
 // LenCoachesCoacheePath returns the URL path to the coachee service LenCoaches HTTP endpoint.

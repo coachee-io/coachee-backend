@@ -21,6 +21,10 @@ type Client struct {
 	// endpoint.
 	GetCoachesDoer goahttp.Doer
 
+	// GetCoach Doer is the HTTP client used to make requests to the GetCoach
+	// endpoint.
+	GetCoachDoer goahttp.Doer
+
 	// LenCoaches Doer is the HTTP client used to make requests to the LenCoaches
 	// endpoint.
 	LenCoachesDoer goahttp.Doer
@@ -78,6 +82,7 @@ func NewClient(
 ) *Client {
 	return &Client{
 		GetCoachesDoer:          doer,
+		GetCoachDoer:            doer,
 		LenCoachesDoer:          doer,
 		CreateCoachDoer:         doer,
 		UpdateCoachDoer:         doer,
@@ -115,6 +120,26 @@ func (c *Client) GetCoaches() goa.Endpoint {
 
 		if err != nil {
 			return nil, goahttp.ErrRequestError("coachee", "GetCoaches", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// GetCoach returns an endpoint that makes HTTP requests to the coachee service
+// GetCoach server.
+func (c *Client) GetCoach() goa.Endpoint {
+	var (
+		decodeResponse = DecodeGetCoachResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildGetCoachRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.GetCoachDoer.Do(req)
+
+		if err != nil {
+			return nil, goahttp.ErrRequestError("coachee", "GetCoach", err)
 		}
 		return decodeResponse(resp)
 	}

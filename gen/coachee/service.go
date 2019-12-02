@@ -17,6 +17,8 @@ import (
 type Service interface {
 	// GetCoaches returns an array of coaches according to a tag and pagination
 	GetCoaches(context.Context, *GetCoachesPayload) (res []*Coach, err error)
+	// GetCoach returns one coach according to the id
+	GetCoach(context.Context, *GetCoachPayload) (res *Coach, err error)
 	// LenCoaches returns the amount of coaches with a given tag
 	LenCoaches(context.Context, *LenCoachesPayload) (res uint, err error)
 	// CreateCoaches creates a base coach
@@ -45,14 +47,34 @@ const ServiceName = "coachee"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [10]string{"GetCoaches", "LenCoaches", "CreateCoach", "UpdateCoach", "CreateCertification", "DeleteCertification", "CreateProgram", "DeleteProgram", "CreateAvailability", "DeleteAvailability"}
+var MethodNames = [11]string{"GetCoaches", "GetCoach", "LenCoaches", "CreateCoach", "UpdateCoach", "CreateCertification", "DeleteCertification", "CreateProgram", "DeleteProgram", "CreateAvailability", "DeleteAvailability"}
 
 // GetCoachesPayload is the payload type of the coachee service GetCoaches
 // method.
 type GetCoachesPayload struct {
-	Tag   string
+	Tag   *string
 	Limit *uint
 	Page  *uint
+}
+
+// GetCoachPayload is the payload type of the coachee service GetCoach method.
+type GetCoachPayload struct {
+	ID uint
+}
+
+// Coach is the result type of the coachee service GetCoach method.
+type Coach struct {
+	ID             uint
+	FirstName      string
+	LastName       string
+	Tags           string
+	Description    string
+	City           string
+	Country        string
+	PictureURL     string
+	Certifications []*Certification
+	Programs       []*Program
+	Availability   []*Availability
 }
 
 // LenCoachesPayload is the payload type of the coachee service LenCoaches
@@ -134,21 +156,6 @@ type CreateAvailabilityPayload struct {
 type DeleteAvailabilityPayload struct {
 	ID   uint
 	AvID string
-}
-
-// represents a coach and all his relevant info
-type Coach struct {
-	ID             uint
-	FirstName      string
-	LastName       string
-	Tags           string
-	Description    string
-	City           string
-	Country        string
-	PictureURL     string
-	Certifications []*Certification
-	Programs       []*Program
-	Availability   []*Availability
 }
 
 // represents a coach certification

@@ -20,6 +20,7 @@ import (
 type Server struct {
 	Mounts              []*MountPoint
 	GetCoaches          http.Handler
+	GetCoach            http.Handler
 	LenCoaches          http.Handler
 	CreateCoach         http.Handler
 	UpdateCoach         http.Handler
@@ -58,7 +59,8 @@ func New(
 ) *Server {
 	return &Server{
 		Mounts: []*MountPoint{
-			{"GetCoaches", "GET", "/coaches/{tag}"},
+			{"GetCoaches", "GET", "/coaches"},
+			{"GetCoach", "GET", "/coaches/{id}"},
 			{"LenCoaches", "GET", "/coaches/{tag}/length"},
 			{"CreateCoach", "POST", "/coaches"},
 			{"UpdateCoach", "POST", "/coaches/{id}"},
@@ -70,6 +72,7 @@ func New(
 			{"DeleteAvailability", "DELETE", "/coaches/{id}/availability/{avID}"},
 		},
 		GetCoaches:          NewGetCoachesHandler(e.GetCoaches, mux, dec, enc, eh),
+		GetCoach:            NewGetCoachHandler(e.GetCoach, mux, dec, enc, eh),
 		LenCoaches:          NewLenCoachesHandler(e.LenCoaches, mux, dec, enc, eh),
 		CreateCoach:         NewCreateCoachHandler(e.CreateCoach, mux, dec, enc, eh),
 		UpdateCoach:         NewUpdateCoachHandler(e.UpdateCoach, mux, dec, enc, eh),
@@ -88,6 +91,7 @@ func (s *Server) Service() string { return "coachee" }
 // Use wraps the server handlers with the given middleware.
 func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.GetCoaches = m(s.GetCoaches)
+	s.GetCoach = m(s.GetCoach)
 	s.LenCoaches = m(s.LenCoaches)
 	s.CreateCoach = m(s.CreateCoach)
 	s.UpdateCoach = m(s.UpdateCoach)
@@ -102,6 +106,7 @@ func (s *Server) Use(m func(http.Handler) http.Handler) {
 // Mount configures the mux to serve the coachee endpoints.
 func Mount(mux goahttp.Muxer, h *Server) {
 	MountGetCoachesHandler(mux, h.GetCoaches)
+	MountGetCoachHandler(mux, h.GetCoach)
 	MountLenCoachesHandler(mux, h.LenCoaches)
 	MountCreateCoachHandler(mux, h.CreateCoach)
 	MountUpdateCoachHandler(mux, h.UpdateCoach)
@@ -122,7 +127,7 @@ func MountGetCoachesHandler(mux goahttp.Muxer, h http.Handler) {
 			h.ServeHTTP(w, r)
 		}
 	}
-	mux.Handle("GET", "/coaches/{tag}", f)
+	mux.Handle("GET", "/coaches", f)
 }
 
 // NewGetCoachesHandler creates a HTTP handler which loads the HTTP request and
@@ -142,6 +147,58 @@ func NewGetCoachesHandler(
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "GetCoaches")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "coachee")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				eh(ctx, w, err)
+			}
+			return
+		}
+
+		res, err := endpoint(ctx, payload)
+
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				eh(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			eh(ctx, w, err)
+		}
+	})
+}
+
+// MountGetCoachHandler configures the mux to serve the "coachee" service
+// "GetCoach" endpoint.
+func MountGetCoachHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("GET", "/coaches/{id}", f)
+}
+
+// NewGetCoachHandler creates a HTTP handler which loads the HTTP request and
+// calls the "coachee" service "GetCoach" endpoint.
+func NewGetCoachHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	dec func(*http.Request) goahttp.Decoder,
+	enc func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	eh func(context.Context, http.ResponseWriter, error),
+) http.Handler {
+	var (
+		decodeRequest  = DecodeGetCoachRequest(mux, dec)
+		encodeResponse = EncodeGetCoachResponse(enc)
+		encodeError    = EncodeGetCoachError(enc)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "GetCoach")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "coachee")
 		payload, err := decodeRequest(r)
 		if err != nil {

@@ -119,15 +119,30 @@ var _ = Service("coachee", func() {
 			Attribute("tag", String)
 			Attribute("limit", UInt)
 			Attribute("page", UInt)
-			Required("tag")
 		})
 
 		Result(ArrayOf(coachResult))
 
 		HTTP(func() {
-			GET("/coaches/{tag}")
+			GET("/coaches")
+			Param("tag")
 			Param("limit")
 			Param("page")
+			Response(StatusOK)
+		})
+	})
+
+	Method("GetCoach", func() {
+		Description("GetCoach returns one coach according to the id")
+		Payload(func() {
+			Attribute("id", UInt)
+			Required("id")
+		})
+
+		Result(coachResult)
+
+		HTTP(func() {
+			GET("/coaches/{id}")
 			Response(StatusOK)
 		})
 	})

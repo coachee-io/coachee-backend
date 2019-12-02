@@ -67,6 +67,22 @@ type CreateAvailabilityRequestBody struct {
 // endpoint HTTP response body.
 type GetCoachesResponseBody []*CoachResponse
 
+// GetCoachResponseBody is the type of the "coachee" service "GetCoach"
+// endpoint HTTP response body.
+type GetCoachResponseBody struct {
+	ID             *uint                        `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	FirstName      *string                      `form:"firstName,omitempty" json:"firstName,omitempty" xml:"firstName,omitempty"`
+	LastName       *string                      `form:"lastName,omitempty" json:"lastName,omitempty" xml:"lastName,omitempty"`
+	Tags           *string                      `form:"tags,omitempty" json:"tags,omitempty" xml:"tags,omitempty"`
+	Description    *string                      `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
+	City           *string                      `form:"city,omitempty" json:"city,omitempty" xml:"city,omitempty"`
+	Country        *string                      `form:"country,omitempty" json:"country,omitempty" xml:"country,omitempty"`
+	PictureURL     *string                      `form:"pictureURL,omitempty" json:"pictureURL,omitempty" xml:"pictureURL,omitempty"`
+	Certifications []*CertificationResponseBody `form:"certifications,omitempty" json:"certifications,omitempty" xml:"certifications,omitempty"`
+	Programs       []*ProgramResponseBody       `form:"programs,omitempty" json:"programs,omitempty" xml:"programs,omitempty"`
+	Availability   []*AvailabilityResponseBody  `form:"availability,omitempty" json:"availability,omitempty" xml:"availability,omitempty"`
+}
+
 // GetCoachesTransientResponseBody is the type of the "coachee" service
 // "GetCoaches" endpoint HTTP response body for the "transient" error.
 type GetCoachesTransientResponseBody struct {
@@ -124,6 +140,78 @@ type GetCoachesValidationResponseBody struct {
 // GetCoachesUnauthorizedResponseBody is the type of the "coachee" service
 // "GetCoaches" endpoint HTTP response body for the "unauthorized" error.
 type GetCoachesUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// GetCoachTransientResponseBody is the type of the "coachee" service
+// "GetCoach" endpoint HTTP response body for the "transient" error.
+type GetCoachTransientResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// GetCoachNotFoundResponseBody is the type of the "coachee" service "GetCoach"
+// endpoint HTTP response body for the "notFound" error.
+type GetCoachNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// GetCoachValidationResponseBody is the type of the "coachee" service
+// "GetCoach" endpoint HTTP response body for the "validation" error.
+type GetCoachValidationResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// GetCoachUnauthorizedResponseBody is the type of the "coachee" service
+// "GetCoach" endpoint HTTP response body for the "unauthorized" error.
+type GetCoachUnauthorizedResponseBody struct {
 	// Name is the name of this class of errors.
 	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
 	// ID is a unique identifier for this particular occurrence of the problem.
@@ -841,6 +929,35 @@ type AvailabilityResponse struct {
 	End     *uint   `form:"end,omitempty" json:"end,omitempty" xml:"end,omitempty"`
 }
 
+// CertificationResponseBody is used to define fields on response body types.
+type CertificationResponseBody struct {
+	ID          *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	Title       *string `form:"title,omitempty" json:"title,omitempty" xml:"title,omitempty"`
+	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
+	Institution *string `form:"institution,omitempty" json:"institution,omitempty" xml:"institution,omitempty"`
+	Month       *uint   `form:"month,omitempty" json:"month,omitempty" xml:"month,omitempty"`
+	Year        *uint   `form:"year,omitempty" json:"year,omitempty" xml:"year,omitempty"`
+}
+
+// ProgramResponseBody is used to define fields on response body types.
+type ProgramResponseBody struct {
+	ID          *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	Name        *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	Sessions    *uint   `form:"sessions,omitempty" json:"sessions,omitempty" xml:"sessions,omitempty"`
+	Duration    *uint   `form:"duration,omitempty" json:"duration,omitempty" xml:"duration,omitempty"`
+	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
+	TotalPrice  *uint   `form:"totalPrice,omitempty" json:"totalPrice,omitempty" xml:"totalPrice,omitempty"`
+	TaxPercent  *uint   `form:"taxPercent,omitempty" json:"taxPercent,omitempty" xml:"taxPercent,omitempty"`
+}
+
+// AvailabilityResponseBody is used to define fields on response body types.
+type AvailabilityResponseBody struct {
+	ID      *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	WeekDay *uint   `form:"weekDay,omitempty" json:"weekDay,omitempty" xml:"weekDay,omitempty"`
+	Start   *uint   `form:"start,omitempty" json:"start,omitempty" xml:"start,omitempty"`
+	End     *uint   `form:"end,omitempty" json:"end,omitempty" xml:"end,omitempty"`
+}
+
 // CertificationRequestBody is used to define fields on request body types.
 type CertificationRequestBody struct {
 	ID          *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
@@ -1020,6 +1137,96 @@ func NewGetCoachesValidation(body *GetCoachesValidationResponseBody) *goa.Servic
 // NewGetCoachesUnauthorized builds a coachee service GetCoaches endpoint
 // unauthorized error.
 func NewGetCoachesUnauthorized(body *GetCoachesUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewGetCoachCoachOK builds a "coachee" service "GetCoach" endpoint result
+// from a HTTP "OK" response.
+func NewGetCoachCoachOK(body *GetCoachResponseBody) *coachee.Coach {
+	v := &coachee.Coach{
+		ID:          *body.ID,
+		FirstName:   *body.FirstName,
+		LastName:    *body.LastName,
+		Tags:        *body.Tags,
+		Description: *body.Description,
+		City:        *body.City,
+		Country:     *body.Country,
+		PictureURL:  *body.PictureURL,
+	}
+	if body.Certifications != nil {
+		v.Certifications = make([]*coachee.Certification, len(body.Certifications))
+		for i, val := range body.Certifications {
+			v.Certifications[i] = unmarshalCertificationResponseBodyToCoacheeCertification(val)
+		}
+	}
+	if body.Programs != nil {
+		v.Programs = make([]*coachee.Program, len(body.Programs))
+		for i, val := range body.Programs {
+			v.Programs[i] = unmarshalProgramResponseBodyToCoacheeProgram(val)
+		}
+	}
+	if body.Availability != nil {
+		v.Availability = make([]*coachee.Availability, len(body.Availability))
+		for i, val := range body.Availability {
+			v.Availability[i] = unmarshalAvailabilityResponseBodyToCoacheeAvailability(val)
+		}
+	}
+	return v
+}
+
+// NewGetCoachTransient builds a coachee service GetCoach endpoint transient
+// error.
+func NewGetCoachTransient(body *GetCoachTransientResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewGetCoachNotFound builds a coachee service GetCoach endpoint notFound
+// error.
+func NewGetCoachNotFound(body *GetCoachNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewGetCoachValidation builds a coachee service GetCoach endpoint validation
+// error.
+func NewGetCoachValidation(body *GetCoachValidationResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewGetCoachUnauthorized builds a coachee service GetCoach endpoint
+// unauthorized error.
+func NewGetCoachUnauthorized(body *GetCoachUnauthorizedResponseBody) *goa.ServiceError {
 	v := &goa.ServiceError{
 		Name:      *body.Name,
 		ID:        *body.ID,
@@ -1535,6 +1742,57 @@ func NewDeleteAvailabilityUnauthorized(body *DeleteAvailabilityUnauthorizedRespo
 	return v
 }
 
+// ValidateGetCoachResponseBody runs the validations defined on
+// GetCoachResponseBody
+func ValidateGetCoachResponseBody(body *GetCoachResponseBody) (err error) {
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.FirstName == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("firstName", "body"))
+	}
+	if body.LastName == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("lastName", "body"))
+	}
+	if body.Tags == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("tags", "body"))
+	}
+	if body.Description == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("description", "body"))
+	}
+	if body.City == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("city", "body"))
+	}
+	if body.Country == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("country", "body"))
+	}
+	if body.PictureURL == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("pictureURL", "body"))
+	}
+	for _, e := range body.Certifications {
+		if e != nil {
+			if err2 := ValidateCertificationResponseBody(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	for _, e := range body.Programs {
+		if e != nil {
+			if err2 := ValidateProgramResponseBody(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	for _, e := range body.Availability {
+		if e != nil {
+			if err2 := ValidateAvailabilityResponseBody(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	return
+}
+
 // ValidateGetCoachesTransientResponseBody runs the validations defined on
 // GetCoaches_transient_Response_Body
 func ValidateGetCoachesTransientResponseBody(body *GetCoachesTransientResponseBody) (err error) {
@@ -1610,6 +1868,102 @@ func ValidateGetCoachesValidationResponseBody(body *GetCoachesValidationResponse
 // ValidateGetCoachesUnauthorizedResponseBody runs the validations defined on
 // GetCoaches_unauthorized_Response_Body
 func ValidateGetCoachesUnauthorizedResponseBody(body *GetCoachesUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateGetCoachTransientResponseBody runs the validations defined on
+// GetCoach_transient_Response_Body
+func ValidateGetCoachTransientResponseBody(body *GetCoachTransientResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateGetCoachNotFoundResponseBody runs the validations defined on
+// GetCoach_notFound_Response_Body
+func ValidateGetCoachNotFoundResponseBody(body *GetCoachNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateGetCoachValidationResponseBody runs the validations defined on
+// GetCoach_validation_Response_Body
+func ValidateGetCoachValidationResponseBody(body *GetCoachValidationResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateGetCoachUnauthorizedResponseBody runs the validations defined on
+// GetCoach_unauthorized_Response_Body
+func ValidateGetCoachUnauthorizedResponseBody(body *GetCoachUnauthorizedResponseBody) (err error) {
 	if body.Name == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
 	}
@@ -2612,6 +2966,116 @@ func ValidateProgramResponse(body *ProgramResponse) (err error) {
 // ValidateAvailabilityResponse runs the validations defined on
 // availabilityResponse
 func ValidateAvailabilityResponse(body *AvailabilityResponse) (err error) {
+	if body.WeekDay == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("weekDay", "body"))
+	}
+	if body.Start == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("start", "body"))
+	}
+	if body.End == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("end", "body"))
+	}
+	if body.WeekDay != nil {
+		if *body.WeekDay < 0 {
+			err = goa.MergeErrors(err, goa.InvalidRangeError("body.weekDay", *body.WeekDay, 0, true))
+		}
+	}
+	if body.WeekDay != nil {
+		if *body.WeekDay > 6 {
+			err = goa.MergeErrors(err, goa.InvalidRangeError("body.weekDay", *body.WeekDay, 6, false))
+		}
+	}
+	if body.Start != nil {
+		if *body.Start < 0 {
+			err = goa.MergeErrors(err, goa.InvalidRangeError("body.start", *body.Start, 0, true))
+		}
+	}
+	if body.Start != nil {
+		if *body.Start > 1440 {
+			err = goa.MergeErrors(err, goa.InvalidRangeError("body.start", *body.Start, 1440, false))
+		}
+	}
+	if body.End != nil {
+		if *body.End < 0 {
+			err = goa.MergeErrors(err, goa.InvalidRangeError("body.end", *body.End, 0, true))
+		}
+	}
+	if body.End != nil {
+		if *body.End > 1440 {
+			err = goa.MergeErrors(err, goa.InvalidRangeError("body.end", *body.End, 1440, false))
+		}
+	}
+	return
+}
+
+// ValidateCertificationResponseBody runs the validations defined on
+// certificationResponseBody
+func ValidateCertificationResponseBody(body *CertificationResponseBody) (err error) {
+	if body.Title == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("title", "body"))
+	}
+	if body.Description == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("description", "body"))
+	}
+	if body.Institution == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("institution", "body"))
+	}
+	if body.Month == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("month", "body"))
+	}
+	if body.Year == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("year", "body"))
+	}
+	if body.Month != nil {
+		if *body.Month < 1 {
+			err = goa.MergeErrors(err, goa.InvalidRangeError("body.month", *body.Month, 1, true))
+		}
+	}
+	if body.Month != nil {
+		if *body.Month > 12 {
+			err = goa.MergeErrors(err, goa.InvalidRangeError("body.month", *body.Month, 12, false))
+		}
+	}
+	if body.Year != nil {
+		if *body.Year < 1900 {
+			err = goa.MergeErrors(err, goa.InvalidRangeError("body.year", *body.Year, 1900, true))
+		}
+	}
+	if body.Year != nil {
+		if *body.Year > 2100 {
+			err = goa.MergeErrors(err, goa.InvalidRangeError("body.year", *body.Year, 2100, false))
+		}
+	}
+	return
+}
+
+// ValidateProgramResponseBody runs the validations defined on
+// programResponseBody
+func ValidateProgramResponseBody(body *ProgramResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.Sessions == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("sessions", "body"))
+	}
+	if body.Duration == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("duration", "body"))
+	}
+	if body.Description == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("description", "body"))
+	}
+	if body.TotalPrice == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("totalPrice", "body"))
+	}
+	if body.TaxPercent == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("taxPercent", "body"))
+	}
+	return
+}
+
+// ValidateAvailabilityResponseBody runs the validations defined on
+// availabilityResponseBody
+func ValidateAvailabilityResponseBody(body *AvailabilityResponseBody) (err error) {
 	if body.WeekDay == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("weekDay", "body"))
 	}

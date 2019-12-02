@@ -67,6 +67,22 @@ type CreateAvailabilityRequestBody struct {
 // endpoint HTTP response body.
 type GetCoachesResponseBody []*CoachResponse
 
+// GetCoachResponseBody is the type of the "coachee" service "GetCoach"
+// endpoint HTTP response body.
+type GetCoachResponseBody struct {
+	ID             uint                         `form:"id" json:"id" xml:"id"`
+	FirstName      string                       `form:"firstName" json:"firstName" xml:"firstName"`
+	LastName       string                       `form:"lastName" json:"lastName" xml:"lastName"`
+	Tags           string                       `form:"tags" json:"tags" xml:"tags"`
+	Description    string                       `form:"description" json:"description" xml:"description"`
+	City           string                       `form:"city" json:"city" xml:"city"`
+	Country        string                       `form:"country" json:"country" xml:"country"`
+	PictureURL     string                       `form:"pictureURL" json:"pictureURL" xml:"pictureURL"`
+	Certifications []*CertificationResponseBody `form:"certifications,omitempty" json:"certifications,omitempty" xml:"certifications,omitempty"`
+	Programs       []*ProgramResponseBody       `form:"programs,omitempty" json:"programs,omitempty" xml:"programs,omitempty"`
+	Availability   []*AvailabilityResponseBody  `form:"availability,omitempty" json:"availability,omitempty" xml:"availability,omitempty"`
+}
+
 // GetCoachesTransientResponseBody is the type of the "coachee" service
 // "GetCoaches" endpoint HTTP response body for the "transient" error.
 type GetCoachesTransientResponseBody struct {
@@ -124,6 +140,78 @@ type GetCoachesValidationResponseBody struct {
 // GetCoachesUnauthorizedResponseBody is the type of the "coachee" service
 // "GetCoaches" endpoint HTTP response body for the "unauthorized" error.
 type GetCoachesUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// GetCoachTransientResponseBody is the type of the "coachee" service
+// "GetCoach" endpoint HTTP response body for the "transient" error.
+type GetCoachTransientResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// GetCoachNotFoundResponseBody is the type of the "coachee" service "GetCoach"
+// endpoint HTTP response body for the "notFound" error.
+type GetCoachNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// GetCoachValidationResponseBody is the type of the "coachee" service
+// "GetCoach" endpoint HTTP response body for the "validation" error.
+type GetCoachValidationResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// GetCoachUnauthorizedResponseBody is the type of the "coachee" service
+// "GetCoach" endpoint HTTP response body for the "unauthorized" error.
+type GetCoachUnauthorizedResponseBody struct {
 	// Name is the name of this class of errors.
 	Name string `form:"name" json:"name" xml:"name"`
 	// ID is a unique identifier for this particular occurrence of the problem.
@@ -841,6 +929,35 @@ type AvailabilityResponse struct {
 	End     uint    `form:"end" json:"end" xml:"end"`
 }
 
+// CertificationResponseBody is used to define fields on response body types.
+type CertificationResponseBody struct {
+	ID          *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	Title       string  `form:"title" json:"title" xml:"title"`
+	Description string  `form:"description" json:"description" xml:"description"`
+	Institution string  `form:"institution" json:"institution" xml:"institution"`
+	Month       uint    `form:"month" json:"month" xml:"month"`
+	Year        uint    `form:"year" json:"year" xml:"year"`
+}
+
+// ProgramResponseBody is used to define fields on response body types.
+type ProgramResponseBody struct {
+	ID          *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	Name        string  `form:"name" json:"name" xml:"name"`
+	Sessions    uint    `form:"sessions" json:"sessions" xml:"sessions"`
+	Duration    uint    `form:"duration" json:"duration" xml:"duration"`
+	Description string  `form:"description" json:"description" xml:"description"`
+	TotalPrice  uint    `form:"totalPrice" json:"totalPrice" xml:"totalPrice"`
+	TaxPercent  uint    `form:"taxPercent" json:"taxPercent" xml:"taxPercent"`
+}
+
+// AvailabilityResponseBody is used to define fields on response body types.
+type AvailabilityResponseBody struct {
+	ID      *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	WeekDay uint    `form:"weekDay" json:"weekDay" xml:"weekDay"`
+	Start   uint    `form:"start" json:"start" xml:"start"`
+	End     uint    `form:"end" json:"end" xml:"end"`
+}
+
 // CertificationRequestBody is used to define fields on request body types.
 type CertificationRequestBody struct {
 	ID          *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
@@ -907,6 +1024,40 @@ func NewGetCoachesResponseBody(res []*coachee.Coach) GetCoachesResponseBody {
 	return body
 }
 
+// NewGetCoachResponseBody builds the HTTP response body from the result of the
+// "GetCoach" endpoint of the "coachee" service.
+func NewGetCoachResponseBody(res *coachee.Coach) *GetCoachResponseBody {
+	body := &GetCoachResponseBody{
+		ID:          res.ID,
+		FirstName:   res.FirstName,
+		LastName:    res.LastName,
+		Tags:        res.Tags,
+		Description: res.Description,
+		City:        res.City,
+		Country:     res.Country,
+		PictureURL:  res.PictureURL,
+	}
+	if res.Certifications != nil {
+		body.Certifications = make([]*CertificationResponseBody, len(res.Certifications))
+		for i, val := range res.Certifications {
+			body.Certifications[i] = marshalCoacheeCertificationToCertificationResponseBody(val)
+		}
+	}
+	if res.Programs != nil {
+		body.Programs = make([]*ProgramResponseBody, len(res.Programs))
+		for i, val := range res.Programs {
+			body.Programs[i] = marshalCoacheeProgramToProgramResponseBody(val)
+		}
+	}
+	if res.Availability != nil {
+		body.Availability = make([]*AvailabilityResponseBody, len(res.Availability))
+		for i, val := range res.Availability {
+			body.Availability[i] = marshalCoacheeAvailabilityToAvailabilityResponseBody(val)
+		}
+	}
+	return body
+}
+
 // NewGetCoachesTransientResponseBody builds the HTTP response body from the
 // result of the "GetCoaches" endpoint of the "coachee" service.
 func NewGetCoachesTransientResponseBody(res *goa.ServiceError) *GetCoachesTransientResponseBody {
@@ -953,6 +1104,62 @@ func NewGetCoachesValidationResponseBody(res *goa.ServiceError) *GetCoachesValid
 // result of the "GetCoaches" endpoint of the "coachee" service.
 func NewGetCoachesUnauthorizedResponseBody(res *goa.ServiceError) *GetCoachesUnauthorizedResponseBody {
 	body := &GetCoachesUnauthorizedResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewGetCoachTransientResponseBody builds the HTTP response body from the
+// result of the "GetCoach" endpoint of the "coachee" service.
+func NewGetCoachTransientResponseBody(res *goa.ServiceError) *GetCoachTransientResponseBody {
+	body := &GetCoachTransientResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewGetCoachNotFoundResponseBody builds the HTTP response body from the
+// result of the "GetCoach" endpoint of the "coachee" service.
+func NewGetCoachNotFoundResponseBody(res *goa.ServiceError) *GetCoachNotFoundResponseBody {
+	body := &GetCoachNotFoundResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewGetCoachValidationResponseBody builds the HTTP response body from the
+// result of the "GetCoach" endpoint of the "coachee" service.
+func NewGetCoachValidationResponseBody(res *goa.ServiceError) *GetCoachValidationResponseBody {
+	body := &GetCoachValidationResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewGetCoachUnauthorizedResponseBody builds the HTTP response body from the
+// result of the "GetCoach" endpoint of the "coachee" service.
+func NewGetCoachUnauthorizedResponseBody(res *goa.ServiceError) *GetCoachUnauthorizedResponseBody {
+	body := &GetCoachUnauthorizedResponseBody{
 		Name:      res.Name,
 		ID:        res.ID,
 		Message:   res.Message,
@@ -1482,11 +1689,18 @@ func NewDeleteAvailabilityUnauthorizedResponseBody(res *goa.ServiceError) *Delet
 }
 
 // NewGetCoachesPayload builds a coachee service GetCoaches endpoint payload.
-func NewGetCoachesPayload(tag string, limit *uint, page *uint) *coachee.GetCoachesPayload {
+func NewGetCoachesPayload(tag *string, limit *uint, page *uint) *coachee.GetCoachesPayload {
 	return &coachee.GetCoachesPayload{
 		Tag:   tag,
 		Limit: limit,
 		Page:  page,
+	}
+}
+
+// NewGetCoachPayload builds a coachee service GetCoach endpoint payload.
+func NewGetCoachPayload(id uint) *coachee.GetCoachPayload {
+	return &coachee.GetCoachPayload{
+		ID: id,
 	}
 }
 
@@ -1697,6 +1911,48 @@ func ValidateCertificationResponse(body *CertificationResponse) (err error) {
 // ValidateAvailabilityResponse runs the validations defined on
 // availabilityResponse
 func ValidateAvailabilityResponse(body *AvailabilityResponse) (err error) {
+	if body.WeekDay < 0 {
+		err = goa.MergeErrors(err, goa.InvalidRangeError("body.weekDay", body.WeekDay, 0, true))
+	}
+	if body.WeekDay > 6 {
+		err = goa.MergeErrors(err, goa.InvalidRangeError("body.weekDay", body.WeekDay, 6, false))
+	}
+	if body.Start < 0 {
+		err = goa.MergeErrors(err, goa.InvalidRangeError("body.start", body.Start, 0, true))
+	}
+	if body.Start > 1440 {
+		err = goa.MergeErrors(err, goa.InvalidRangeError("body.start", body.Start, 1440, false))
+	}
+	if body.End < 0 {
+		err = goa.MergeErrors(err, goa.InvalidRangeError("body.end", body.End, 0, true))
+	}
+	if body.End > 1440 {
+		err = goa.MergeErrors(err, goa.InvalidRangeError("body.end", body.End, 1440, false))
+	}
+	return
+}
+
+// ValidateCertificationResponseBody runs the validations defined on
+// certificationResponseBody
+func ValidateCertificationResponseBody(body *CertificationResponseBody) (err error) {
+	if body.Month < 1 {
+		err = goa.MergeErrors(err, goa.InvalidRangeError("body.month", body.Month, 1, true))
+	}
+	if body.Month > 12 {
+		err = goa.MergeErrors(err, goa.InvalidRangeError("body.month", body.Month, 12, false))
+	}
+	if body.Year < 1900 {
+		err = goa.MergeErrors(err, goa.InvalidRangeError("body.year", body.Year, 1900, true))
+	}
+	if body.Year > 2100 {
+		err = goa.MergeErrors(err, goa.InvalidRangeError("body.year", body.Year, 2100, false))
+	}
+	return
+}
+
+// ValidateAvailabilityResponseBody runs the validations defined on
+// availabilityResponseBody
+func ValidateAvailabilityResponseBody(body *AvailabilityResponseBody) (err error) {
 	if body.WeekDay < 0 {
 		err = goa.MergeErrors(err, goa.InvalidRangeError("body.weekDay", body.WeekDay, 0, true))
 	}

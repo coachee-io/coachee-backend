@@ -35,14 +35,15 @@ func EncodeGetCoachesResponse(encoder func(context.Context, http.ResponseWriter)
 func DecodeGetCoachesRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
 	return func(r *http.Request) (interface{}, error) {
 		var (
-			tag   string
+			tag   *string
 			limit *uint
 			page  *uint
 			err   error
-
-			params = mux.Vars(r)
 		)
-		tag = params["tag"]
+		tagRaw := r.URL.Query().Get("tag")
+		if tagRaw != "" {
+			tag = &tagRaw
+		}
 		{
 			limitRaw := r.URL.Query().Get("limit")
 			if limitRaw != "" {
@@ -109,6 +110,89 @@ func EncodeGetCoachesError(encoder func(context.Context, http.ResponseWriter) go
 			res := v.(*goa.ServiceError)
 			enc := encoder(ctx, w)
 			body := NewGetCoachesUnauthorizedResponseBody(res)
+			w.Header().Set("goa-error", "unauthorized")
+			w.WriteHeader(http.StatusUnauthorized)
+			return enc.Encode(body)
+		default:
+			return encodeError(ctx, w, v)
+		}
+	}
+}
+
+// EncodeGetCoachResponse returns an encoder for responses returned by the
+// coachee GetCoach endpoint.
+func EncodeGetCoachResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		res := v.(*coachee.Coach)
+		enc := encoder(ctx, w)
+		body := NewGetCoachResponseBody(res)
+		w.WriteHeader(http.StatusOK)
+		return enc.Encode(body)
+	}
+}
+
+// DecodeGetCoachRequest returns a decoder for requests sent to the coachee
+// GetCoach endpoint.
+func DecodeGetCoachRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			id  uint
+			err error
+
+			params = mux.Vars(r)
+		)
+		{
+			idRaw := params["id"]
+			v, err2 := strconv.ParseUint(idRaw, 10, strconv.IntSize)
+			if err2 != nil {
+				err = goa.MergeErrors(err, goa.InvalidFieldTypeError("id", idRaw, "unsigned integer"))
+			}
+			id = uint(v)
+		}
+		if err != nil {
+			return nil, err
+		}
+		payload := NewGetCoachPayload(id)
+
+		return payload, nil
+	}
+}
+
+// EncodeGetCoachError returns an encoder for errors returned by the GetCoach
+// coachee endpoint.
+func EncodeGetCoachError(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, error) error {
+	encodeError := goahttp.ErrorEncoder(encoder)
+	return func(ctx context.Context, w http.ResponseWriter, v error) error {
+		en, ok := v.(ErrorNamer)
+		if !ok {
+			return encodeError(ctx, w, v)
+		}
+		switch en.ErrorName() {
+		case "transient":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			body := NewGetCoachTransientResponseBody(res)
+			w.Header().Set("goa-error", "transient")
+			w.WriteHeader(http.StatusInternalServerError)
+			return enc.Encode(body)
+		case "notFound":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			body := NewGetCoachNotFoundResponseBody(res)
+			w.Header().Set("goa-error", "notFound")
+			w.WriteHeader(http.StatusNotFound)
+			return enc.Encode(body)
+		case "validation":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			body := NewGetCoachValidationResponseBody(res)
+			w.Header().Set("goa-error", "validation")
+			w.WriteHeader(http.StatusBadRequest)
+			return enc.Encode(body)
+		case "unauthorized":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			body := NewGetCoachUnauthorizedResponseBody(res)
 			w.Header().Set("goa-error", "unauthorized")
 			w.WriteHeader(http.StatusUnauthorized)
 			return enc.Encode(body)
@@ -937,6 +1021,59 @@ func marshalCoacheeAvailabilityToAvailabilityResponse(v *coachee.Availability) *
 		return nil
 	}
 	res := &AvailabilityResponse{
+		ID:      v.ID,
+		WeekDay: v.WeekDay,
+		Start:   v.Start,
+		End:     v.End,
+	}
+
+	return res
+}
+
+// marshalCoacheeCertificationToCertificationResponseBody builds a value of
+// type *CertificationResponseBody from a value of type *coachee.Certification.
+func marshalCoacheeCertificationToCertificationResponseBody(v *coachee.Certification) *CertificationResponseBody {
+	if v == nil {
+		return nil
+	}
+	res := &CertificationResponseBody{
+		ID:          v.ID,
+		Title:       v.Title,
+		Description: v.Description,
+		Institution: v.Institution,
+		Month:       v.Month,
+		Year:        v.Year,
+	}
+
+	return res
+}
+
+// marshalCoacheeProgramToProgramResponseBody builds a value of type
+// *ProgramResponseBody from a value of type *coachee.Program.
+func marshalCoacheeProgramToProgramResponseBody(v *coachee.Program) *ProgramResponseBody {
+	if v == nil {
+		return nil
+	}
+	res := &ProgramResponseBody{
+		ID:          v.ID,
+		Name:        v.Name,
+		Sessions:    v.Sessions,
+		Duration:    v.Duration,
+		Description: v.Description,
+		TotalPrice:  v.TotalPrice,
+		TaxPercent:  v.TaxPercent,
+	}
+
+	return res
+}
+
+// marshalCoacheeAvailabilityToAvailabilityResponseBody builds a value of type
+// *AvailabilityResponseBody from a value of type *coachee.Availability.
+func marshalCoacheeAvailabilityToAvailabilityResponseBody(v *coachee.Availability) *AvailabilityResponseBody {
+	if v == nil {
+		return nil
+	}
+	res := &AvailabilityResponseBody{
 		ID:      v.ID,
 		WeekDay: v.WeekDay,
 		Start:   v.Start,

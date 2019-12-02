@@ -20,14 +20,28 @@ func (s *Service) GetCoaches(ctx context.Context, p *coachee.GetCoachesPayload) 
 	if p.Page != nil {
 		page = *p.Page
 	}
+	var tag string
+	if p.Tag != nil {
+		tag = *p.Tag
+	}
 
-	coaches, err := s.coachRepository.GetByPage(repository.DefaultNoTransaction, p.Tag, limit, page)
+	coaches, err := s.coachRepository.GetByPage(repository.DefaultNoTransaction, tag, limit, page)
 	if err != nil {
-		s.logger.Error().Err(err).Str("tags", p.Tag).Msg("failed to retrieve coaches")
+		s.logger.Error().Err(err).Str("tags", tag).Msg("failed to retrieve coaches")
 		return nil, err
 	}
 
 	return CoachesToPayload(coaches), nil
+}
+
+// GetCoach returns a coach according to the id
+func (s *Service) GetCoach(ctx context.Context, p *coachee.GetCoachPayload) (*coachee.Coach, error) {
+	coach, err := s.coachRepository.GetByID(repository.DefaultNoTransaction, p.ID)
+	if err != nil {
+		s.logger.Error().Err(err).Uint("id", p.ID).Msg("failed to retrieve coach")
+		return nil, err
+	}
+	return CoachToPayload(coach), nil
 }
 
 // LenCoaches gives the number of coaches with a given tag
