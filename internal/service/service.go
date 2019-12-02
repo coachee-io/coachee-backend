@@ -16,9 +16,10 @@ type Service struct {
 }
 
 // NewCoachee returns the coachee service implementation.
-func NewCoachee(ctx context.Context, logger *zerolog.Logger, coach repository.Coach) *Service {
+func NewCoachee(ctx context.Context, coach repository.Coach) *Service {
+	log := zerolog.Ctx(ctx).With().Str("component", "service").Logger()
 	return &Service{
-		logger:          logger,
+		logger:          &log,
 		coachRepository: coach,
 	}
 }

@@ -40,7 +40,7 @@ func testCoach() *model.Coach {
 				DateAcquired: time.Date(2008, 1, 0, 0, 0, 0, 0, time.UTC),
 			},
 		},
-		Program: model.Programs{
+		Programs: model.Programs{
 			{
 				ID:               "leid3",
 				Name:             "Best girlfriend course",
@@ -51,6 +51,7 @@ func testCoach() *model.Coach {
 				TaxPercent:       2000,
 			},
 		},
+		IntroCall: time.Now(),
 	}
 }
 
@@ -68,6 +69,7 @@ func TestCoachRepository_Create(t *testing.T) {
 	require.Nil(t, err)
 	coach2.CreatedAt = coach.CreatedAt //slight diff
 	coach2.UpdatedAt = coach.UpdatedAt
+	coach2.IntroCall = coach.IntroCall
 	require.Equal(t, *coach, *coach2)
 }
 
@@ -141,6 +143,7 @@ func TestCoachRepository_Length(t *testing.T) {
 	require.Nil(t, err)
 	coach2.CreatedAt = coach.CreatedAt //slight diff
 	coach2.UpdatedAt = coach.UpdatedAt
+	coach2.IntroCall = coach.IntroCall
 	require.Equal(t, *coach, *coach2)
 
 	count, err := repo.Length(repository.DefaultNoTransaction, coach.Tags)
