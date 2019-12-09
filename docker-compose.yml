@@ -10,5 +10,15 @@ services:
       - MYSQL_ROOT_PASSWORD=coachee_pass
     volumes:
       - ./db/init:/docker-entrypoint-initdb.d
-    ports:
-      - 3306:3306
+  coachee:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: pmdcosta/coachee:latest
+    depends_on:
+      - mysql
+    environment:
+      - DB_HOST=mysql
+      - DB_USER=coachee_user
+      - DB_PASSWORD=coachee_pass
+      - DB_NAME=coachee_db
