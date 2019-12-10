@@ -223,7 +223,7 @@ var _ = Service("coachee", func() {
 		})
 
 		HTTP(func() {
-			PUT("/coaches/{id}/certifications")
+			POST("/coaches/{id}/certifications")
 			Response(StatusAccepted)
 		})
 	})
@@ -253,7 +253,7 @@ var _ = Service("coachee", func() {
 		})
 
 		HTTP(func() {
-			PUT("/coaches/{id}/programs")
+			POST("/coaches/{id}/programs")
 			Response(StatusAccepted)
 		})
 	})
@@ -283,7 +283,7 @@ var _ = Service("coachee", func() {
 		})
 
 		HTTP(func() {
-			PUT("/coaches/{id}/availability")
+			POST("/coaches/{id}/availability")
 			Response(StatusAccepted)
 		})
 	})

@@ -64,11 +64,11 @@ func New(
 			{"LenCoaches", "GET", "/coaches/{tag}/length"},
 			{"CreateCoach", "POST", "/coaches"},
 			{"UpdateCoach", "POST", "/coaches/{id}"},
-			{"CreateCertification", "PUT", "/coaches/{id}/certifications"},
+			{"CreateCertification", "POST", "/coaches/{id}/certifications"},
 			{"DeleteCertification", "DELETE", "/coaches/{id}/certifications/{certID}"},
-			{"CreateProgram", "PUT", "/coaches/{id}/programs"},
+			{"CreateProgram", "POST", "/coaches/{id}/programs"},
 			{"DeleteProgram", "DELETE", "/coaches/{id}/programs/{programID}"},
-			{"CreateAvailability", "PUT", "/coaches/{id}/availability"},
+			{"CreateAvailability", "POST", "/coaches/{id}/availability"},
 			{"DeleteAvailability", "DELETE", "/coaches/{id}/availability/{avID}"},
 		},
 		GetCoaches:          NewGetCoachesHandler(e.GetCoaches, mux, dec, enc, eh),
@@ -387,7 +387,7 @@ func MountCreateCertificationHandler(mux goahttp.Muxer, h http.Handler) {
 			h.ServeHTTP(w, r)
 		}
 	}
-	mux.Handle("PUT", "/coaches/{id}/certifications", f)
+	mux.Handle("POST", "/coaches/{id}/certifications", f)
 }
 
 // NewCreateCertificationHandler creates a HTTP handler which loads the HTTP
@@ -491,7 +491,7 @@ func MountCreateProgramHandler(mux goahttp.Muxer, h http.Handler) {
 			h.ServeHTTP(w, r)
 		}
 	}
-	mux.Handle("PUT", "/coaches/{id}/programs", f)
+	mux.Handle("POST", "/coaches/{id}/programs", f)
 }
 
 // NewCreateProgramHandler creates a HTTP handler which loads the HTTP request
@@ -595,7 +595,7 @@ func MountCreateAvailabilityHandler(mux goahttp.Muxer, h http.Handler) {
 			h.ServeHTTP(w, r)
 		}
 	}
-	mux.Handle("PUT", "/coaches/{id}/availability", f)
+	mux.Handle("POST", "/coaches/{id}/availability", f)
 }
 
 // NewCreateAvailabilityHandler creates a HTTP handler which loads the HTTP

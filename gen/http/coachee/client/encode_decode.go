@@ -688,7 +688,7 @@ func (c *Client) BuildCreateCertificationRequest(ctx context.Context, v interfac
 		id = p.ID
 	}
 	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: CreateCertificationCoacheePath(id)}
-	req, err := http.NewRequest("PUT", u.String(), nil)
+	req, err := http.NewRequest("POST", u.String(), nil)
 	if err != nil {
 		return nil, goahttp.ErrInvalidURL("coachee", "CreateCertification", u.String(), err)
 	}
@@ -935,7 +935,7 @@ func (c *Client) BuildCreateProgramRequest(ctx context.Context, v interface{}) (
 		id = p.ID
 	}
 	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: CreateProgramCoacheePath(id)}
-	req, err := http.NewRequest("PUT", u.String(), nil)
+	req, err := http.NewRequest("POST", u.String(), nil)
 	if err != nil {
 		return nil, goahttp.ErrInvalidURL("coachee", "CreateProgram", u.String(), err)
 	}
@@ -1182,7 +1182,7 @@ func (c *Client) BuildCreateAvailabilityRequest(ctx context.Context, v interface
 		id = p.ID
 	}
 	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: CreateAvailabilityCoacheePath(id)}
-	req, err := http.NewRequest("PUT", u.String(), nil)
+	req, err := http.NewRequest("POST", u.String(), nil)
 	if err != nil {
 		return nil, goahttp.ErrInvalidURL("coachee", "CreateAvailability", u.String(), err)
 	}

@@ -180,7 +180,7 @@ paths:
       schemes:
       - http
   /coaches/{id}/availability:
-    put:
+    post:
       tags:
       - coachee
       summary: CreateAvailability coachee
@@ -257,7 +257,7 @@ paths:
       schemes:
       - http
   /coaches/{id}/certifications:
-    put:
+    post:
       tags:
       - coachee
       summary: CreateCertification coachee
@@ -334,7 +334,7 @@ paths:
       schemes:
       - http
   /coaches/{id}/programs:
-    put:
+    post:
       tags:
       - coachee
       summary: CreateProgram coachee

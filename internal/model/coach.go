@@ -1,9 +1,12 @@
 package model
 
 import (
+	"coachee-backend/gen/coachee"
 	"database/sql/driver"
 	"encoding/json"
 	"time"
+
+	"github.com/pborman/uuid"
 )
 
 // CoachStatus are the possible status for the coaches
@@ -113,4 +116,50 @@ type Certification struct {
 	Description  string
 	Institution  string
 	DateAcquired time.Time
+}
+
+// New creates a new Availability from the payload
+func (Availability) New(a *coachee.Availability) *Availability {
+	if a == nil {
+		return nil
+	}
+
+	return &Availability{
+		ID:    uuid.New(),
+		Day:   a.WeekDay,
+		Start: a.Start,
+		End:   a.End,
+	}
+}
+
+// New creates a new certification from the payload
+func (Certification) New(c *coachee.Certification) *Certification {
+	if c == nil {
+		return nil
+	}
+
+	return &Certification{
+		ID:           uuid.New(),
+		Title:        c.Title,
+		Description:  c.Description,
+		Institution:  c.Institution,
+		DateAcquired: time.Date(int(c.Year), time.Month(c.Month), 0, 0, 0, 0, 0, time.UTC),
+	}
+}
+
+// New creates a new program from the payload
+func (Program) New(p *coachee.Program) *Program {
+	if p == nil {
+		return nil
+	}
+
+	return &Program{
+		ID:               uuid.New(),
+		Name:             p.Name,
+		NumberOfSessions: p.Sessions,
+		Duration:         p.Duration,
+		Description:      p.Description,
+		TotalPrice:       p.TotalPrice,
+		TaxPercent:       p.TaxPercent,
+	}
 }
