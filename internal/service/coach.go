@@ -57,18 +57,36 @@ func (s *Service) LenCoaches(ctx context.Context, p *coachee.LenCoachesPayload) 
 
 // CreateCoaches creates a base coach
 func (s *Service) CreateCoach(ctx context.Context, p *coachee.CreateCoachPayload) (uint, error) {
+	var city, country, vat, textAvailability string
+	switch {
+	case p.City != nil:
+		city = *p.City
+		fallthrough
+	case p.Country != nil:
+		country = *p.Country
+		fallthrough
+	case p.Vat != nil:
+		vat = *p.Vat
+		fallthrough
+	case p.TextAvailability != nil:
+		textAvailability = *p.TextAvailability
+	}
+
 	coach := &model.Coach{
-		FirstName:   p.FirstName,
-		LastName:    p.LastName,
-		Email:       p.Email,
-		Phone:       p.Phone,
-		Tags:        p.Tags,
-		Description: p.Description,
-		City:        *p.City,
-		Country:     *p.Country,
-		Status:      model.StatusRegistered,
-		Vat:         *p.Vat,
-		IntroCall:   time.Unix(int64(p.IntroCall), 0),
+		FirstName:          p.FirstName,
+		LastName:           p.LastName,
+		Email:              p.Email,
+		Phone:              p.Phone,
+		Tags:               p.Tags,
+		Description:        p.Description,
+		City:               city,
+		Country:            country,
+		Status:             model.StatusRegistered,
+		Vat:                vat,
+		IntroCall:          time.Unix(int64(p.IntroCall), 0),
+		TextAvailability:   textAvailability,
+		TextCertifications: p.TextCertifications,
+		TextPrograms:       p.TextPrograms,
 	}
 
 	err := s.coachRepository.Create(repository.DefaultNoTransaction, coach)

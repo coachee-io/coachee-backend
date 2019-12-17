@@ -174,9 +174,13 @@ var _ = Service("coachee", func() {
 			Attribute("city", String)
 			Attribute("country", String)
 			Attribute("introCall", UInt) // maybe an external scheduler
+			Attribute("textCertifications", String)
+			Attribute("textPrograms", String)
+			Attribute("textAvailability", String)
 			Attribute("vat", String)
 
-			Required("firstName", "lastName", "email", "phone", "tags", "description", "introCall")
+			Required("firstName", "lastName", "email", "phone", "tags", "description", "introCall",
+				"textCertifications", "textPrograms")
 		})
 
 		Result(UInt)

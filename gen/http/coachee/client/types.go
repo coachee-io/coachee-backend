@@ -16,16 +16,19 @@ import (
 // CreateCoachRequestBody is the type of the "coachee" service "CreateCoach"
 // endpoint HTTP request body.
 type CreateCoachRequestBody struct {
-	FirstName   string  `form:"firstName" json:"firstName" xml:"firstName"`
-	LastName    string  `form:"lastName" json:"lastName" xml:"lastName"`
-	Email       string  `form:"email" json:"email" xml:"email"`
-	Phone       string  `form:"phone" json:"phone" xml:"phone"`
-	Tags        string  `form:"tags" json:"tags" xml:"tags"`
-	Description string  `form:"description" json:"description" xml:"description"`
-	City        *string `form:"city,omitempty" json:"city,omitempty" xml:"city,omitempty"`
-	Country     *string `form:"country,omitempty" json:"country,omitempty" xml:"country,omitempty"`
-	IntroCall   uint    `form:"introCall" json:"introCall" xml:"introCall"`
-	Vat         *string `form:"vat,omitempty" json:"vat,omitempty" xml:"vat,omitempty"`
+	FirstName          string  `form:"firstName" json:"firstName" xml:"firstName"`
+	LastName           string  `form:"lastName" json:"lastName" xml:"lastName"`
+	Email              string  `form:"email" json:"email" xml:"email"`
+	Phone              string  `form:"phone" json:"phone" xml:"phone"`
+	Tags               string  `form:"tags" json:"tags" xml:"tags"`
+	Description        string  `form:"description" json:"description" xml:"description"`
+	City               *string `form:"city,omitempty" json:"city,omitempty" xml:"city,omitempty"`
+	Country            *string `form:"country,omitempty" json:"country,omitempty" xml:"country,omitempty"`
+	IntroCall          uint    `form:"introCall" json:"introCall" xml:"introCall"`
+	TextCertifications string  `form:"textCertifications" json:"textCertifications" xml:"textCertifications"`
+	TextPrograms       string  `form:"textPrograms" json:"textPrograms" xml:"textPrograms"`
+	TextAvailability   *string `form:"textAvailability,omitempty" json:"textAvailability,omitempty" xml:"textAvailability,omitempty"`
+	Vat                *string `form:"vat,omitempty" json:"vat,omitempty" xml:"vat,omitempty"`
 }
 
 // UpdateCoachRequestBody is the type of the "coachee" service "UpdateCoach"
@@ -991,16 +994,19 @@ type AvailabilityRequestBody struct {
 // the "CreateCoach" endpoint of the "coachee" service.
 func NewCreateCoachRequestBody(p *coachee.CreateCoachPayload) *CreateCoachRequestBody {
 	body := &CreateCoachRequestBody{
-		FirstName:   p.FirstName,
-		LastName:    p.LastName,
-		Email:       p.Email,
-		Phone:       p.Phone,
-		Tags:        p.Tags,
-		Description: p.Description,
-		City:        p.City,
-		Country:     p.Country,
-		IntroCall:   p.IntroCall,
-		Vat:         p.Vat,
+		FirstName:          p.FirstName,
+		LastName:           p.LastName,
+		Email:              p.Email,
+		Phone:              p.Phone,
+		Tags:               p.Tags,
+		Description:        p.Description,
+		City:               p.City,
+		Country:            p.Country,
+		IntroCall:          p.IntroCall,
+		TextCertifications: p.TextCertifications,
+		TextPrograms:       p.TextPrograms,
+		TextAvailability:   p.TextAvailability,
+		Vat:                p.Vat,
 	}
 	return body
 }

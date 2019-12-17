@@ -86,16 +86,19 @@ type LenCoachesPayload struct {
 // CreateCoachPayload is the payload type of the coachee service CreateCoach
 // method.
 type CreateCoachPayload struct {
-	FirstName   string
-	LastName    string
-	Email       string
-	Phone       string
-	Tags        string
-	Description string
-	City        *string
-	Country     *string
-	IntroCall   uint
-	Vat         *string
+	FirstName          string
+	LastName           string
+	Email              string
+	Phone              string
+	Tags               string
+	Description        string
+	City               *string
+	Country            *string
+	IntroCall          uint
+	TextCertifications string
+	TextPrograms       string
+	TextAvailability   *string
+	Vat                *string
 }
 
 // UpdateCoachPayload is the payload type of the coachee service UpdateCoach

@@ -41,6 +41,10 @@ type Coach struct {
 	Certifications Certifications `sql:"TYPE:json"`
 	Programs       Programs       `sql:"TYPE:json"`
 
+	TextAvailability   string `sql:"TYPE:text"`
+	TextCertifications string `sql:"TYPE:text"`
+	TextPrograms       string `sql:"TYPE:text"`
+
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt *time.Time `sql:"index"`

@@ -16,16 +16,19 @@ import (
 // CreateCoachRequestBody is the type of the "coachee" service "CreateCoach"
 // endpoint HTTP request body.
 type CreateCoachRequestBody struct {
-	FirstName   *string `form:"firstName,omitempty" json:"firstName,omitempty" xml:"firstName,omitempty"`
-	LastName    *string `form:"lastName,omitempty" json:"lastName,omitempty" xml:"lastName,omitempty"`
-	Email       *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
-	Phone       *string `form:"phone,omitempty" json:"phone,omitempty" xml:"phone,omitempty"`
-	Tags        *string `form:"tags,omitempty" json:"tags,omitempty" xml:"tags,omitempty"`
-	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
-	City        *string `form:"city,omitempty" json:"city,omitempty" xml:"city,omitempty"`
-	Country     *string `form:"country,omitempty" json:"country,omitempty" xml:"country,omitempty"`
-	IntroCall   *uint   `form:"introCall,omitempty" json:"introCall,omitempty" xml:"introCall,omitempty"`
-	Vat         *string `form:"vat,omitempty" json:"vat,omitempty" xml:"vat,omitempty"`
+	FirstName          *string `form:"firstName,omitempty" json:"firstName,omitempty" xml:"firstName,omitempty"`
+	LastName           *string `form:"lastName,omitempty" json:"lastName,omitempty" xml:"lastName,omitempty"`
+	Email              *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
+	Phone              *string `form:"phone,omitempty" json:"phone,omitempty" xml:"phone,omitempty"`
+	Tags               *string `form:"tags,omitempty" json:"tags,omitempty" xml:"tags,omitempty"`
+	Description        *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
+	City               *string `form:"city,omitempty" json:"city,omitempty" xml:"city,omitempty"`
+	Country            *string `form:"country,omitempty" json:"country,omitempty" xml:"country,omitempty"`
+	IntroCall          *uint   `form:"introCall,omitempty" json:"introCall,omitempty" xml:"introCall,omitempty"`
+	TextCertifications *string `form:"textCertifications,omitempty" json:"textCertifications,omitempty" xml:"textCertifications,omitempty"`
+	TextPrograms       *string `form:"textPrograms,omitempty" json:"textPrograms,omitempty" xml:"textPrograms,omitempty"`
+	TextAvailability   *string `form:"textAvailability,omitempty" json:"textAvailability,omitempty" xml:"textAvailability,omitempty"`
+	Vat                *string `form:"vat,omitempty" json:"vat,omitempty" xml:"vat,omitempty"`
 }
 
 // UpdateCoachRequestBody is the type of the "coachee" service "UpdateCoach"
@@ -1714,16 +1717,19 @@ func NewLenCoachesPayload(tag string) *coachee.LenCoachesPayload {
 // NewCreateCoachPayload builds a coachee service CreateCoach endpoint payload.
 func NewCreateCoachPayload(body *CreateCoachRequestBody) *coachee.CreateCoachPayload {
 	v := &coachee.CreateCoachPayload{
-		FirstName:   *body.FirstName,
-		LastName:    *body.LastName,
-		Email:       *body.Email,
-		Phone:       *body.Phone,
-		Tags:        *body.Tags,
-		Description: *body.Description,
-		City:        body.City,
-		Country:     body.Country,
-		IntroCall:   *body.IntroCall,
-		Vat:         body.Vat,
+		FirstName:          *body.FirstName,
+		LastName:           *body.LastName,
+		Email:              *body.Email,
+		Phone:              *body.Phone,
+		Tags:               *body.Tags,
+		Description:        *body.Description,
+		City:               body.City,
+		Country:            body.Country,
+		IntroCall:          *body.IntroCall,
+		TextCertifications: *body.TextCertifications,
+		TextPrograms:       *body.TextPrograms,
+		TextAvailability:   body.TextAvailability,
+		Vat:                body.Vat,
 	}
 	return v
 }
@@ -1825,6 +1831,12 @@ func ValidateCreateCoachRequestBody(body *CreateCoachRequestBody) (err error) {
 	}
 	if body.IntroCall == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("introCall", "body"))
+	}
+	if body.TextCertifications == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("textCertifications", "body"))
+	}
+	if body.TextPrograms == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("textPrograms", "body"))
 	}
 	return
 }

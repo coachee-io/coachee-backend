@@ -15,6 +15,7 @@ func testCoach() *model.Coach {
 		ID:          0,
 		FirstName:   "Elie",
 		LastName:    "Viveiros",
+		Email:       "lize@gmail.com",
 		Phone:       "094712747127",
 		StripeID:    "stripe_id",
 		Tags:        "health",
@@ -23,6 +24,8 @@ func testCoach() *model.Coach {
 		Country:     "UK",
 		PictureUrl:  "https://nationalpostcom.files.wordpress.com/2019/02/gbr_21_blackwhitebearsiblings.jpg?quality=80&strip=all&w=780&zoom=2",
 		Status:      model.StatusActive,
+		Vat:         "le vat number",
+		IntroCall:   time.Now(),
 		Availability: model.Availabilities{
 			{
 				ID:    "leid",
@@ -51,7 +54,9 @@ func testCoach() *model.Coach {
 				TaxPercent:       2000,
 			},
 		},
-		IntroCall: time.Now(),
+		TextAvailability:   "text Availability",
+		TextCertifications: "text Certifications",
+		TextPrograms:       "text Programs",
 	}
 }
 
