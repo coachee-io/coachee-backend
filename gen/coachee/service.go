@@ -39,9 +39,9 @@ type Service interface {
 	// deletes an availability for a coach
 	DeleteAvailability(context.Context, *DeleteAvailabilityPayload) (err error)
 	// creates a new client
-	CreateClient(context.Context, *CreateClientPayload) (res string, err error)
+	CreateClient(context.Context, *CreateClientPayload) (res *CreateClientResult, err error)
 	// ClientLogin implements ClientLogin.
-	ClientLogin(context.Context, *ClientLoginPayload) (res string, err error)
+	ClientLogin(context.Context, *ClientLoginPayload) (res *ClientLoginResult, err error)
 	// CreateOrder implements CreateOrder.
 	CreateOrder(context.Context, *CreateOrderPayload) (err error)
 }
@@ -184,11 +184,25 @@ type CreateClientPayload struct {
 	Password  string
 }
 
+// CreateClientResult is the result type of the coachee service CreateClient
+// method.
+type CreateClientResult struct {
+	Token string
+	User  *BaseClient
+}
+
 // ClientLoginPayload is the payload type of the coachee service ClientLogin
 // method.
 type ClientLoginPayload struct {
 	Email    string
 	Password string
+}
+
+// ClientLoginResult is the result type of the coachee service ClientLogin
+// method.
+type ClientLoginResult struct {
+	Token string
+	User  *BaseClient
 }
 
 // CreateOrderPayload is the payload type of the coachee service CreateOrder
@@ -228,6 +242,14 @@ type Availability struct {
 	WeekDay uint
 	Start   uint
 	End     uint
+}
+
+// represents a client
+type BaseClient struct {
+	ID        uint
+	FirstName string
+	LastName  string
+	Expiry    int64
 }
 
 // MakeTransient builds a goa.ServiceError from an error.

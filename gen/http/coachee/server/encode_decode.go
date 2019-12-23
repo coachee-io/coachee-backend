@@ -1059,9 +1059,9 @@ func EncodeDeleteAvailabilityError(encoder func(context.Context, http.ResponseWr
 // coachee CreateClient endpoint.
 func EncodeCreateClientResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
 	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
-		res := v.(string)
+		res := v.(*coachee.CreateClientResult)
 		enc := encoder(ctx, w)
-		body := res
+		body := NewCreateClientResponseBody(res)
 		w.WriteHeader(http.StatusCreated)
 		return enc.Encode(body)
 	}
@@ -1147,9 +1147,9 @@ func EncodeCreateClientError(encoder func(context.Context, http.ResponseWriter) 
 // coachee ClientLogin endpoint.
 func EncodeClientLoginResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
 	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
-		res := v.(string)
+		res := v.(*coachee.ClientLoginResult)
 		enc := encoder(ctx, w)
-		body := res
+		body := NewClientLoginResponseBody(res)
 		w.WriteHeader(http.StatusOK)
 		return enc.Encode(body)
 	}
@@ -1477,6 +1477,19 @@ func unmarshalAvailabilityRequestBodyToCoacheeAvailability(v *AvailabilityReques
 		WeekDay: *v.WeekDay,
 		Start:   *v.Start,
 		End:     *v.End,
+	}
+
+	return res
+}
+
+// marshalCoacheeBaseClientToBaseClientResponseBody builds a value of type
+// *BaseClientResponseBody from a value of type *coachee.BaseClient.
+func marshalCoacheeBaseClientToBaseClientResponseBody(v *coachee.BaseClient) *BaseClientResponseBody {
+	res := &BaseClientResponseBody{
+		ID:        v.ID,
+		FirstName: v.FirstName,
+		LastName:  v.LastName,
+		Expiry:    v.Expiry,
 	}
 
 	return res

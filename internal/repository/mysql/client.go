@@ -51,7 +51,7 @@ func (r ClientRepository) GetByEmail(transaction repository.Transaction, email s
 	tx := r.checkTransaction(transaction)
 
 	var client model.Client
-	if err := tx.First(&client).Where("email = ?", email).Error; err != nil {
+	if err := tx.Where("email = ?", email).First(&client).Error; err != nil {
 		return nil, parseError(err)
 	}
 

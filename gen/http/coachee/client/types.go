@@ -111,6 +111,20 @@ type GetCoachResponseBody struct {
 	Availability   []*AvailabilityResponseBody  `form:"availability,omitempty" json:"availability,omitempty" xml:"availability,omitempty"`
 }
 
+// CreateClientResponseBody is the type of the "coachee" service "CreateClient"
+// endpoint HTTP response body.
+type CreateClientResponseBody struct {
+	Token *string                 `form:"token,omitempty" json:"token,omitempty" xml:"token,omitempty"`
+	User  *BaseClientResponseBody `form:"user,omitempty" json:"user,omitempty" xml:"user,omitempty"`
+}
+
+// ClientLoginResponseBody is the type of the "coachee" service "ClientLogin"
+// endpoint HTTP response body.
+type ClientLoginResponseBody struct {
+	Token *string                 `form:"token,omitempty" json:"token,omitempty" xml:"token,omitempty"`
+	User  *BaseClientResponseBody `form:"user,omitempty" json:"user,omitempty" xml:"user,omitempty"`
+}
+
 // GetCoachesInternalResponseBody is the type of the "coachee" service
 // "GetCoaches" endpoint HTTP response body for the "internal" error.
 type GetCoachesInternalResponseBody struct {
@@ -1483,6 +1497,14 @@ type AvailabilityRequestBody struct {
 	End     uint    `form:"end" json:"end" xml:"end"`
 }
 
+// BaseClientResponseBody is used to define fields on response body types.
+type BaseClientResponseBody struct {
+	ID        *uint   `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	FirstName *string `form:"firstName,omitempty" json:"firstName,omitempty" xml:"firstName,omitempty"`
+	LastName  *string `form:"lastName,omitempty" json:"lastName,omitempty" xml:"lastName,omitempty"`
+	Expiry    *int64  `form:"expiry,omitempty" json:"expiry,omitempty" xml:"expiry,omitempty"`
+}
+
 // NewCreateCoachRequestBody builds the HTTP request body from the payload of
 // the "CreateCoach" endpoint of the "coachee" service.
 func NewCreateCoachRequestBody(p *coachee.CreateCoachPayload) *CreateCoachRequestBody {
@@ -2429,6 +2451,16 @@ func NewDeleteAvailabilityUnauthorized(body *DeleteAvailabilityUnauthorizedRespo
 	return v
 }
 
+// NewCreateClientResultCreated builds a "coachee" service "CreateClient"
+// endpoint result from a HTTP "Created" response.
+func NewCreateClientResultCreated(body *CreateClientResponseBody) *coachee.CreateClientResult {
+	v := &coachee.CreateClientResult{
+		Token: *body.Token,
+	}
+	v.User = unmarshalBaseClientResponseBodyToCoacheeBaseClient(body.User)
+	return v
+}
+
 // NewCreateClientInternal builds a coachee service CreateClient endpoint
 // internal error.
 func NewCreateClientInternal(body *CreateClientInternalResponseBody) *goa.ServiceError {
@@ -2496,6 +2528,16 @@ func NewCreateClientUnauthorized(body *CreateClientUnauthorizedResponseBody) *go
 		Timeout:   *body.Timeout,
 		Fault:     *body.Fault,
 	}
+	return v
+}
+
+// NewClientLoginResultOK builds a "coachee" service "ClientLogin" endpoint
+// result from a HTTP "OK" response.
+func NewClientLoginResultOK(body *ClientLoginResponseBody) *coachee.ClientLoginResult {
+	v := &coachee.ClientLoginResult{
+		Token: *body.Token,
+	}
+	v.User = unmarshalBaseClientResponseBodyToCoacheeBaseClient(body.User)
 	return v
 }
 
@@ -2685,6 +2727,40 @@ func ValidateGetCoachResponseBody(body *GetCoachResponseBody) (err error) {
 			if err2 := ValidateAvailabilityResponseBody(e); err2 != nil {
 				err = goa.MergeErrors(err, err2)
 			}
+		}
+	}
+	return
+}
+
+// ValidateCreateClientResponseBody runs the validations defined on
+// CreateClientResponseBody
+func ValidateCreateClientResponseBody(body *CreateClientResponseBody) (err error) {
+	if body.Token == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("token", "body"))
+	}
+	if body.User == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("user", "body"))
+	}
+	if body.User != nil {
+		if err2 := ValidateBaseClientResponseBody(body.User); err2 != nil {
+			err = goa.MergeErrors(err, err2)
+		}
+	}
+	return
+}
+
+// ValidateClientLoginResponseBody runs the validations defined on
+// ClientLoginResponseBody
+func ValidateClientLoginResponseBody(body *ClientLoginResponseBody) (err error) {
+	if body.Token == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("token", "body"))
+	}
+	if body.User == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("user", "body"))
+	}
+	if body.User != nil {
+		if err2 := ValidateBaseClientResponseBody(body.User); err2 != nil {
+			err = goa.MergeErrors(err, err2)
 		}
 	}
 	return
@@ -4677,6 +4753,24 @@ func ValidateAvailabilityRequestBody(body *AvailabilityRequestBody) (err error) 
 	}
 	if body.End > 1440 {
 		err = goa.MergeErrors(err, goa.InvalidRangeError("body.end", body.End, 1440, false))
+	}
+	return
+}
+
+// ValidateBaseClientResponseBody runs the validations defined on
+// baseClientResponseBody
+func ValidateBaseClientResponseBody(body *BaseClientResponseBody) (err error) {
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.FirstName == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("firstName", "body"))
+	}
+	if body.LastName == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("lastName", "body"))
+	}
+	if body.Expiry == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("expiry", "body"))
 	}
 	return
 }

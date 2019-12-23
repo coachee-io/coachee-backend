@@ -1715,14 +1715,19 @@ func DecodeCreateClientResponse(decoder func(*http.Response) goahttp.Decoder, re
 		switch resp.StatusCode {
 		case http.StatusCreated:
 			var (
-				body string
+				body CreateClientResponseBody
 				err  error
 			)
 			err = decoder(resp).Decode(&body)
 			if err != nil {
 				return nil, goahttp.ErrDecodingError("coachee", "CreateClient", err)
 			}
-			return body, nil
+			err = ValidateCreateClientResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("coachee", "CreateClient", err)
+			}
+			res := NewCreateClientResultCreated(&body)
+			return res, nil
 		case http.StatusInternalServerError:
 			en := resp.Header.Get("goa-error")
 			switch en {
@@ -1865,14 +1870,19 @@ func DecodeClientLoginResponse(decoder func(*http.Response) goahttp.Decoder, res
 		switch resp.StatusCode {
 		case http.StatusOK:
 			var (
-				body string
+				body ClientLoginResponseBody
 				err  error
 			)
 			err = decoder(resp).Decode(&body)
 			if err != nil {
 				return nil, goahttp.ErrDecodingError("coachee", "ClientLogin", err)
 			}
-			return body, nil
+			err = ValidateClientLoginResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("coachee", "ClientLogin", err)
+			}
+			res := NewClientLoginResultOK(&body)
+			return res, nil
 		case http.StatusInternalServerError:
 			en := resp.Header.Get("goa-error")
 			switch en {
@@ -2289,6 +2299,19 @@ func marshalAvailabilityRequestBodyToCoacheeAvailability(v *AvailabilityRequestB
 		WeekDay: v.WeekDay,
 		Start:   v.Start,
 		End:     v.End,
+	}
+
+	return res
+}
+
+// unmarshalBaseClientResponseBodyToCoacheeBaseClient builds a value of type
+// *coachee.BaseClient from a value of type *BaseClientResponseBody.
+func unmarshalBaseClientResponseBodyToCoacheeBaseClient(v *BaseClientResponseBody) *coachee.BaseClient {
+	res := &coachee.BaseClient{
+		ID:        *v.ID,
+		FirstName: *v.FirstName,
+		LastName:  *v.LastName,
+		Expiry:    *v.Expiry,
 	}
 
 	return res

@@ -10,11 +10,11 @@ import (
 
 var secret = []byte("Zq4t7w!z%C*F-JaNdRgUjXn2r5u8x/A?")
 
-func CreateUserToken(id uint) (string, error) {
+func CreateUserToken(id uint, expiry time.Time) (string, error) {
 	claims := jwt.MapClaims{}
 	claims["scopes"] = []string{"client"}
 	claims["id"] = id
-	claims["expiry"] = time.Now().Add(time.Minute * 30).Unix() //Token expires after 30 minutes
+	claims["expiry"] = expiry
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString(secret)
 }

@@ -98,6 +98,17 @@ var coachResult = Type("coach", func() {
 	Required("id", "firstName", "lastName", "tags", "description", "city", "country", "pictureURL")
 })
 
+var client = Type("baseClient", func() {
+	Description("represents a client")
+
+	Attribute("id", UInt)
+	Attribute("firstName", String)
+	Attribute("lastName", String)
+	Attribute("expiry", Int64)
+
+	Required("id", "firstName", "lastName", "expiry")
+})
+
 var JWT = JWTSecurity("jwt", func() {
 	Scope("client", "client auth")
 	Scope("admin", "admin auth")
@@ -328,7 +339,12 @@ var _ = Service("coachee", func() {
 			Required("email", "firstName", "lastName", "birthDate", "password")
 		})
 
-		Result(String, "jwt")
+		Result(func() {
+			Attribute("token", String)
+			Attribute("user", client)
+
+			Required("token", "user")
+		})
 
 		HTTP(func() {
 			POST("/clients")
@@ -344,7 +360,12 @@ var _ = Service("coachee", func() {
 			Required("email", "password")
 		})
 
-		Result(String, "jwt")
+		Result(func() {
+			Attribute("token", String)
+			Attribute("user", client)
+
+			Required("token", "user")
+		})
 
 		HTTP(func() {
 			POST("/clients/login")

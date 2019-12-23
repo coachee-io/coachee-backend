@@ -138,23 +138,23 @@ func (c *Client) DeleteAvailability(ctx context.Context, p *DeleteAvailabilityPa
 }
 
 // CreateClient calls the "CreateClient" endpoint of the "coachee" service.
-func (c *Client) CreateClient(ctx context.Context, p *CreateClientPayload) (res string, err error) {
+func (c *Client) CreateClient(ctx context.Context, p *CreateClientPayload) (res *CreateClientResult, err error) {
 	var ires interface{}
 	ires, err = c.CreateClientEndpoint(ctx, p)
 	if err != nil {
 		return
 	}
-	return ires.(string), nil
+	return ires.(*CreateClientResult), nil
 }
 
 // ClientLogin calls the "ClientLogin" endpoint of the "coachee" service.
-func (c *Client) ClientLogin(ctx context.Context, p *ClientLoginPayload) (res string, err error) {
+func (c *Client) ClientLogin(ctx context.Context, p *ClientLoginPayload) (res *ClientLoginResult, err error) {
 	var ires interface{}
 	ires, err = c.ClientLoginEndpoint(ctx, p)
 	if err != nil {
 		return
 	}
-	return ires.(string), nil
+	return ires.(*ClientLoginResult), nil
 }
 
 // CreateOrder calls the "CreateOrder" endpoint of the "coachee" service.
