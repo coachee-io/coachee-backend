@@ -14,7 +14,7 @@ func CreateUserToken(id uint) (string, error) {
 	claims := jwt.MapClaims{}
 	claims["scopes"] = []string{"client"}
 	claims["id"] = id
-	claims["exp"] = time.Now().Add(time.Minute * 30).Unix() //Token expires after 30 minutes
+	claims["expiry"] = time.Now().Add(time.Minute * 30).Unix() //Token expires after 30 minutes
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString(secret)
 }

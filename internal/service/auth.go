@@ -5,12 +5,15 @@ import (
 	"coachee-backend/internal/auth"
 	"context"
 	"errors"
+	"time"
 
 	"goa.design/goa/v3/security"
 )
 
 var (
-	ErrInvalidTokenScopes error = coachee.MakeUnauthorized(errors.New("invalid token"))
+	ErrInvalidToken error = coachee.MakeUnauthorized(errors.New("invalid token"))
+
+	ErrExpiredToken error = coachee.MakeUnauthorized(errors.New("token is expired"))
 )
 
 func (s *Service) JWTAuth(ctx context.Context, token string, schema *security.JWTScheme) (context.Context, error) {
@@ -21,18 +24,32 @@ func (s *Service) JWTAuth(ctx context.Context, token string, schema *security.JW
 
 	// 2. validate provided "scopes" claim
 	if claims["scopes"] == nil {
-		return ctx, ErrInvalidTokenScopes
+		return ctx, ErrInvalidToken
 	}
 	scopes, ok := claims["scopes"].([]interface{})
 	if !ok {
-		return ctx, ErrInvalidTokenScopes
+		return ctx, ErrInvalidToken
 	}
 	scopesInToken := make([]string, len(scopes))
 	for _, scp := range scopes {
 		scopesInToken = append(scopesInToken, scp.(string))
 	}
 	if err := schema.Validate(scopesInToken); err != nil {
-		return ctx, ErrInvalidTokenScopes
+		return ctx, ErrInvalidToken
 	}
+
+	// validate expiry token
+	expiry, ok := claims["expiry"]
+	if !ok {
+		return ctx, ErrInvalidToken
+	}
+	exp, ok := expiry.(time.Time)
+	if !ok {
+		return ctx, ErrInvalidToken
+	}
+	if exp.After(time.Now()) {
+		return ctx, ErrExpiredToken
+	}
+
 	return ctx, nil
 }
