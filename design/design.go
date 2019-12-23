@@ -1,6 +1,8 @@
 package design
 
-import . "goa.design/goa/v3/dsl"
+import (
+	. "goa.design/goa/v3/dsl"
+)
 
 // API describes the global properties of the API server.
 var _ = API("coachee", func() {
@@ -96,6 +98,11 @@ var coachResult = Type("coach", func() {
 	Required("id", "firstName", "lastName", "tags", "description", "city", "country", "pictureURL")
 })
 
+var JWT = JWTSecurity("jwt", func() {
+	Scope("client", "client auth")
+	Scope("admin", "admin auth")
+})
+
 var _ = Service("coachee", func() {
 	Description("The coachee service performs operations on coachees")
 
@@ -106,7 +113,9 @@ var _ = Service("coachee", func() {
 	Error("notFound")
 	Error("validation")
 	Error("unauthorized")
+	Error("internal")
 	HTTP(func() {
+		Response("internal", StatusInternalServerError)
 		Response("transient", StatusInternalServerError)
 		Response("notFound", StatusNotFound)
 		Response("validation", StatusBadRequest)
@@ -304,6 +313,62 @@ var _ = Service("coachee", func() {
 		HTTP(func() {
 			DELETE("/coaches/{id}/availability/{avID}")
 			Response(StatusOK)
+		})
+	})
+
+	Method("CreateClient", func() {
+		Description("creates a new client")
+		Payload(func() {
+			Attribute("email", String)
+			Attribute("firstName", String)
+			Attribute("lastName", String)
+			Attribute("birthDate", Int64)
+			Attribute("password", String)
+
+			Required("email", "firstName", "lastName", "birthDate", "password")
+		})
+
+		Result(String, "jwt")
+
+		HTTP(func() {
+			POST("/clients")
+			Response(StatusCreated)
+		})
+	})
+
+	Method("ClientLogin", func() {
+		Payload(func() {
+			Attribute("email", String)
+			Attribute("password", String)
+
+			Required("email", "password")
+		})
+
+		Result(String, "jwt")
+
+		HTTP(func() {
+			POST("/clients/login")
+			Response(StatusOK)
+		})
+	})
+
+	Method("CreateOrder", func() {
+		Security(JWT, func() {
+			Scope("client")
+		})
+
+		Payload(func() {
+			Token("token", String, "JWT token used to perform authorization")
+			Attribute("coachId", UInt)
+			Attribute("programId", String)
+			Attribute("introCall", Int64)
+
+			Required("token", "coachId", "programId", "introCall")
+		})
+
+		HTTP(func() {
+			POST("/orders")
+			Response(StatusCreated)
 		})
 	})
 })

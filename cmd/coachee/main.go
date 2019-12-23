@@ -41,9 +41,10 @@ func main() {
 
 	// Initialize repositories
 	coachRepository := mysql.NewCoachRepository(conn)
+	clientRepository := mysql.NewClientRepository(conn)
 
 	// Initialize the services.
-	coacheeSvc := service.NewCoachee(appCtx, coachRepository)
+	coacheeSvc := service.NewCoachee(appCtx, coachRepository, clientRepository)
 
 	// Wrap the services in endpoints that can be invoked from other services
 	// potentially running in different processes.

@@ -12,14 +12,16 @@ import (
 type Service struct {
 	logger *zerolog.Logger
 
-	coachRepository repository.Coach
+	coachRepository  repository.Coach
+	clientRepository repository.Client
 }
 
 // NewCoachee returns the coachee service implementation.
-func NewCoachee(ctx context.Context, coach repository.Coach) *Service {
+func NewCoachee(ctx context.Context, coach repository.Coach, client repository.Client) *Service {
 	log := zerolog.Ctx(ctx).With().Str("component", "service").Logger()
 	return &Service{
-		logger:          &log,
-		coachRepository: coach,
+		logger:           &log,
+		coachRepository:  coach,
+		clientRepository: client,
 	}
 }

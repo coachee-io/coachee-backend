@@ -19,7 +19,7 @@ func parseError(err error) error {
 		} else if gorm.IsRecordNotFoundError(err) {
 			return coachee.MakeNotFound(fmt.Errorf("record not found"))
 		}
-		return err
+		return coachee.MakeTransient(err)
 	}
 	return nil
 }

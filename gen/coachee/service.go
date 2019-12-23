@@ -11,6 +11,7 @@ import (
 	"context"
 
 	goa "goa.design/goa/v3/pkg"
+	"goa.design/goa/v3/security"
 )
 
 // The coachee service performs operations on coachees
@@ -37,6 +38,18 @@ type Service interface {
 	CreateAvailability(context.Context, *CreateAvailabilityPayload) (err error)
 	// deletes an availability for a coach
 	DeleteAvailability(context.Context, *DeleteAvailabilityPayload) (err error)
+	// creates a new client
+	CreateClient(context.Context, *CreateClientPayload) (res string, err error)
+	// ClientLogin implements ClientLogin.
+	ClientLogin(context.Context, *ClientLoginPayload) (res string, err error)
+	// CreateOrder implements CreateOrder.
+	CreateOrder(context.Context, *CreateOrderPayload) (err error)
+}
+
+// Auther defines the authorization functions to be implemented by the service.
+type Auther interface {
+	// JWTAuth implements the authorization logic for the JWT security scheme.
+	JWTAuth(ctx context.Context, token string, schema *security.JWTScheme) (context.Context, error)
 }
 
 // ServiceName is the name of the service as defined in the design. This is the
@@ -47,7 +60,7 @@ const ServiceName = "coachee"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [11]string{"GetCoaches", "GetCoach", "LenCoaches", "CreateCoach", "UpdateCoach", "CreateCertification", "DeleteCertification", "CreateProgram", "DeleteProgram", "CreateAvailability", "DeleteAvailability"}
+var MethodNames = [14]string{"GetCoaches", "GetCoach", "LenCoaches", "CreateCoach", "UpdateCoach", "CreateCertification", "DeleteCertification", "CreateProgram", "DeleteProgram", "CreateAvailability", "DeleteAvailability", "CreateClient", "ClientLogin", "CreateOrder"}
 
 // GetCoachesPayload is the payload type of the coachee service GetCoaches
 // method.
@@ -161,6 +174,33 @@ type DeleteAvailabilityPayload struct {
 	AvID string
 }
 
+// CreateClientPayload is the payload type of the coachee service CreateClient
+// method.
+type CreateClientPayload struct {
+	Email     string
+	FirstName string
+	LastName  string
+	BirthDate int64
+	Password  string
+}
+
+// ClientLoginPayload is the payload type of the coachee service ClientLogin
+// method.
+type ClientLoginPayload struct {
+	Email    string
+	Password string
+}
+
+// CreateOrderPayload is the payload type of the coachee service CreateOrder
+// method.
+type CreateOrderPayload struct {
+	// JWT token used to perform authorization
+	Token     string
+	CoachID   uint
+	ProgramID string
+	IntroCall int64
+}
+
 // represents a coach certification
 type Certification struct {
 	ID          *string
@@ -222,6 +262,15 @@ func MakeValidation(err error) *goa.ServiceError {
 func MakeUnauthorized(err error) *goa.ServiceError {
 	return &goa.ServiceError{
 		Name:    "unauthorized",
+		ID:      goa.NewErrorID(),
+		Message: err.Error(),
+	}
+}
+
+// MakeInternal builds a goa.ServiceError from an error.
+func MakeInternal(err error) *goa.ServiceError {
+	return &goa.ServiceError{
+		Name:    "internal",
 		ID:      goa.NewErrorID(),
 		Message: err.Error(),
 	}

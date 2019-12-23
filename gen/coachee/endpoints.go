@@ -11,6 +11,7 @@ import (
 	"context"
 
 	goa "goa.design/goa/v3/pkg"
+	"goa.design/goa/v3/security"
 )
 
 // Endpoints wraps the "coachee" service endpoints.
@@ -26,10 +27,15 @@ type Endpoints struct {
 	DeleteProgram       goa.Endpoint
 	CreateAvailability  goa.Endpoint
 	DeleteAvailability  goa.Endpoint
+	CreateClient        goa.Endpoint
+	ClientLogin         goa.Endpoint
+	CreateOrder         goa.Endpoint
 }
 
 // NewEndpoints wraps the methods of the "coachee" service with endpoints.
 func NewEndpoints(s Service) *Endpoints {
+	// Casting service to Auther interface
+	a := s.(Auther)
 	return &Endpoints{
 		GetCoaches:          NewGetCoachesEndpoint(s),
 		GetCoach:            NewGetCoachEndpoint(s),
@@ -42,6 +48,9 @@ func NewEndpoints(s Service) *Endpoints {
 		DeleteProgram:       NewDeleteProgramEndpoint(s),
 		CreateAvailability:  NewCreateAvailabilityEndpoint(s),
 		DeleteAvailability:  NewDeleteAvailabilityEndpoint(s),
+		CreateClient:        NewCreateClientEndpoint(s),
+		ClientLogin:         NewClientLoginEndpoint(s),
+		CreateOrder:         NewCreateOrderEndpoint(s, a.JWTAuth),
 	}
 }
 
@@ -58,6 +67,9 @@ func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.DeleteProgram = m(e.DeleteProgram)
 	e.CreateAvailability = m(e.CreateAvailability)
 	e.DeleteAvailability = m(e.DeleteAvailability)
+	e.CreateClient = m(e.CreateClient)
+	e.ClientLogin = m(e.ClientLogin)
+	e.CreateOrder = m(e.CreateOrder)
 }
 
 // NewGetCoachesEndpoint returns an endpoint function that calls the method
@@ -156,5 +168,42 @@ func NewDeleteAvailabilityEndpoint(s Service) goa.Endpoint {
 	return func(ctx context.Context, req interface{}) (interface{}, error) {
 		p := req.(*DeleteAvailabilityPayload)
 		return nil, s.DeleteAvailability(ctx, p)
+	}
+}
+
+// NewCreateClientEndpoint returns an endpoint function that calls the method
+// "CreateClient" of service "coachee".
+func NewCreateClientEndpoint(s Service) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*CreateClientPayload)
+		return s.CreateClient(ctx, p)
+	}
+}
+
+// NewClientLoginEndpoint returns an endpoint function that calls the method
+// "ClientLogin" of service "coachee".
+func NewClientLoginEndpoint(s Service) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*ClientLoginPayload)
+		return s.ClientLogin(ctx, p)
+	}
+}
+
+// NewCreateOrderEndpoint returns an endpoint function that calls the method
+// "CreateOrder" of service "coachee".
+func NewCreateOrderEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*CreateOrderPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{"client", "admin"},
+			RequiredScopes: []string{"client"},
+		}
+		ctx, err = authJWTFn(ctx, p.Token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		return nil, s.CreateOrder(ctx, p)
 	}
 }

@@ -1,0 +1,35 @@
+package model
+
+import (
+	"errors"
+	"time"
+
+	validation "github.com/go-ozzo/ozzo-validation"
+	"github.com/go-ozzo/ozzo-validation/is"
+)
+
+type Client struct {
+	ID        uint `gorm:"primary_key"`
+	StripeID  string
+	FirstName string
+	LastName  string
+	Email     string `gorm:"not null;unique"`
+	BirthDate time.Time
+	Password  string
+
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt *time.Time `sql:"index"`
+}
+
+func (c *Client) Validate() error {
+	if c == nil {
+		return errors.New("nil client")
+	}
+	return validation.ValidateStruct(c,
+		validation.Field(&c.Email, is.Email, validation.Required),
+		validation.Field(&c.BirthDate, validation.Required),
+		validation.Field(&c.FirstName, validation.Required),
+		validation.Field(&c.LastName, validation.Required),
+		validation.Field(&c.Password, validation.Required))
+}

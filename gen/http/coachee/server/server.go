@@ -30,6 +30,9 @@ type Server struct {
 	DeleteProgram       http.Handler
 	CreateAvailability  http.Handler
 	DeleteAvailability  http.Handler
+	CreateClient        http.Handler
+	ClientLogin         http.Handler
+	CreateOrder         http.Handler
 }
 
 // ErrorNamer is an interface implemented by generated error structs that
@@ -70,6 +73,9 @@ func New(
 			{"DeleteProgram", "DELETE", "/coaches/{id}/programs/{programID}"},
 			{"CreateAvailability", "POST", "/coaches/{id}/availability"},
 			{"DeleteAvailability", "DELETE", "/coaches/{id}/availability/{avID}"},
+			{"CreateClient", "POST", "/clients"},
+			{"ClientLogin", "POST", "/clients/login"},
+			{"CreateOrder", "POST", "/orders"},
 		},
 		GetCoaches:          NewGetCoachesHandler(e.GetCoaches, mux, dec, enc, eh),
 		GetCoach:            NewGetCoachHandler(e.GetCoach, mux, dec, enc, eh),
@@ -82,6 +88,9 @@ func New(
 		DeleteProgram:       NewDeleteProgramHandler(e.DeleteProgram, mux, dec, enc, eh),
 		CreateAvailability:  NewCreateAvailabilityHandler(e.CreateAvailability, mux, dec, enc, eh),
 		DeleteAvailability:  NewDeleteAvailabilityHandler(e.DeleteAvailability, mux, dec, enc, eh),
+		CreateClient:        NewCreateClientHandler(e.CreateClient, mux, dec, enc, eh),
+		ClientLogin:         NewClientLoginHandler(e.ClientLogin, mux, dec, enc, eh),
+		CreateOrder:         NewCreateOrderHandler(e.CreateOrder, mux, dec, enc, eh),
 	}
 }
 
@@ -101,6 +110,9 @@ func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.DeleteProgram = m(s.DeleteProgram)
 	s.CreateAvailability = m(s.CreateAvailability)
 	s.DeleteAvailability = m(s.DeleteAvailability)
+	s.CreateClient = m(s.CreateClient)
+	s.ClientLogin = m(s.ClientLogin)
+	s.CreateOrder = m(s.CreateOrder)
 }
 
 // Mount configures the mux to serve the coachee endpoints.
@@ -116,6 +128,9 @@ func Mount(mux goahttp.Muxer, h *Server) {
 	MountDeleteProgramHandler(mux, h.DeleteProgram)
 	MountCreateAvailabilityHandler(mux, h.CreateAvailability)
 	MountDeleteAvailabilityHandler(mux, h.DeleteAvailability)
+	MountCreateClientHandler(mux, h.CreateClient)
+	MountClientLoginHandler(mux, h.ClientLogin)
+	MountCreateOrderHandler(mux, h.CreateOrder)
 }
 
 // MountGetCoachesHandler configures the mux to serve the "coachee" service
@@ -667,6 +682,162 @@ func NewDeleteAvailabilityHandler(
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "DeleteAvailability")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "coachee")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				eh(ctx, w, err)
+			}
+			return
+		}
+
+		res, err := endpoint(ctx, payload)
+
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				eh(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			eh(ctx, w, err)
+		}
+	})
+}
+
+// MountCreateClientHandler configures the mux to serve the "coachee" service
+// "CreateClient" endpoint.
+func MountCreateClientHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("POST", "/clients", f)
+}
+
+// NewCreateClientHandler creates a HTTP handler which loads the HTTP request
+// and calls the "coachee" service "CreateClient" endpoint.
+func NewCreateClientHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	dec func(*http.Request) goahttp.Decoder,
+	enc func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	eh func(context.Context, http.ResponseWriter, error),
+) http.Handler {
+	var (
+		decodeRequest  = DecodeCreateClientRequest(mux, dec)
+		encodeResponse = EncodeCreateClientResponse(enc)
+		encodeError    = EncodeCreateClientError(enc)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "CreateClient")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "coachee")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				eh(ctx, w, err)
+			}
+			return
+		}
+
+		res, err := endpoint(ctx, payload)
+
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				eh(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			eh(ctx, w, err)
+		}
+	})
+}
+
+// MountClientLoginHandler configures the mux to serve the "coachee" service
+// "ClientLogin" endpoint.
+func MountClientLoginHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("POST", "/clients/login", f)
+}
+
+// NewClientLoginHandler creates a HTTP handler which loads the HTTP request
+// and calls the "coachee" service "ClientLogin" endpoint.
+func NewClientLoginHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	dec func(*http.Request) goahttp.Decoder,
+	enc func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	eh func(context.Context, http.ResponseWriter, error),
+) http.Handler {
+	var (
+		decodeRequest  = DecodeClientLoginRequest(mux, dec)
+		encodeResponse = EncodeClientLoginResponse(enc)
+		encodeError    = EncodeClientLoginError(enc)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "ClientLogin")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "coachee")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				eh(ctx, w, err)
+			}
+			return
+		}
+
+		res, err := endpoint(ctx, payload)
+
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				eh(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			eh(ctx, w, err)
+		}
+	})
+}
+
+// MountCreateOrderHandler configures the mux to serve the "coachee" service
+// "CreateOrder" endpoint.
+func MountCreateOrderHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("POST", "/orders", f)
+}
+
+// NewCreateOrderHandler creates a HTTP handler which loads the HTTP request
+// and calls the "coachee" service "CreateOrder" endpoint.
+func NewCreateOrderHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	dec func(*http.Request) goahttp.Decoder,
+	enc func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	eh func(context.Context, http.ResponseWriter, error),
+) http.Handler {
+	var (
+		decodeRequest  = DecodeCreateOrderRequest(mux, dec)
+		encodeResponse = EncodeCreateOrderResponse(enc)
+		encodeError    = EncodeCreateOrderError(enc)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "CreateOrder")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "coachee")
 		payload, err := decodeRequest(r)
 		if err != nil {

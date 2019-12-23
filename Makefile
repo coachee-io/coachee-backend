@@ -5,6 +5,7 @@
 		gen \
 		test-start \
 		test-stop \
+		db-start \
 
 SHELL := /bin/bash
 
@@ -29,3 +30,6 @@ test-start:
 
 test-stop:
 	docker-compose --file docker-compose.local.yml down
+
+db-start:
+	docker-compose --file docker-compose.local.yml up -d mysql

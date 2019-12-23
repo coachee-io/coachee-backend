@@ -65,3 +65,18 @@ func CreateAvailabilityCoacheePath(id uint) string {
 func DeleteAvailabilityCoacheePath(id uint, avID string) string {
 	return fmt.Sprintf("/coaches/%v/availability/%v", id, avID)
 }
+
+// CreateClientCoacheePath returns the URL path to the coachee service CreateClient HTTP endpoint.
+func CreateClientCoacheePath() string {
+	return "/clients"
+}
+
+// ClientLoginCoacheePath returns the URL path to the coachee service ClientLogin HTTP endpoint.
+func ClientLoginCoacheePath() string {
+	return "/clients/login"
+}
+
+// CreateOrderCoacheePath returns the URL path to the coachee service CreateOrder HTTP endpoint.
+func CreateOrderCoacheePath() string {
+	return "/orders"
+}

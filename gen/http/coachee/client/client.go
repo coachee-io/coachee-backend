@@ -61,6 +61,18 @@ type Client struct {
 	// DeleteAvailability endpoint.
 	DeleteAvailabilityDoer goahttp.Doer
 
+	// CreateClient Doer is the HTTP client used to make requests to the
+	// CreateClient endpoint.
+	CreateClientDoer goahttp.Doer
+
+	// ClientLogin Doer is the HTTP client used to make requests to the ClientLogin
+	// endpoint.
+	ClientLoginDoer goahttp.Doer
+
+	// CreateOrder Doer is the HTTP client used to make requests to the CreateOrder
+	// endpoint.
+	CreateOrderDoer goahttp.Doer
+
 	// RestoreResponseBody controls whether the response bodies are reset after
 	// decoding so they can be read again.
 	RestoreResponseBody bool
@@ -92,6 +104,9 @@ func NewClient(
 		DeleteProgramDoer:       doer,
 		CreateAvailabilityDoer:  doer,
 		DeleteAvailabilityDoer:  doer,
+		CreateClientDoer:        doer,
+		ClientLoginDoer:         doer,
+		CreateOrderDoer:         doer,
 		RestoreResponseBody:     restoreBody,
 		scheme:                  scheme,
 		host:                    host,
@@ -345,6 +360,81 @@ func (c *Client) DeleteAvailability() goa.Endpoint {
 
 		if err != nil {
 			return nil, goahttp.ErrRequestError("coachee", "DeleteAvailability", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// CreateClient returns an endpoint that makes HTTP requests to the coachee
+// service CreateClient server.
+func (c *Client) CreateClient() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeCreateClientRequest(c.encoder)
+		decodeResponse = DecodeCreateClientResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildCreateClientRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.CreateClientDoer.Do(req)
+
+		if err != nil {
+			return nil, goahttp.ErrRequestError("coachee", "CreateClient", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// ClientLogin returns an endpoint that makes HTTP requests to the coachee
+// service ClientLogin server.
+func (c *Client) ClientLogin() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeClientLoginRequest(c.encoder)
+		decodeResponse = DecodeClientLoginResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildClientLoginRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.ClientLoginDoer.Do(req)
+
+		if err != nil {
+			return nil, goahttp.ErrRequestError("coachee", "ClientLogin", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// CreateOrder returns an endpoint that makes HTTP requests to the coachee
+// service CreateOrder server.
+func (c *Client) CreateOrder() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeCreateOrderRequest(c.encoder)
+		decodeResponse = DecodeCreateOrderResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildCreateOrderRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.CreateOrderDoer.Do(req)
+
+		if err != nil {
+			return nil, goahttp.ErrRequestError("coachee", "CreateOrder", err)
 		}
 		return decodeResponse(resp)
 	}
