@@ -1489,7 +1489,6 @@ func marshalCoacheeBaseClientToBaseClientResponseBody(v *coachee.BaseClient) *Ba
 		ID:        v.ID,
 		FirstName: v.FirstName,
 		LastName:  v.LastName,
-		Expiry:    v.Expiry,
 	}
 
 	return res

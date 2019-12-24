@@ -54,12 +54,12 @@ func (s *Service) CreateClient(ctx context.Context, p *coachee.CreateClientPaylo
 	}
 
 	return &coachee.CreateClientResult{
-		Token: token,
+		Token:  token,
+		Expiry: expiry.Unix(),
 		User: &coachee.BaseClient{
 			ID:        client.ID,
 			FirstName: client.FirstName,
 			LastName:  client.LastName,
-			Expiry:    expiry.Unix(),
 		},
 	}, nil
 }
@@ -88,12 +88,12 @@ func (s *Service) ClientLogin(ctx context.Context, p *coachee.ClientLoginPayload
 	}
 
 	return &coachee.ClientLoginResult{
-		Token: token,
+		Token:  token,
+		Expiry: expiry.Unix(),
 		User: &coachee.BaseClient{
 			ID:        client.ID,
 			FirstName: client.FirstName,
 			LastName:  client.LastName,
-			Expiry:    expiry.Unix(),
 		},
 	}, nil
 }

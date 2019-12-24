@@ -104,9 +104,8 @@ var client = Type("baseClient", func() {
 	Attribute("id", UInt)
 	Attribute("firstName", String)
 	Attribute("lastName", String)
-	Attribute("expiry", Int64)
 
-	Required("id", "firstName", "lastName", "expiry")
+	Required("id", "firstName", "lastName")
 })
 
 var JWT = JWTSecurity("jwt", func() {
@@ -341,9 +340,10 @@ var _ = Service("coachee", func() {
 
 		Result(func() {
 			Attribute("token", String)
+			Attribute("expiry", Int64)
 			Attribute("user", client)
 
-			Required("token", "user")
+			Required("token", "expiry", "user")
 		})
 
 		HTTP(func() {
@@ -362,9 +362,10 @@ var _ = Service("coachee", func() {
 
 		Result(func() {
 			Attribute("token", String)
+			Attribute("expiry", Int64)
 			Attribute("user", client)
 
-			Required("token", "user")
+			Required("token", "expiry", "user")
 		})
 
 		HTTP(func() {

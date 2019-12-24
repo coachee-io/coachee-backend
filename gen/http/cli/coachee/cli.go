@@ -29,7 +29,7 @@ func UsageCommands() string {
 
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
-	return os.Args[0] + ` coachee get-coaches --tag "Ipsa qui qui alias numquam nulla." --limit 4492369939465379996 --page 15582752012625605545` + "\n" +
+	return os.Args[0] + ` coachee get-coaches --tag "Alias numquam nulla magni consequatur." --limit 16852559949711679896 --page 10376482645123414200` + "\n" +
 		""
 }
 
@@ -301,7 +301,7 @@ GetCoaches returns an array of coaches according to a tag and pagination
     -page UINT: 
 
 Example:
-    `+os.Args[0]+` coachee get-coaches --tag "Ipsa qui qui alias numquam nulla." --limit 4492369939465379996 --page 15582752012625605545
+    `+os.Args[0]+` coachee get-coaches --tag "Alias numquam nulla magni consequatur." --limit 16852559949711679896 --page 10376482645123414200
 `, os.Args[0])
 }
 
@@ -500,8 +500,8 @@ ClientLogin implements ClientLogin.
 
 Example:
     `+os.Args[0]+` coachee client-login --body '{
-      "email": "Officia non et voluptates veniam illum.",
-      "password": "Amet fugiat ab dolorum quas beatae."
+      "email": "Vel officia non et voluptates.",
+      "password": "Illum dolore amet fugiat ab dolorum."
    }'
 `, os.Args[0])
 }
@@ -515,9 +515,9 @@ CreateOrder implements CreateOrder.
 
 Example:
     `+os.Args[0]+` coachee create-order --body '{
-      "coachId": 13819349304194012070,
-      "introCall": 6313759655879750564,
-      "programId": "Rerum architecto et facere quidem aut libero."
-   }' --token "Accusantium tempore fugit doloremque quod veritatis."
+      "coachId": 17165600852348217374,
+      "introCall": 6582573386058109301,
+      "programId": "Quidem aut libero rerum mollitia accusantium."
+   }' --token "Doloremque quod veritatis."
 `, os.Args[0])
 }

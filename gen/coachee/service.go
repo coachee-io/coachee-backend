@@ -187,8 +187,9 @@ type CreateClientPayload struct {
 // CreateClientResult is the result type of the coachee service CreateClient
 // method.
 type CreateClientResult struct {
-	Token string
-	User  *BaseClient
+	Token  string
+	Expiry int64
+	User   *BaseClient
 }
 
 // ClientLoginPayload is the payload type of the coachee service ClientLogin
@@ -201,8 +202,9 @@ type ClientLoginPayload struct {
 // ClientLoginResult is the result type of the coachee service ClientLogin
 // method.
 type ClientLoginResult struct {
-	Token string
-	User  *BaseClient
+	Token  string
+	Expiry int64
+	User   *BaseClient
 }
 
 // CreateOrderPayload is the payload type of the coachee service CreateOrder
@@ -249,7 +251,6 @@ type BaseClient struct {
 	ID        uint
 	FirstName string
 	LastName  string
-	Expiry    int64
 }
 
 // MakeTransient builds a goa.ServiceError from an error.

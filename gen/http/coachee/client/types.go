@@ -114,15 +114,17 @@ type GetCoachResponseBody struct {
 // CreateClientResponseBody is the type of the "coachee" service "CreateClient"
 // endpoint HTTP response body.
 type CreateClientResponseBody struct {
-	Token *string                 `form:"token,omitempty" json:"token,omitempty" xml:"token,omitempty"`
-	User  *BaseClientResponseBody `form:"user,omitempty" json:"user,omitempty" xml:"user,omitempty"`
+	Token  *string                 `form:"token,omitempty" json:"token,omitempty" xml:"token,omitempty"`
+	Expiry *int64                  `form:"expiry,omitempty" json:"expiry,omitempty" xml:"expiry,omitempty"`
+	User   *BaseClientResponseBody `form:"user,omitempty" json:"user,omitempty" xml:"user,omitempty"`
 }
 
 // ClientLoginResponseBody is the type of the "coachee" service "ClientLogin"
 // endpoint HTTP response body.
 type ClientLoginResponseBody struct {
-	Token *string                 `form:"token,omitempty" json:"token,omitempty" xml:"token,omitempty"`
-	User  *BaseClientResponseBody `form:"user,omitempty" json:"user,omitempty" xml:"user,omitempty"`
+	Token  *string                 `form:"token,omitempty" json:"token,omitempty" xml:"token,omitempty"`
+	Expiry *int64                  `form:"expiry,omitempty" json:"expiry,omitempty" xml:"expiry,omitempty"`
+	User   *BaseClientResponseBody `form:"user,omitempty" json:"user,omitempty" xml:"user,omitempty"`
 }
 
 // GetCoachesInternalResponseBody is the type of the "coachee" service
@@ -1502,7 +1504,6 @@ type BaseClientResponseBody struct {
 	ID        *uint   `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 	FirstName *string `form:"firstName,omitempty" json:"firstName,omitempty" xml:"firstName,omitempty"`
 	LastName  *string `form:"lastName,omitempty" json:"lastName,omitempty" xml:"lastName,omitempty"`
-	Expiry    *int64  `form:"expiry,omitempty" json:"expiry,omitempty" xml:"expiry,omitempty"`
 }
 
 // NewCreateCoachRequestBody builds the HTTP request body from the payload of
@@ -2455,7 +2456,8 @@ func NewDeleteAvailabilityUnauthorized(body *DeleteAvailabilityUnauthorizedRespo
 // endpoint result from a HTTP "Created" response.
 func NewCreateClientResultCreated(body *CreateClientResponseBody) *coachee.CreateClientResult {
 	v := &coachee.CreateClientResult{
-		Token: *body.Token,
+		Token:  *body.Token,
+		Expiry: *body.Expiry,
 	}
 	v.User = unmarshalBaseClientResponseBodyToCoacheeBaseClient(body.User)
 	return v
@@ -2535,7 +2537,8 @@ func NewCreateClientUnauthorized(body *CreateClientUnauthorizedResponseBody) *go
 // result from a HTTP "OK" response.
 func NewClientLoginResultOK(body *ClientLoginResponseBody) *coachee.ClientLoginResult {
 	v := &coachee.ClientLoginResult{
-		Token: *body.Token,
+		Token:  *body.Token,
+		Expiry: *body.Expiry,
 	}
 	v.User = unmarshalBaseClientResponseBodyToCoacheeBaseClient(body.User)
 	return v
@@ -2738,6 +2741,9 @@ func ValidateCreateClientResponseBody(body *CreateClientResponseBody) (err error
 	if body.Token == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("token", "body"))
 	}
+	if body.Expiry == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("expiry", "body"))
+	}
 	if body.User == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("user", "body"))
 	}
@@ -2754,6 +2760,9 @@ func ValidateCreateClientResponseBody(body *CreateClientResponseBody) (err error
 func ValidateClientLoginResponseBody(body *ClientLoginResponseBody) (err error) {
 	if body.Token == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("token", "body"))
+	}
+	if body.Expiry == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("expiry", "body"))
 	}
 	if body.User == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("user", "body"))
@@ -4768,9 +4777,6 @@ func ValidateBaseClientResponseBody(body *BaseClientResponseBody) (err error) {
 	}
 	if body.LastName == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("lastName", "body"))
-	}
-	if body.Expiry == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("expiry", "body"))
 	}
 	return
 }

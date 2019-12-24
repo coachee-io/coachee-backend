@@ -114,15 +114,17 @@ type GetCoachResponseBody struct {
 // CreateClientResponseBody is the type of the "coachee" service "CreateClient"
 // endpoint HTTP response body.
 type CreateClientResponseBody struct {
-	Token string                  `form:"token" json:"token" xml:"token"`
-	User  *BaseClientResponseBody `form:"user" json:"user" xml:"user"`
+	Token  string                  `form:"token" json:"token" xml:"token"`
+	Expiry int64                   `form:"expiry" json:"expiry" xml:"expiry"`
+	User   *BaseClientResponseBody `form:"user" json:"user" xml:"user"`
 }
 
 // ClientLoginResponseBody is the type of the "coachee" service "ClientLogin"
 // endpoint HTTP response body.
 type ClientLoginResponseBody struct {
-	Token string                  `form:"token" json:"token" xml:"token"`
-	User  *BaseClientResponseBody `form:"user" json:"user" xml:"user"`
+	Token  string                  `form:"token" json:"token" xml:"token"`
+	Expiry int64                   `form:"expiry" json:"expiry" xml:"expiry"`
+	User   *BaseClientResponseBody `form:"user" json:"user" xml:"user"`
 }
 
 // GetCoachesInternalResponseBody is the type of the "coachee" service
@@ -1473,7 +1475,6 @@ type BaseClientResponseBody struct {
 	ID        uint   `form:"id" json:"id" xml:"id"`
 	FirstName string `form:"firstName" json:"firstName" xml:"firstName"`
 	LastName  string `form:"lastName" json:"lastName" xml:"lastName"`
-	Expiry    int64  `form:"expiry" json:"expiry" xml:"expiry"`
 }
 
 // CertificationRequestBody is used to define fields on request body types.
@@ -1580,7 +1581,8 @@ func NewGetCoachResponseBody(res *coachee.Coach) *GetCoachResponseBody {
 // the "CreateClient" endpoint of the "coachee" service.
 func NewCreateClientResponseBody(res *coachee.CreateClientResult) *CreateClientResponseBody {
 	body := &CreateClientResponseBody{
-		Token: res.Token,
+		Token:  res.Token,
+		Expiry: res.Expiry,
 	}
 	if res.User != nil {
 		body.User = marshalCoacheeBaseClientToBaseClientResponseBody(res.User)
@@ -1592,7 +1594,8 @@ func NewCreateClientResponseBody(res *coachee.CreateClientResult) *CreateClientR
 // the "ClientLogin" endpoint of the "coachee" service.
 func NewClientLoginResponseBody(res *coachee.ClientLoginResult) *ClientLoginResponseBody {
 	body := &ClientLoginResponseBody{
-		Token: res.Token,
+		Token:  res.Token,
+		Expiry: res.Expiry,
 	}
 	if res.User != nil {
 		body.User = marshalCoacheeBaseClientToBaseClientResponseBody(res.User)
