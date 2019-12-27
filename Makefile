@@ -6,6 +6,7 @@
 		test-start \
 		test-stop \
 		db-start \
+                refresh
 
 SHELL := /bin/bash
 
@@ -33,3 +34,6 @@ test-stop:
 
 db-start:
 	docker-compose --file docker-compose.local.yml up -d mysql
+
+refresh:
+	docker-compose up -d --no-deps --build coachee
