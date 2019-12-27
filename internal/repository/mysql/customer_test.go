@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func testClient() *model.Customer {
+func testCustomer() *model.Customer {
 	return &model.Customer{
 		StripeID:  "stripeId",
 		FirstName: "Lize",
@@ -21,23 +21,23 @@ func testClient() *model.Customer {
 	}
 }
 
-func TestClientRepository_Create(t *testing.T) {
+func TestCustomerRepository_Create(t *testing.T) {
 	db := NewDatabase(t)
-	repo := mysql.NewClientRepository(db)
+	repo := mysql.NewCustomerRepository(db)
 	defer db.Close()
 
-	client := testClient()
+	client := testCustomer()
 
 	err := repo.Create(repository.DefaultNoTransaction, client)
 	require.Nil(t, err)
 }
 
-func TestClientRepository_GetByID(t *testing.T) {
+func TestCustomerRepository_GetByID(t *testing.T) {
 	db := NewDatabase(t)
-	repo := mysql.NewClientRepository(db)
+	repo := mysql.NewCustomerRepository(db)
 	defer db.Close()
 
-	client := testClient()
+	client := testCustomer()
 
 	err := repo.Create(repository.DefaultNoTransaction, client)
 	require.Nil(t, err)
@@ -50,12 +50,12 @@ func TestClientRepository_GetByID(t *testing.T) {
 	require.Equal(t, client, client2)
 }
 
-func TestClientRepository_GetByEmail(t *testing.T) {
+func TestCustomerRepository_GetByEmail(t *testing.T) {
 	db := NewDatabase(t)
-	repo := mysql.NewClientRepository(db)
+	repo := mysql.NewCustomerRepository(db)
 	defer db.Close()
 
-	client := testClient()
+	client := testCustomer()
 
 	err := repo.Create(repository.DefaultNoTransaction, client)
 	require.Nil(t, err)
@@ -68,12 +68,12 @@ func TestClientRepository_GetByEmail(t *testing.T) {
 	require.Equal(t, client, client2)
 }
 
-func TestClientRepository_Update(t *testing.T) {
+func TestCustomerRepository_Update(t *testing.T) {
 	db := NewDatabase(t)
-	repo := mysql.NewClientRepository(db)
+	repo := mysql.NewCustomerRepository(db)
 	defer db.Close()
 
-	client := testClient()
+	client := testCustomer()
 
 	err := repo.Create(repository.DefaultNoTransaction, client)
 	require.Nil(t, err)

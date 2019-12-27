@@ -6,7 +6,7 @@
 		test-start \
 		test-stop \
 		db-start \
-                refresh
+        refresh \
 
 SHELL := /bin/bash
 

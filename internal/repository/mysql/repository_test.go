@@ -29,11 +29,13 @@ func NewDatabase(t *testing.T) *gorm.DB {
 	sql.DropTableIfExists(
 		model.Coach{},
 		model.Customer{},
+		model.Order{},
 	)
 
 	sql.AutoMigrate(
 		model.Coach{},
 		model.Customer{},
+		model.Order{},
 	)
 	return sql
 }

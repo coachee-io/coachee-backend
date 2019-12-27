@@ -2,6 +2,7 @@ package main
 
 import (
 	coachee "coachee-backend/gen/coachee"
+	"coachee-backend/internal/model"
 	"coachee-backend/internal/repository/mysql"
 	"coachee-backend/internal/repository/mysql/connector"
 	"coachee-backend/internal/service"
@@ -41,9 +42,16 @@ func main() {
 		logger.Panicln("failed to connect to db:", err.Error())
 	}
 
+	// Auto-migrate db
+	conn.AutoMigrate(
+		model.Coach{},
+		model.Customer{},
+		model.Order{},
+	)
+
 	// Initialize repositories
 	coachRepository := mysql.NewCoachRepository(conn)
-	clientRepository := mysql.NewClientRepository(conn)
+	clientRepository := mysql.NewCustomerRepository(conn)
 
 	// Initialize stripe client
 	stripeClient := stripe.NewClient(appCtx, *stripeKey)

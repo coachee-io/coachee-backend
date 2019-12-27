@@ -24,3 +24,12 @@ type Customer interface {
 	GetByEmail(tx Transaction, email string) (*model.Customer, error)
 	Update(tx Transaction, client *model.Customer) error
 }
+
+// Order is the repository to interact and persist orders
+type Order interface {
+	Begin() Transaction
+
+	Create(transaction Transaction, client *model.Order) error
+	GetByID(transaction Transaction, id uint) (*model.Order, error)
+	Update(transaction Transaction, client *model.Order) error
+}

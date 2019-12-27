@@ -12,8 +12,8 @@ type CustomerRepository struct {
 	db *gorm.DB
 }
 
-// NewClientRepository initializes a CustomerRepository
-func NewClientRepository(db *gorm.DB) *CustomerRepository {
+// NewCustomerRepository initializes a CustomerRepository
+func NewCustomerRepository(db *gorm.DB) *CustomerRepository {
 	return &CustomerRepository{db: db}
 }
 
