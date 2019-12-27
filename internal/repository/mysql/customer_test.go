@@ -10,8 +10,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func testClient() *model.Client {
-	return &model.Client{
+func testClient() *model.Customer {
+	return &model.Customer{
 		StripeID:  "stripeId",
 		FirstName: "Lize",
 		LastName:  "Viveiros",

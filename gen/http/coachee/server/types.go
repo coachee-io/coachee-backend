@@ -66,9 +66,9 @@ type CreateAvailabilityRequestBody struct {
 	Availability *AvailabilityRequestBody `form:"availability,omitempty" json:"availability,omitempty" xml:"availability,omitempty"`
 }
 
-// CreateClientRequestBody is the type of the "coachee" service "CreateClient"
-// endpoint HTTP request body.
-type CreateClientRequestBody struct {
+// CreateCustomerRequestBody is the type of the "coachee" service
+// "CreateCustomer" endpoint HTTP request body.
+type CreateCustomerRequestBody struct {
 	Email     *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
 	FirstName *string `form:"firstName,omitempty" json:"firstName,omitempty" xml:"firstName,omitempty"`
 	LastName  *string `form:"lastName,omitempty" json:"lastName,omitempty" xml:"lastName,omitempty"`
@@ -76,9 +76,9 @@ type CreateClientRequestBody struct {
 	Password  *string `form:"password,omitempty" json:"password,omitempty" xml:"password,omitempty"`
 }
 
-// ClientLoginRequestBody is the type of the "coachee" service "ClientLogin"
-// endpoint HTTP request body.
-type ClientLoginRequestBody struct {
+// CustomerLoginRequestBody is the type of the "coachee" service
+// "CustomerLogin" endpoint HTTP request body.
+type CustomerLoginRequestBody struct {
 	Email    *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
 	Password *string `form:"password,omitempty" json:"password,omitempty" xml:"password,omitempty"`
 }
@@ -111,17 +111,17 @@ type GetCoachResponseBody struct {
 	Availability   []*AvailabilityResponseBody  `form:"availability,omitempty" json:"availability,omitempty" xml:"availability,omitempty"`
 }
 
-// CreateClientResponseBody is the type of the "coachee" service "CreateClient"
-// endpoint HTTP response body.
-type CreateClientResponseBody struct {
+// CreateCustomerResponseBody is the type of the "coachee" service
+// "CreateCustomer" endpoint HTTP response body.
+type CreateCustomerResponseBody struct {
 	Token  string                  `form:"token" json:"token" xml:"token"`
 	Expiry int64                   `form:"expiry" json:"expiry" xml:"expiry"`
 	User   *BaseClientResponseBody `form:"user" json:"user" xml:"user"`
 }
 
-// ClientLoginResponseBody is the type of the "coachee" service "ClientLogin"
-// endpoint HTTP response body.
-type ClientLoginResponseBody struct {
+// CustomerLoginResponseBody is the type of the "coachee" service
+// "CustomerLogin" endpoint HTTP response body.
+type CustomerLoginResponseBody struct {
 	Token  string                  `form:"token" json:"token" xml:"token"`
 	Expiry int64                   `form:"expiry" json:"expiry" xml:"expiry"`
 	User   *BaseClientResponseBody `form:"user" json:"user" xml:"user"`
@@ -1127,9 +1127,9 @@ type DeleteAvailabilityUnauthorizedResponseBody struct {
 	Fault bool `form:"fault" json:"fault" xml:"fault"`
 }
 
-// CreateClientInternalResponseBody is the type of the "coachee" service
-// "CreateClient" endpoint HTTP response body for the "internal" error.
-type CreateClientInternalResponseBody struct {
+// CreateCustomerInternalResponseBody is the type of the "coachee" service
+// "CreateCustomer" endpoint HTTP response body for the "internal" error.
+type CreateCustomerInternalResponseBody struct {
 	// Name is the name of this class of errors.
 	Name string `form:"name" json:"name" xml:"name"`
 	// ID is a unique identifier for this particular occurrence of the problem.
@@ -1145,9 +1145,9 @@ type CreateClientInternalResponseBody struct {
 	Fault bool `form:"fault" json:"fault" xml:"fault"`
 }
 
-// CreateClientTransientResponseBody is the type of the "coachee" service
-// "CreateClient" endpoint HTTP response body for the "transient" error.
-type CreateClientTransientResponseBody struct {
+// CreateCustomerTransientResponseBody is the type of the "coachee" service
+// "CreateCustomer" endpoint HTTP response body for the "transient" error.
+type CreateCustomerTransientResponseBody struct {
 	// Name is the name of this class of errors.
 	Name string `form:"name" json:"name" xml:"name"`
 	// ID is a unique identifier for this particular occurrence of the problem.
@@ -1163,9 +1163,9 @@ type CreateClientTransientResponseBody struct {
 	Fault bool `form:"fault" json:"fault" xml:"fault"`
 }
 
-// CreateClientNotFoundResponseBody is the type of the "coachee" service
-// "CreateClient" endpoint HTTP response body for the "notFound" error.
-type CreateClientNotFoundResponseBody struct {
+// CreateCustomerNotFoundResponseBody is the type of the "coachee" service
+// "CreateCustomer" endpoint HTTP response body for the "notFound" error.
+type CreateCustomerNotFoundResponseBody struct {
 	// Name is the name of this class of errors.
 	Name string `form:"name" json:"name" xml:"name"`
 	// ID is a unique identifier for this particular occurrence of the problem.
@@ -1181,9 +1181,9 @@ type CreateClientNotFoundResponseBody struct {
 	Fault bool `form:"fault" json:"fault" xml:"fault"`
 }
 
-// CreateClientValidationResponseBody is the type of the "coachee" service
-// "CreateClient" endpoint HTTP response body for the "validation" error.
-type CreateClientValidationResponseBody struct {
+// CreateCustomerValidationResponseBody is the type of the "coachee" service
+// "CreateCustomer" endpoint HTTP response body for the "validation" error.
+type CreateCustomerValidationResponseBody struct {
 	// Name is the name of this class of errors.
 	Name string `form:"name" json:"name" xml:"name"`
 	// ID is a unique identifier for this particular occurrence of the problem.
@@ -1199,9 +1199,9 @@ type CreateClientValidationResponseBody struct {
 	Fault bool `form:"fault" json:"fault" xml:"fault"`
 }
 
-// CreateClientUnauthorizedResponseBody is the type of the "coachee" service
-// "CreateClient" endpoint HTTP response body for the "unauthorized" error.
-type CreateClientUnauthorizedResponseBody struct {
+// CreateCustomerUnauthorizedResponseBody is the type of the "coachee" service
+// "CreateCustomer" endpoint HTTP response body for the "unauthorized" error.
+type CreateCustomerUnauthorizedResponseBody struct {
 	// Name is the name of this class of errors.
 	Name string `form:"name" json:"name" xml:"name"`
 	// ID is a unique identifier for this particular occurrence of the problem.
@@ -1217,9 +1217,9 @@ type CreateClientUnauthorizedResponseBody struct {
 	Fault bool `form:"fault" json:"fault" xml:"fault"`
 }
 
-// ClientLoginInternalResponseBody is the type of the "coachee" service
-// "ClientLogin" endpoint HTTP response body for the "internal" error.
-type ClientLoginInternalResponseBody struct {
+// CustomerLoginInternalResponseBody is the type of the "coachee" service
+// "CustomerLogin" endpoint HTTP response body for the "internal" error.
+type CustomerLoginInternalResponseBody struct {
 	// Name is the name of this class of errors.
 	Name string `form:"name" json:"name" xml:"name"`
 	// ID is a unique identifier for this particular occurrence of the problem.
@@ -1235,9 +1235,9 @@ type ClientLoginInternalResponseBody struct {
 	Fault bool `form:"fault" json:"fault" xml:"fault"`
 }
 
-// ClientLoginTransientResponseBody is the type of the "coachee" service
-// "ClientLogin" endpoint HTTP response body for the "transient" error.
-type ClientLoginTransientResponseBody struct {
+// CustomerLoginTransientResponseBody is the type of the "coachee" service
+// "CustomerLogin" endpoint HTTP response body for the "transient" error.
+type CustomerLoginTransientResponseBody struct {
 	// Name is the name of this class of errors.
 	Name string `form:"name" json:"name" xml:"name"`
 	// ID is a unique identifier for this particular occurrence of the problem.
@@ -1253,9 +1253,9 @@ type ClientLoginTransientResponseBody struct {
 	Fault bool `form:"fault" json:"fault" xml:"fault"`
 }
 
-// ClientLoginNotFoundResponseBody is the type of the "coachee" service
-// "ClientLogin" endpoint HTTP response body for the "notFound" error.
-type ClientLoginNotFoundResponseBody struct {
+// CustomerLoginNotFoundResponseBody is the type of the "coachee" service
+// "CustomerLogin" endpoint HTTP response body for the "notFound" error.
+type CustomerLoginNotFoundResponseBody struct {
 	// Name is the name of this class of errors.
 	Name string `form:"name" json:"name" xml:"name"`
 	// ID is a unique identifier for this particular occurrence of the problem.
@@ -1271,9 +1271,9 @@ type ClientLoginNotFoundResponseBody struct {
 	Fault bool `form:"fault" json:"fault" xml:"fault"`
 }
 
-// ClientLoginValidationResponseBody is the type of the "coachee" service
-// "ClientLogin" endpoint HTTP response body for the "validation" error.
-type ClientLoginValidationResponseBody struct {
+// CustomerLoginValidationResponseBody is the type of the "coachee" service
+// "CustomerLogin" endpoint HTTP response body for the "validation" error.
+type CustomerLoginValidationResponseBody struct {
 	// Name is the name of this class of errors.
 	Name string `form:"name" json:"name" xml:"name"`
 	// ID is a unique identifier for this particular occurrence of the problem.
@@ -1289,9 +1289,9 @@ type ClientLoginValidationResponseBody struct {
 	Fault bool `form:"fault" json:"fault" xml:"fault"`
 }
 
-// ClientLoginUnauthorizedResponseBody is the type of the "coachee" service
-// "ClientLogin" endpoint HTTP response body for the "unauthorized" error.
-type ClientLoginUnauthorizedResponseBody struct {
+// CustomerLoginUnauthorizedResponseBody is the type of the "coachee" service
+// "CustomerLogin" endpoint HTTP response body for the "unauthorized" error.
+type CustomerLoginUnauthorizedResponseBody struct {
 	// Name is the name of this class of errors.
 	Name string `form:"name" json:"name" xml:"name"`
 	// ID is a unique identifier for this particular occurrence of the problem.
@@ -1577,10 +1577,10 @@ func NewGetCoachResponseBody(res *coachee.Coach) *GetCoachResponseBody {
 	return body
 }
 
-// NewCreateClientResponseBody builds the HTTP response body from the result of
-// the "CreateClient" endpoint of the "coachee" service.
-func NewCreateClientResponseBody(res *coachee.CreateClientResult) *CreateClientResponseBody {
-	body := &CreateClientResponseBody{
+// NewCreateCustomerResponseBody builds the HTTP response body from the result
+// of the "CreateCustomer" endpoint of the "coachee" service.
+func NewCreateCustomerResponseBody(res *coachee.CreateCustomerResult) *CreateCustomerResponseBody {
+	body := &CreateCustomerResponseBody{
 		Token:  res.Token,
 		Expiry: res.Expiry,
 	}
@@ -1590,10 +1590,10 @@ func NewCreateClientResponseBody(res *coachee.CreateClientResult) *CreateClientR
 	return body
 }
 
-// NewClientLoginResponseBody builds the HTTP response body from the result of
-// the "ClientLogin" endpoint of the "coachee" service.
-func NewClientLoginResponseBody(res *coachee.ClientLoginResult) *ClientLoginResponseBody {
-	body := &ClientLoginResponseBody{
+// NewCustomerLoginResponseBody builds the HTTP response body from the result
+// of the "CustomerLogin" endpoint of the "coachee" service.
+func NewCustomerLoginResponseBody(res *coachee.CustomerLoginResult) *CustomerLoginResponseBody {
+	body := &CustomerLoginResponseBody{
 		Token:  res.Token,
 		Expiry: res.Expiry,
 	}
@@ -2389,10 +2389,10 @@ func NewDeleteAvailabilityUnauthorizedResponseBody(res *goa.ServiceError) *Delet
 	return body
 }
 
-// NewCreateClientInternalResponseBody builds the HTTP response body from the
-// result of the "CreateClient" endpoint of the "coachee" service.
-func NewCreateClientInternalResponseBody(res *goa.ServiceError) *CreateClientInternalResponseBody {
-	body := &CreateClientInternalResponseBody{
+// NewCreateCustomerInternalResponseBody builds the HTTP response body from the
+// result of the "CreateCustomer" endpoint of the "coachee" service.
+func NewCreateCustomerInternalResponseBody(res *goa.ServiceError) *CreateCustomerInternalResponseBody {
+	body := &CreateCustomerInternalResponseBody{
 		Name:      res.Name,
 		ID:        res.ID,
 		Message:   res.Message,
@@ -2403,10 +2403,10 @@ func NewCreateClientInternalResponseBody(res *goa.ServiceError) *CreateClientInt
 	return body
 }
 
-// NewCreateClientTransientResponseBody builds the HTTP response body from the
-// result of the "CreateClient" endpoint of the "coachee" service.
-func NewCreateClientTransientResponseBody(res *goa.ServiceError) *CreateClientTransientResponseBody {
-	body := &CreateClientTransientResponseBody{
+// NewCreateCustomerTransientResponseBody builds the HTTP response body from
+// the result of the "CreateCustomer" endpoint of the "coachee" service.
+func NewCreateCustomerTransientResponseBody(res *goa.ServiceError) *CreateCustomerTransientResponseBody {
+	body := &CreateCustomerTransientResponseBody{
 		Name:      res.Name,
 		ID:        res.ID,
 		Message:   res.Message,
@@ -2417,10 +2417,10 @@ func NewCreateClientTransientResponseBody(res *goa.ServiceError) *CreateClientTr
 	return body
 }
 
-// NewCreateClientNotFoundResponseBody builds the HTTP response body from the
-// result of the "CreateClient" endpoint of the "coachee" service.
-func NewCreateClientNotFoundResponseBody(res *goa.ServiceError) *CreateClientNotFoundResponseBody {
-	body := &CreateClientNotFoundResponseBody{
+// NewCreateCustomerNotFoundResponseBody builds the HTTP response body from the
+// result of the "CreateCustomer" endpoint of the "coachee" service.
+func NewCreateCustomerNotFoundResponseBody(res *goa.ServiceError) *CreateCustomerNotFoundResponseBody {
+	body := &CreateCustomerNotFoundResponseBody{
 		Name:      res.Name,
 		ID:        res.ID,
 		Message:   res.Message,
@@ -2431,10 +2431,10 @@ func NewCreateClientNotFoundResponseBody(res *goa.ServiceError) *CreateClientNot
 	return body
 }
 
-// NewCreateClientValidationResponseBody builds the HTTP response body from the
-// result of the "CreateClient" endpoint of the "coachee" service.
-func NewCreateClientValidationResponseBody(res *goa.ServiceError) *CreateClientValidationResponseBody {
-	body := &CreateClientValidationResponseBody{
+// NewCreateCustomerValidationResponseBody builds the HTTP response body from
+// the result of the "CreateCustomer" endpoint of the "coachee" service.
+func NewCreateCustomerValidationResponseBody(res *goa.ServiceError) *CreateCustomerValidationResponseBody {
+	body := &CreateCustomerValidationResponseBody{
 		Name:      res.Name,
 		ID:        res.ID,
 		Message:   res.Message,
@@ -2445,10 +2445,10 @@ func NewCreateClientValidationResponseBody(res *goa.ServiceError) *CreateClientV
 	return body
 }
 
-// NewCreateClientUnauthorizedResponseBody builds the HTTP response body from
-// the result of the "CreateClient" endpoint of the "coachee" service.
-func NewCreateClientUnauthorizedResponseBody(res *goa.ServiceError) *CreateClientUnauthorizedResponseBody {
-	body := &CreateClientUnauthorizedResponseBody{
+// NewCreateCustomerUnauthorizedResponseBody builds the HTTP response body from
+// the result of the "CreateCustomer" endpoint of the "coachee" service.
+func NewCreateCustomerUnauthorizedResponseBody(res *goa.ServiceError) *CreateCustomerUnauthorizedResponseBody {
+	body := &CreateCustomerUnauthorizedResponseBody{
 		Name:      res.Name,
 		ID:        res.ID,
 		Message:   res.Message,
@@ -2459,10 +2459,10 @@ func NewCreateClientUnauthorizedResponseBody(res *goa.ServiceError) *CreateClien
 	return body
 }
 
-// NewClientLoginInternalResponseBody builds the HTTP response body from the
-// result of the "ClientLogin" endpoint of the "coachee" service.
-func NewClientLoginInternalResponseBody(res *goa.ServiceError) *ClientLoginInternalResponseBody {
-	body := &ClientLoginInternalResponseBody{
+// NewCustomerLoginInternalResponseBody builds the HTTP response body from the
+// result of the "CustomerLogin" endpoint of the "coachee" service.
+func NewCustomerLoginInternalResponseBody(res *goa.ServiceError) *CustomerLoginInternalResponseBody {
+	body := &CustomerLoginInternalResponseBody{
 		Name:      res.Name,
 		ID:        res.ID,
 		Message:   res.Message,
@@ -2473,10 +2473,10 @@ func NewClientLoginInternalResponseBody(res *goa.ServiceError) *ClientLoginInter
 	return body
 }
 
-// NewClientLoginTransientResponseBody builds the HTTP response body from the
-// result of the "ClientLogin" endpoint of the "coachee" service.
-func NewClientLoginTransientResponseBody(res *goa.ServiceError) *ClientLoginTransientResponseBody {
-	body := &ClientLoginTransientResponseBody{
+// NewCustomerLoginTransientResponseBody builds the HTTP response body from the
+// result of the "CustomerLogin" endpoint of the "coachee" service.
+func NewCustomerLoginTransientResponseBody(res *goa.ServiceError) *CustomerLoginTransientResponseBody {
+	body := &CustomerLoginTransientResponseBody{
 		Name:      res.Name,
 		ID:        res.ID,
 		Message:   res.Message,
@@ -2487,10 +2487,10 @@ func NewClientLoginTransientResponseBody(res *goa.ServiceError) *ClientLoginTran
 	return body
 }
 
-// NewClientLoginNotFoundResponseBody builds the HTTP response body from the
-// result of the "ClientLogin" endpoint of the "coachee" service.
-func NewClientLoginNotFoundResponseBody(res *goa.ServiceError) *ClientLoginNotFoundResponseBody {
-	body := &ClientLoginNotFoundResponseBody{
+// NewCustomerLoginNotFoundResponseBody builds the HTTP response body from the
+// result of the "CustomerLogin" endpoint of the "coachee" service.
+func NewCustomerLoginNotFoundResponseBody(res *goa.ServiceError) *CustomerLoginNotFoundResponseBody {
+	body := &CustomerLoginNotFoundResponseBody{
 		Name:      res.Name,
 		ID:        res.ID,
 		Message:   res.Message,
@@ -2501,10 +2501,10 @@ func NewClientLoginNotFoundResponseBody(res *goa.ServiceError) *ClientLoginNotFo
 	return body
 }
 
-// NewClientLoginValidationResponseBody builds the HTTP response body from the
-// result of the "ClientLogin" endpoint of the "coachee" service.
-func NewClientLoginValidationResponseBody(res *goa.ServiceError) *ClientLoginValidationResponseBody {
-	body := &ClientLoginValidationResponseBody{
+// NewCustomerLoginValidationResponseBody builds the HTTP response body from
+// the result of the "CustomerLogin" endpoint of the "coachee" service.
+func NewCustomerLoginValidationResponseBody(res *goa.ServiceError) *CustomerLoginValidationResponseBody {
+	body := &CustomerLoginValidationResponseBody{
 		Name:      res.Name,
 		ID:        res.ID,
 		Message:   res.Message,
@@ -2515,10 +2515,10 @@ func NewClientLoginValidationResponseBody(res *goa.ServiceError) *ClientLoginVal
 	return body
 }
 
-// NewClientLoginUnauthorizedResponseBody builds the HTTP response body from
-// the result of the "ClientLogin" endpoint of the "coachee" service.
-func NewClientLoginUnauthorizedResponseBody(res *goa.ServiceError) *ClientLoginUnauthorizedResponseBody {
-	body := &ClientLoginUnauthorizedResponseBody{
+// NewCustomerLoginUnauthorizedResponseBody builds the HTTP response body from
+// the result of the "CustomerLogin" endpoint of the "coachee" service.
+func NewCustomerLoginUnauthorizedResponseBody(res *goa.ServiceError) *CustomerLoginUnauthorizedResponseBody {
+	body := &CustomerLoginUnauthorizedResponseBody{
 		Name:      res.Name,
 		ID:        res.ID,
 		Message:   res.Message,
@@ -2716,10 +2716,10 @@ func NewDeleteAvailabilityPayload(id uint, avID string) *coachee.DeleteAvailabil
 	}
 }
 
-// NewCreateClientPayload builds a coachee service CreateClient endpoint
+// NewCreateCustomerPayload builds a coachee service CreateCustomer endpoint
 // payload.
-func NewCreateClientPayload(body *CreateClientRequestBody) *coachee.CreateClientPayload {
-	v := &coachee.CreateClientPayload{
+func NewCreateCustomerPayload(body *CreateCustomerRequestBody) *coachee.CreateCustomerPayload {
+	v := &coachee.CreateCustomerPayload{
 		Email:     *body.Email,
 		FirstName: *body.FirstName,
 		LastName:  *body.LastName,
@@ -2729,9 +2729,10 @@ func NewCreateClientPayload(body *CreateClientRequestBody) *coachee.CreateClient
 	return v
 }
 
-// NewClientLoginPayload builds a coachee service ClientLogin endpoint payload.
-func NewClientLoginPayload(body *ClientLoginRequestBody) *coachee.ClientLoginPayload {
-	v := &coachee.ClientLoginPayload{
+// NewCustomerLoginPayload builds a coachee service CustomerLogin endpoint
+// payload.
+func NewCustomerLoginPayload(body *CustomerLoginRequestBody) *coachee.CustomerLoginPayload {
+	v := &coachee.CustomerLoginPayload{
 		Email:    *body.Email,
 		Password: *body.Password,
 	}
@@ -2824,9 +2825,9 @@ func ValidateCreateAvailabilityRequestBody(body *CreateAvailabilityRequestBody) 
 	return
 }
 
-// ValidateCreateClientRequestBody runs the validations defined on
-// CreateClientRequestBody
-func ValidateCreateClientRequestBody(body *CreateClientRequestBody) (err error) {
+// ValidateCreateCustomerRequestBody runs the validations defined on
+// CreateCustomerRequestBody
+func ValidateCreateCustomerRequestBody(body *CreateCustomerRequestBody) (err error) {
 	if body.Email == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("email", "body"))
 	}
@@ -2845,9 +2846,9 @@ func ValidateCreateClientRequestBody(body *CreateClientRequestBody) (err error) 
 	return
 }
 
-// ValidateClientLoginRequestBody runs the validations defined on
-// ClientLoginRequestBody
-func ValidateClientLoginRequestBody(body *ClientLoginRequestBody) (err error) {
+// ValidateCustomerLoginRequestBody runs the validations defined on
+// CustomerLoginRequestBody
+func ValidateCustomerLoginRequestBody(body *CustomerLoginRequestBody) (err error) {
 	if body.Email == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("email", "body"))
 	}

@@ -13,15 +13,15 @@ paths:
     post:
       tags:
       - coachee
-      summary: CreateClient coachee
-      description: creates a new client
-      operationId: coachee#CreateClient
+      summary: CreateCustomer coachee
+      description: creates a new customer
+      operationId: coachee#CreateCustomer
       parameters:
-      - name: CreateClientRequestBody
+      - name: CreateCustomerRequestBody
         in: body
         required: true
         schema:
-          $ref: '#/definitions/CoacheeCreateClientRequestBody'
+          $ref: '#/definitions/CoacheeCreateCustomerRequestBody'
           required:
           - email
           - firstName
@@ -32,7 +32,7 @@ paths:
         "201":
           description: Created response.
           schema:
-            $ref: '#/definitions/CoacheeCreateClientResponseBody'
+            $ref: '#/definitions/CoacheeCreateCustomerResponseBody'
             required:
             - token
             - expiry
@@ -40,33 +40,34 @@ paths:
         "400":
           description: Bad Request response.
           schema:
-            $ref: '#/definitions/CoacheeCreateClientValidationResponseBody'
+            $ref: '#/definitions/CoacheeCreateCustomerValidationResponseBody'
         "401":
           description: Unauthorized response.
           schema:
-            $ref: '#/definitions/CoacheeCreateClientUnauthorizedResponseBody'
+            $ref: '#/definitions/CoacheeCreateCustomerUnauthorizedResponseBody'
         "404":
           description: Not Found response.
           schema:
-            $ref: '#/definitions/CoacheeCreateClientNotFoundResponseBody'
+            $ref: '#/definitions/CoacheeCreateCustomerNotFoundResponseBody'
         "500":
           description: Internal Server Error response.
           schema:
-            $ref: '#/definitions/CoacheeCreateClientTransientResponseBody'
+            $ref: '#/definitions/CoacheeCreateCustomerTransientResponseBody'
       schemes:
       - http
   /clients/login:
     post:
       tags:
       - coachee
-      summary: ClientLogin coachee
-      operationId: coachee#ClientLogin
+      summary: CustomerLogin coachee
+      description: logs in a customer and returns a jwt
+      operationId: coachee#CustomerLogin
       parameters:
-      - name: ClientLoginRequestBody
+      - name: CustomerLoginRequestBody
         in: body
         required: true
         schema:
-          $ref: '#/definitions/CoacheeClientLoginRequestBody'
+          $ref: '#/definitions/CoacheeCustomerLoginRequestBody'
           required:
           - email
           - password
@@ -74,7 +75,7 @@ paths:
         "200":
           description: OK response.
           schema:
-            $ref: '#/definitions/CoacheeClientLoginResponseBody'
+            $ref: '#/definitions/CoacheeCustomerLoginResponseBody'
             required:
             - token
             - expiry
@@ -82,19 +83,19 @@ paths:
         "400":
           description: Bad Request response.
           schema:
-            $ref: '#/definitions/CoacheeClientLoginValidationResponseBody'
+            $ref: '#/definitions/CoacheeCustomerLoginValidationResponseBody'
         "401":
           description: Unauthorized response.
           schema:
-            $ref: '#/definitions/CoacheeClientLoginUnauthorizedResponseBody'
+            $ref: '#/definitions/CoacheeCustomerLoginUnauthorizedResponseBody'
         "404":
           description: Not Found response.
           schema:
-            $ref: '#/definitions/CoacheeClientLoginNotFoundResponseBody'
+            $ref: '#/definitions/CoacheeCustomerLoginNotFoundResponseBody'
         "500":
           description: Internal Server Error response.
           schema:
-            $ref: '#/definitions/CoacheeClientLoginTransientResponseBody'
+            $ref: '#/definitions/CoacheeCustomerLoginTransientResponseBody'
       schemes:
       - http
   /coaches:
@@ -541,7 +542,8 @@ paths:
       tags:
       - coachee
       summary: CreateOrder coachee
-      description: |2-
+      description: |-
+        creates a new order
 
         **Required security scopes for jwt**:
           * `client`
@@ -585,271 +587,6 @@ paths:
       security:
       - jwt_header_Authorization: []
 definitions:
-  CoacheeClientLoginInternalResponseBody:
-    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
-    type: object
-    properties:
-      fault:
-        type: boolean
-        description: Is the error a server-side fault?
-        example: false
-      id:
-        type: string
-        description: ID is a unique identifier for this particular occurrence of the
-          problem.
-        example: 123abc
-      message:
-        type: string
-        description: Message is a human-readable explanation specific to this occurrence
-          of the problem.
-        example: parameter 'p' must be an integer
-      name:
-        type: string
-        description: Name is the name of this class of errors.
-        example: bad_request
-      temporary:
-        type: boolean
-        description: Is the error temporary?
-        example: false
-      timeout:
-        type: boolean
-        description: Is the error a timeout?
-        example: false
-    description: ClientLogin_internal_Response_Body result type (default view)
-    example:
-      fault: true
-      id: 123abc
-      message: parameter 'p' must be an integer
-      name: bad_request
-      temporary: true
-      timeout: true
-    required:
-    - name
-    - id
-    - message
-    - temporary
-    - timeout
-    - fault
-  CoacheeClientLoginNotFoundResponseBody:
-    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
-    type: object
-    properties:
-      fault:
-        type: boolean
-        description: Is the error a server-side fault?
-        example: true
-      id:
-        type: string
-        description: ID is a unique identifier for this particular occurrence of the
-          problem.
-        example: 123abc
-      message:
-        type: string
-        description: Message is a human-readable explanation specific to this occurrence
-          of the problem.
-        example: parameter 'p' must be an integer
-      name:
-        type: string
-        description: Name is the name of this class of errors.
-        example: bad_request
-      temporary:
-        type: boolean
-        description: Is the error temporary?
-        example: true
-      timeout:
-        type: boolean
-        description: Is the error a timeout?
-        example: true
-    description: ClientLogin_notFound_Response_Body result type (default view)
-    example:
-      fault: false
-      id: 123abc
-      message: parameter 'p' must be an integer
-      name: bad_request
-      temporary: true
-      timeout: true
-    required:
-    - name
-    - id
-    - message
-    - temporary
-    - timeout
-    - fault
-  CoacheeClientLoginRequestBody:
-    title: CoacheeClientLoginRequestBody
-    type: object
-    properties:
-      email:
-        type: string
-        example: Et repellat omnis minus.
-      password:
-        type: string
-        example: Temporibus et voluptatibus necessitatibus vitae.
-    example:
-      email: Voluptas quis odio.
-      password: Sapiente eos a.
-    required:
-    - email
-    - password
-  CoacheeClientLoginResponseBody:
-    title: CoacheeClientLoginResponseBody
-    type: object
-    properties:
-      expiry:
-        type: integer
-        example: 4615869918223465678
-        format: int64
-      token:
-        type: string
-        example: Voluptatum velit corporis nam.
-      user:
-        $ref: '#/definitions/baseClientResponseBody'
-    example:
-      expiry: 9178894401714104833
-      token: Debitis sunt nihil soluta animi.
-      user:
-        firstName: Distinctio facere neque quis.
-        id: 3187574953544294077
-        lastName: Esse placeat consequatur cum dolorem quo.
-    required:
-    - token
-    - expiry
-    - user
-  CoacheeClientLoginTransientResponseBody:
-    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
-    type: object
-    properties:
-      fault:
-        type: boolean
-        description: Is the error a server-side fault?
-        example: true
-      id:
-        type: string
-        description: ID is a unique identifier for this particular occurrence of the
-          problem.
-        example: 123abc
-      message:
-        type: string
-        description: Message is a human-readable explanation specific to this occurrence
-          of the problem.
-        example: parameter 'p' must be an integer
-      name:
-        type: string
-        description: Name is the name of this class of errors.
-        example: bad_request
-      temporary:
-        type: boolean
-        description: Is the error temporary?
-        example: false
-      timeout:
-        type: boolean
-        description: Is the error a timeout?
-        example: true
-    description: ClientLogin_transient_Response_Body result type (default view)
-    example:
-      fault: false
-      id: 123abc
-      message: parameter 'p' must be an integer
-      name: bad_request
-      temporary: true
-      timeout: true
-    required:
-    - name
-    - id
-    - message
-    - temporary
-    - timeout
-    - fault
-  CoacheeClientLoginUnauthorizedResponseBody:
-    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
-    type: object
-    properties:
-      fault:
-        type: boolean
-        description: Is the error a server-side fault?
-        example: false
-      id:
-        type: string
-        description: ID is a unique identifier for this particular occurrence of the
-          problem.
-        example: 123abc
-      message:
-        type: string
-        description: Message is a human-readable explanation specific to this occurrence
-          of the problem.
-        example: parameter 'p' must be an integer
-      name:
-        type: string
-        description: Name is the name of this class of errors.
-        example: bad_request
-      temporary:
-        type: boolean
-        description: Is the error temporary?
-        example: true
-      timeout:
-        type: boolean
-        description: Is the error a timeout?
-        example: true
-    description: ClientLogin_unauthorized_Response_Body result type (default view)
-    example:
-      fault: false
-      id: 123abc
-      message: parameter 'p' must be an integer
-      name: bad_request
-      temporary: true
-      timeout: true
-    required:
-    - name
-    - id
-    - message
-    - temporary
-    - timeout
-    - fault
-  CoacheeClientLoginValidationResponseBody:
-    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
-    type: object
-    properties:
-      fault:
-        type: boolean
-        description: Is the error a server-side fault?
-        example: false
-      id:
-        type: string
-        description: ID is a unique identifier for this particular occurrence of the
-          problem.
-        example: 123abc
-      message:
-        type: string
-        description: Message is a human-readable explanation specific to this occurrence
-          of the problem.
-        example: parameter 'p' must be an integer
-      name:
-        type: string
-        description: Name is the name of this class of errors.
-        example: bad_request
-      temporary:
-        type: boolean
-        description: Is the error temporary?
-        example: false
-      timeout:
-        type: boolean
-        description: Is the error a timeout?
-        example: true
-    description: ClientLogin_validation_Response_Body result type (default view)
-    example:
-      fault: true
-      id: 123abc
-      message: parameter 'p' must be an integer
-      name: bad_request
-      temporary: false
-      timeout: true
-    required:
-    - name
-    - id
-    - message
-    - temporary
-    - timeout
-    - fault
   CoacheeCreateAvailabilityInternalResponseBody:
     title: 'Mediatype identifier: application/vnd.goa.error; view=default'
     type: object
@@ -1335,287 +1072,6 @@ definitions:
     - temporary
     - timeout
     - fault
-  CoacheeCreateClientInternalResponseBody:
-    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
-    type: object
-    properties:
-      fault:
-        type: boolean
-        description: Is the error a server-side fault?
-        example: false
-      id:
-        type: string
-        description: ID is a unique identifier for this particular occurrence of the
-          problem.
-        example: 123abc
-      message:
-        type: string
-        description: Message is a human-readable explanation specific to this occurrence
-          of the problem.
-        example: parameter 'p' must be an integer
-      name:
-        type: string
-        description: Name is the name of this class of errors.
-        example: bad_request
-      temporary:
-        type: boolean
-        description: Is the error temporary?
-        example: true
-      timeout:
-        type: boolean
-        description: Is the error a timeout?
-        example: false
-    description: CreateClient_internal_Response_Body result type (default view)
-    example:
-      fault: false
-      id: 123abc
-      message: parameter 'p' must be an integer
-      name: bad_request
-      temporary: true
-      timeout: false
-    required:
-    - name
-    - id
-    - message
-    - temporary
-    - timeout
-    - fault
-  CoacheeCreateClientNotFoundResponseBody:
-    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
-    type: object
-    properties:
-      fault:
-        type: boolean
-        description: Is the error a server-side fault?
-        example: false
-      id:
-        type: string
-        description: ID is a unique identifier for this particular occurrence of the
-          problem.
-        example: 123abc
-      message:
-        type: string
-        description: Message is a human-readable explanation specific to this occurrence
-          of the problem.
-        example: parameter 'p' must be an integer
-      name:
-        type: string
-        description: Name is the name of this class of errors.
-        example: bad_request
-      temporary:
-        type: boolean
-        description: Is the error temporary?
-        example: false
-      timeout:
-        type: boolean
-        description: Is the error a timeout?
-        example: false
-    description: CreateClient_notFound_Response_Body result type (default view)
-    example:
-      fault: true
-      id: 123abc
-      message: parameter 'p' must be an integer
-      name: bad_request
-      temporary: true
-      timeout: false
-    required:
-    - name
-    - id
-    - message
-    - temporary
-    - timeout
-    - fault
-  CoacheeCreateClientRequestBody:
-    title: CoacheeCreateClientRequestBody
-    type: object
-    properties:
-      birthDate:
-        type: integer
-        example: 6782520044946415499
-        format: int64
-      email:
-        type: string
-        example: Iste voluptas natus.
-      firstName:
-        type: string
-        example: Illum sit explicabo.
-      lastName:
-        type: string
-        example: Quibusdam qui sit.
-      password:
-        type: string
-        example: Sequi iure odit dolorum voluptatibus aut.
-    example:
-      birthDate: 277188324686452101
-      email: Dolores id voluptatem sit a.
-      firstName: Veniam earum voluptatem eos et doloribus eaque.
-      lastName: Voluptas provident repudiandae qui corporis.
-      password: Provident et dolorum aut.
-    required:
-    - email
-    - firstName
-    - lastName
-    - birthDate
-    - password
-  CoacheeCreateClientResponseBody:
-    title: CoacheeCreateClientResponseBody
-    type: object
-    properties:
-      expiry:
-        type: integer
-        example: 9218004418527680396
-        format: int64
-      token:
-        type: string
-        example: Id numquam et consectetur provident sint perferendis.
-      user:
-        $ref: '#/definitions/baseClientResponseBody'
-    example:
-      expiry: 7071590289746513943
-      token: Exercitationem quasi.
-      user:
-        firstName: Distinctio facere neque quis.
-        id: 3187574953544294077
-        lastName: Esse placeat consequatur cum dolorem quo.
-    required:
-    - token
-    - expiry
-    - user
-  CoacheeCreateClientTransientResponseBody:
-    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
-    type: object
-    properties:
-      fault:
-        type: boolean
-        description: Is the error a server-side fault?
-        example: false
-      id:
-        type: string
-        description: ID is a unique identifier for this particular occurrence of the
-          problem.
-        example: 123abc
-      message:
-        type: string
-        description: Message is a human-readable explanation specific to this occurrence
-          of the problem.
-        example: parameter 'p' must be an integer
-      name:
-        type: string
-        description: Name is the name of this class of errors.
-        example: bad_request
-      temporary:
-        type: boolean
-        description: Is the error temporary?
-        example: true
-      timeout:
-        type: boolean
-        description: Is the error a timeout?
-        example: false
-    description: CreateClient_transient_Response_Body result type (default view)
-    example:
-      fault: true
-      id: 123abc
-      message: parameter 'p' must be an integer
-      name: bad_request
-      temporary: false
-      timeout: false
-    required:
-    - name
-    - id
-    - message
-    - temporary
-    - timeout
-    - fault
-  CoacheeCreateClientUnauthorizedResponseBody:
-    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
-    type: object
-    properties:
-      fault:
-        type: boolean
-        description: Is the error a server-side fault?
-        example: false
-      id:
-        type: string
-        description: ID is a unique identifier for this particular occurrence of the
-          problem.
-        example: 123abc
-      message:
-        type: string
-        description: Message is a human-readable explanation specific to this occurrence
-          of the problem.
-        example: parameter 'p' must be an integer
-      name:
-        type: string
-        description: Name is the name of this class of errors.
-        example: bad_request
-      temporary:
-        type: boolean
-        description: Is the error temporary?
-        example: true
-      timeout:
-        type: boolean
-        description: Is the error a timeout?
-        example: true
-    description: CreateClient_unauthorized_Response_Body result type (default view)
-    example:
-      fault: false
-      id: 123abc
-      message: parameter 'p' must be an integer
-      name: bad_request
-      temporary: true
-      timeout: false
-    required:
-    - name
-    - id
-    - message
-    - temporary
-    - timeout
-    - fault
-  CoacheeCreateClientValidationResponseBody:
-    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
-    type: object
-    properties:
-      fault:
-        type: boolean
-        description: Is the error a server-side fault?
-        example: false
-      id:
-        type: string
-        description: ID is a unique identifier for this particular occurrence of the
-          problem.
-        example: 123abc
-      message:
-        type: string
-        description: Message is a human-readable explanation specific to this occurrence
-          of the problem.
-        example: parameter 'p' must be an integer
-      name:
-        type: string
-        description: Name is the name of this class of errors.
-        example: bad_request
-      temporary:
-        type: boolean
-        description: Is the error temporary?
-        example: false
-      timeout:
-        type: boolean
-        description: Is the error a timeout?
-        example: true
-    description: CreateClient_validation_Response_Body result type (default view)
-    example:
-      fault: false
-      id: 123abc
-      message: parameter 'p' must be an integer
-      name: bad_request
-      temporary: true
-      timeout: true
-    required:
-    - name
-    - id
-    - message
-    - temporary
-    - timeout
-    - fault
   CoacheeCreateCoachInternalResponseBody:
     title: 'Mediatype identifier: application/vnd.goa.error; view=default'
     type: object
@@ -1901,6 +1357,287 @@ definitions:
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: false
+      timeout: true
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  CoacheeCreateCustomerInternalResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: false
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: true
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: false
+    description: CreateCustomer_internal_Response_Body result type (default view)
+    example:
+      fault: false
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: true
+      timeout: false
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  CoacheeCreateCustomerNotFoundResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: false
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: false
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: false
+    description: CreateCustomer_notFound_Response_Body result type (default view)
+    example:
+      fault: true
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: true
+      timeout: false
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  CoacheeCreateCustomerRequestBody:
+    title: CoacheeCreateCustomerRequestBody
+    type: object
+    properties:
+      birthDate:
+        type: integer
+        example: 6782520044946415499
+        format: int64
+      email:
+        type: string
+        example: Iste voluptas natus.
+      firstName:
+        type: string
+        example: Illum sit explicabo.
+      lastName:
+        type: string
+        example: Quibusdam qui sit.
+      password:
+        type: string
+        example: Sequi iure odit dolorum voluptatibus aut.
+    example:
+      birthDate: 277188324686452101
+      email: Dolores id voluptatem sit a.
+      firstName: Veniam earum voluptatem eos et doloribus eaque.
+      lastName: Voluptas provident repudiandae qui corporis.
+      password: Provident et dolorum aut.
+    required:
+    - email
+    - firstName
+    - lastName
+    - birthDate
+    - password
+  CoacheeCreateCustomerResponseBody:
+    title: CoacheeCreateCustomerResponseBody
+    type: object
+    properties:
+      expiry:
+        type: integer
+        example: 9218004418527680396
+        format: int64
+      token:
+        type: string
+        example: Id numquam et consectetur provident sint perferendis.
+      user:
+        $ref: '#/definitions/baseClientResponseBody'
+    example:
+      expiry: 7071590289746513943
+      token: Exercitationem quasi.
+      user:
+        firstName: Distinctio facere neque quis.
+        id: 3187574953544294077
+        lastName: Esse placeat consequatur cum dolorem quo.
+    required:
+    - token
+    - expiry
+    - user
+  CoacheeCreateCustomerTransientResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: false
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: true
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: false
+    description: CreateCustomer_transient_Response_Body result type (default view)
+    example:
+      fault: true
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: false
+      timeout: false
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  CoacheeCreateCustomerUnauthorizedResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: false
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: true
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: true
+    description: CreateCustomer_unauthorized_Response_Body result type (default view)
+    example:
+      fault: false
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: true
+      timeout: false
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  CoacheeCreateCustomerValidationResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: false
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: false
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: true
+    description: CreateCustomer_validation_Response_Body result type (default view)
+    example:
+      fault: false
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: true
       timeout: true
     required:
     - name
@@ -2391,6 +2128,271 @@ definitions:
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: true
+      timeout: true
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  CoacheeCustomerLoginInternalResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: false
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: false
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: false
+    description: CustomerLogin_internal_Response_Body result type (default view)
+    example:
+      fault: true
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: true
+      timeout: true
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  CoacheeCustomerLoginNotFoundResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: true
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: true
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: true
+    description: CustomerLogin_notFound_Response_Body result type (default view)
+    example:
+      fault: false
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: true
+      timeout: true
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  CoacheeCustomerLoginRequestBody:
+    title: CoacheeCustomerLoginRequestBody
+    type: object
+    properties:
+      email:
+        type: string
+        example: Et repellat omnis minus.
+      password:
+        type: string
+        example: Temporibus et voluptatibus necessitatibus vitae.
+    example:
+      email: Voluptas quis odio.
+      password: Sapiente eos a.
+    required:
+    - email
+    - password
+  CoacheeCustomerLoginResponseBody:
+    title: CoacheeCustomerLoginResponseBody
+    type: object
+    properties:
+      expiry:
+        type: integer
+        example: 4615869918223465678
+        format: int64
+      token:
+        type: string
+        example: Voluptatum velit corporis nam.
+      user:
+        $ref: '#/definitions/baseClientResponseBody'
+    example:
+      expiry: 9178894401714104833
+      token: Debitis sunt nihil soluta animi.
+      user:
+        firstName: Distinctio facere neque quis.
+        id: 3187574953544294077
+        lastName: Esse placeat consequatur cum dolorem quo.
+    required:
+    - token
+    - expiry
+    - user
+  CoacheeCustomerLoginTransientResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: true
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: false
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: true
+    description: CustomerLogin_transient_Response_Body result type (default view)
+    example:
+      fault: false
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: true
+      timeout: true
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  CoacheeCustomerLoginUnauthorizedResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: false
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: true
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: true
+    description: CustomerLogin_unauthorized_Response_Body result type (default view)
+    example:
+      fault: false
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: true
+      timeout: true
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  CoacheeCustomerLoginValidationResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: false
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: false
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: true
+    description: CustomerLogin_validation_Response_Body result type (default view)
+    example:
+      fault: true
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: false
       timeout: true
     required:
     - name

@@ -341,18 +341,18 @@ func BuildDeleteAvailabilityPayload(coacheeDeleteAvailabilityID string, coacheeD
 	return payload, nil
 }
 
-// BuildCreateClientPayload builds the payload for the coachee CreateClient
+// BuildCreateCustomerPayload builds the payload for the coachee CreateCustomer
 // endpoint from CLI flags.
-func BuildCreateClientPayload(coacheeCreateClientBody string) (*coachee.CreateClientPayload, error) {
+func BuildCreateCustomerPayload(coacheeCreateCustomerBody string) (*coachee.CreateCustomerPayload, error) {
 	var err error
-	var body CreateClientRequestBody
+	var body CreateCustomerRequestBody
 	{
-		err = json.Unmarshal([]byte(coacheeCreateClientBody), &body)
+		err = json.Unmarshal([]byte(coacheeCreateCustomerBody), &body)
 		if err != nil {
 			return nil, fmt.Errorf("invalid JSON for body, example of valid JSON:\n%s", "'{\n      \"birthDate\": 4576625523972506832,\n      \"email\": \"Id fugit delectus quia possimus perferendis tempore.\",\n      \"firstName\": \"Porro nisi aut aut beatae.\",\n      \"lastName\": \"Quia blanditiis similique necessitatibus sint.\",\n      \"password\": \"Quia voluptas labore voluptatum.\"\n   }'")
 		}
 	}
-	v := &coachee.CreateClientPayload{
+	v := &coachee.CreateCustomerPayload{
 		Email:     body.Email,
 		FirstName: body.FirstName,
 		LastName:  body.LastName,
@@ -362,18 +362,18 @@ func BuildCreateClientPayload(coacheeCreateClientBody string) (*coachee.CreateCl
 	return v, nil
 }
 
-// BuildClientLoginPayload builds the payload for the coachee ClientLogin
+// BuildCustomerLoginPayload builds the payload for the coachee CustomerLogin
 // endpoint from CLI flags.
-func BuildClientLoginPayload(coacheeClientLoginBody string) (*coachee.ClientLoginPayload, error) {
+func BuildCustomerLoginPayload(coacheeCustomerLoginBody string) (*coachee.CustomerLoginPayload, error) {
 	var err error
-	var body ClientLoginRequestBody
+	var body CustomerLoginRequestBody
 	{
-		err = json.Unmarshal([]byte(coacheeClientLoginBody), &body)
+		err = json.Unmarshal([]byte(coacheeCustomerLoginBody), &body)
 		if err != nil {
 			return nil, fmt.Errorf("invalid JSON for body, example of valid JSON:\n%s", "'{\n      \"email\": \"Vel officia non et voluptates.\",\n      \"password\": \"Illum dolore amet fugiat ab dolorum.\"\n   }'")
 		}
 	}
-	v := &coachee.ClientLoginPayload{
+	v := &coachee.CustomerLoginPayload{
 		Email:    body.Email,
 		Password: body.Password,
 	}

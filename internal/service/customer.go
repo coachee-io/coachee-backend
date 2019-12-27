@@ -10,8 +10,8 @@ import (
 	"time"
 )
 
-// CreateClient creates a new client and returns a jwt
-func (s *Service) CreateClient(ctx context.Context, p *coachee.CreateClientPayload) (res *coachee.CreateClientResult, err error) {
+// CreateCustomer creates a new customer and returns a jwt
+func (s *Service) CreateCustomer(ctx context.Context, p *coachee.CreateCustomerPayload) (res *coachee.CreateCustomerResult, err error) {
 	l := s.logger.With().Str("service", "CreateClient").Logger()
 
 	if len(p.Password) < 8 {
@@ -26,7 +26,7 @@ func (s *Service) CreateClient(ctx context.Context, p *coachee.CreateClientPaylo
 		return nil, coachee.MakeValidation(err)
 	}
 
-	client := &model.Client{
+	client := &model.Customer{
 		FirstName: p.FirstName,
 		LastName:  p.LastName,
 		Email:     p.Email,
@@ -40,20 +40,42 @@ func (s *Service) CreateClient(ctx context.Context, p *coachee.CreateClientPaylo
 		return nil, coachee.MakeValidation(err)
 	}
 
-	err = s.clientRepository.Create(repository.DefaultNoTransaction, client)
+	tx := s.clientRepository.Begin()
+	err = s.clientRepository.Create(tx, client)
 	if err != nil {
 		l.Error().Err(err).Msg("failed to persist client")
+		_ = tx.Rollback()
 		return nil, err
+	}
+
+	err = s.stripe.CreateCustomer(client)
+	if err != nil {
+		l.Error().Err(err).Msg("failed to store client in stripe")
+		_ = tx.Rollback()
+		return nil, coachee.MakeTransient(err)
+	}
+
+	err = s.clientRepository.Update(tx, client)
+	if err != nil {
+		l.Error().Err(err).Msg("failed to update client")
+		_ = tx.Rollback()
+		return nil, coachee.MakeTransient(err)
 	}
 
 	expiry := time.Now().Add(30 * time.Minute)
 	token, err := auth.CreateUserToken(client.ID, expiry)
 	if err != nil {
 		l.Error().Err(err).Msg("failed to generate jwt")
+		_ = tx.Rollback()
 		return nil, coachee.MakeInternal(err)
 	}
 
-	return &coachee.CreateClientResult{
+	if err := tx.Commit(); err != nil {
+		l.Error().Err(err).Msg("failed to commit client changes")
+		return nil, coachee.MakeTransient(err)
+	}
+
+	return &coachee.CreateCustomerResult{
 		Token:  token,
 		Expiry: expiry.Unix(),
 		User: &coachee.BaseClient{
@@ -64,8 +86,8 @@ func (s *Service) CreateClient(ctx context.Context, p *coachee.CreateClientPaylo
 	}, nil
 }
 
-// ClientLogin authenticates a client and returns a jwt
-func (s *Service) ClientLogin(ctx context.Context, p *coachee.ClientLoginPayload) (*coachee.ClientLoginResult, error) {
+// ClientLogin authenticates a customer and returns a jwt
+func (s *Service) CustomerLogin(ctx context.Context, p *coachee.CustomerLoginPayload) (res *coachee.CustomerLoginResult, err error) {
 	l := s.logger.With().Str("service", "ClientLogin").Logger()
 
 	client, err := s.clientRepository.GetByEmail(repository.DefaultNoTransaction, p.Email)
@@ -87,7 +109,7 @@ func (s *Service) ClientLogin(ctx context.Context, p *coachee.ClientLoginPayload
 		return nil, coachee.MakeInternal(err)
 	}
 
-	return &coachee.ClientLoginResult{
+	return &coachee.CustomerLoginResult{
 		Token:  token,
 		Expiry: expiry.Unix(),
 		User: &coachee.BaseClient{

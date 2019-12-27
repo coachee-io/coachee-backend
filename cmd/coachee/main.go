@@ -5,6 +5,7 @@ import (
 	"coachee-backend/internal/repository/mysql"
 	"coachee-backend/internal/repository/mysql/connector"
 	"coachee-backend/internal/service"
+	"coachee-backend/internal/stripe"
 	"context"
 	"flag"
 	"fmt"
@@ -25,6 +26,7 @@ func main() {
 		httpPortF = flag.String("http-port", "", "HTTP port (overrides host HTTP port specified in service design)")
 		secureF   = flag.Bool("secure", false, "Use secure scheme (https or grpcs)")
 		dbgF      = flag.Bool("debug", false, "Log request and response bodies")
+		stripeKey = flag.String("stripe-Key", "sk_test_yKV7Mo9kSpokxpFvwxKRtbyd00knjXTpJh", "stripe key")
 	)
 	flag.Parse()
 	// initialize app context
@@ -43,8 +45,11 @@ func main() {
 	coachRepository := mysql.NewCoachRepository(conn)
 	clientRepository := mysql.NewClientRepository(conn)
 
+	// Initialize stripe client
+	stripeClient := stripe.NewClient(appCtx, *stripeKey)
+
 	// Initialize the services.
-	coacheeSvc := service.NewCoachee(appCtx, coachRepository, clientRepository)
+	coacheeSvc := service.NewCoachee(appCtx, coachRepository, clientRepository, stripeClient)
 
 	// Wrap the services in endpoints that can be invoked from other services
 	// potentially running in different processes.

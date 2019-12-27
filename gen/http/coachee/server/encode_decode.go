@@ -1055,24 +1055,24 @@ func EncodeDeleteAvailabilityError(encoder func(context.Context, http.ResponseWr
 	}
 }
 
-// EncodeCreateClientResponse returns an encoder for responses returned by the
-// coachee CreateClient endpoint.
-func EncodeCreateClientResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+// EncodeCreateCustomerResponse returns an encoder for responses returned by
+// the coachee CreateCustomer endpoint.
+func EncodeCreateCustomerResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
 	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
-		res := v.(*coachee.CreateClientResult)
+		res := v.(*coachee.CreateCustomerResult)
 		enc := encoder(ctx, w)
-		body := NewCreateClientResponseBody(res)
+		body := NewCreateCustomerResponseBody(res)
 		w.WriteHeader(http.StatusCreated)
 		return enc.Encode(body)
 	}
 }
 
-// DecodeCreateClientRequest returns a decoder for requests sent to the coachee
-// CreateClient endpoint.
-func DecodeCreateClientRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+// DecodeCreateCustomerRequest returns a decoder for requests sent to the
+// coachee CreateCustomer endpoint.
+func DecodeCreateCustomerRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
 	return func(r *http.Request) (interface{}, error) {
 		var (
-			body CreateClientRequestBody
+			body CreateCustomerRequestBody
 			err  error
 		)
 		err = decoder(r).Decode(&body)
@@ -1082,19 +1082,19 @@ func DecodeCreateClientRequest(mux goahttp.Muxer, decoder func(*http.Request) go
 			}
 			return nil, goa.DecodePayloadError(err.Error())
 		}
-		err = ValidateCreateClientRequestBody(&body)
+		err = ValidateCreateCustomerRequestBody(&body)
 		if err != nil {
 			return nil, err
 		}
-		payload := NewCreateClientPayload(&body)
+		payload := NewCreateCustomerPayload(&body)
 
 		return payload, nil
 	}
 }
 
-// EncodeCreateClientError returns an encoder for errors returned by the
-// CreateClient coachee endpoint.
-func EncodeCreateClientError(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, error) error {
+// EncodeCreateCustomerError returns an encoder for errors returned by the
+// CreateCustomer coachee endpoint.
+func EncodeCreateCustomerError(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, error) error {
 	encodeError := goahttp.ErrorEncoder(encoder)
 	return func(ctx context.Context, w http.ResponseWriter, v error) error {
 		en, ok := v.(ErrorNamer)
@@ -1105,35 +1105,35 @@ func EncodeCreateClientError(encoder func(context.Context, http.ResponseWriter) 
 		case "internal":
 			res := v.(*goa.ServiceError)
 			enc := encoder(ctx, w)
-			body := NewCreateClientInternalResponseBody(res)
+			body := NewCreateCustomerInternalResponseBody(res)
 			w.Header().Set("goa-error", "internal")
 			w.WriteHeader(http.StatusInternalServerError)
 			return enc.Encode(body)
 		case "transient":
 			res := v.(*goa.ServiceError)
 			enc := encoder(ctx, w)
-			body := NewCreateClientTransientResponseBody(res)
+			body := NewCreateCustomerTransientResponseBody(res)
 			w.Header().Set("goa-error", "transient")
 			w.WriteHeader(http.StatusInternalServerError)
 			return enc.Encode(body)
 		case "notFound":
 			res := v.(*goa.ServiceError)
 			enc := encoder(ctx, w)
-			body := NewCreateClientNotFoundResponseBody(res)
+			body := NewCreateCustomerNotFoundResponseBody(res)
 			w.Header().Set("goa-error", "notFound")
 			w.WriteHeader(http.StatusNotFound)
 			return enc.Encode(body)
 		case "validation":
 			res := v.(*goa.ServiceError)
 			enc := encoder(ctx, w)
-			body := NewCreateClientValidationResponseBody(res)
+			body := NewCreateCustomerValidationResponseBody(res)
 			w.Header().Set("goa-error", "validation")
 			w.WriteHeader(http.StatusBadRequest)
 			return enc.Encode(body)
 		case "unauthorized":
 			res := v.(*goa.ServiceError)
 			enc := encoder(ctx, w)
-			body := NewCreateClientUnauthorizedResponseBody(res)
+			body := NewCreateCustomerUnauthorizedResponseBody(res)
 			w.Header().Set("goa-error", "unauthorized")
 			w.WriteHeader(http.StatusUnauthorized)
 			return enc.Encode(body)
@@ -1143,24 +1143,24 @@ func EncodeCreateClientError(encoder func(context.Context, http.ResponseWriter) 
 	}
 }
 
-// EncodeClientLoginResponse returns an encoder for responses returned by the
-// coachee ClientLogin endpoint.
-func EncodeClientLoginResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+// EncodeCustomerLoginResponse returns an encoder for responses returned by the
+// coachee CustomerLogin endpoint.
+func EncodeCustomerLoginResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
 	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
-		res := v.(*coachee.ClientLoginResult)
+		res := v.(*coachee.CustomerLoginResult)
 		enc := encoder(ctx, w)
-		body := NewClientLoginResponseBody(res)
+		body := NewCustomerLoginResponseBody(res)
 		w.WriteHeader(http.StatusOK)
 		return enc.Encode(body)
 	}
 }
 
-// DecodeClientLoginRequest returns a decoder for requests sent to the coachee
-// ClientLogin endpoint.
-func DecodeClientLoginRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+// DecodeCustomerLoginRequest returns a decoder for requests sent to the
+// coachee CustomerLogin endpoint.
+func DecodeCustomerLoginRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
 	return func(r *http.Request) (interface{}, error) {
 		var (
-			body ClientLoginRequestBody
+			body CustomerLoginRequestBody
 			err  error
 		)
 		err = decoder(r).Decode(&body)
@@ -1170,19 +1170,19 @@ func DecodeClientLoginRequest(mux goahttp.Muxer, decoder func(*http.Request) goa
 			}
 			return nil, goa.DecodePayloadError(err.Error())
 		}
-		err = ValidateClientLoginRequestBody(&body)
+		err = ValidateCustomerLoginRequestBody(&body)
 		if err != nil {
 			return nil, err
 		}
-		payload := NewClientLoginPayload(&body)
+		payload := NewCustomerLoginPayload(&body)
 
 		return payload, nil
 	}
 }
 
-// EncodeClientLoginError returns an encoder for errors returned by the
-// ClientLogin coachee endpoint.
-func EncodeClientLoginError(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, error) error {
+// EncodeCustomerLoginError returns an encoder for errors returned by the
+// CustomerLogin coachee endpoint.
+func EncodeCustomerLoginError(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, error) error {
 	encodeError := goahttp.ErrorEncoder(encoder)
 	return func(ctx context.Context, w http.ResponseWriter, v error) error {
 		en, ok := v.(ErrorNamer)
@@ -1193,35 +1193,35 @@ func EncodeClientLoginError(encoder func(context.Context, http.ResponseWriter) g
 		case "internal":
 			res := v.(*goa.ServiceError)
 			enc := encoder(ctx, w)
-			body := NewClientLoginInternalResponseBody(res)
+			body := NewCustomerLoginInternalResponseBody(res)
 			w.Header().Set("goa-error", "internal")
 			w.WriteHeader(http.StatusInternalServerError)
 			return enc.Encode(body)
 		case "transient":
 			res := v.(*goa.ServiceError)
 			enc := encoder(ctx, w)
-			body := NewClientLoginTransientResponseBody(res)
+			body := NewCustomerLoginTransientResponseBody(res)
 			w.Header().Set("goa-error", "transient")
 			w.WriteHeader(http.StatusInternalServerError)
 			return enc.Encode(body)
 		case "notFound":
 			res := v.(*goa.ServiceError)
 			enc := encoder(ctx, w)
-			body := NewClientLoginNotFoundResponseBody(res)
+			body := NewCustomerLoginNotFoundResponseBody(res)
 			w.Header().Set("goa-error", "notFound")
 			w.WriteHeader(http.StatusNotFound)
 			return enc.Encode(body)
 		case "validation":
 			res := v.(*goa.ServiceError)
 			enc := encoder(ctx, w)
-			body := NewClientLoginValidationResponseBody(res)
+			body := NewCustomerLoginValidationResponseBody(res)
 			w.Header().Set("goa-error", "validation")
 			w.WriteHeader(http.StatusBadRequest)
 			return enc.Encode(body)
 		case "unauthorized":
 			res := v.(*goa.ServiceError)
 			enc := encoder(ctx, w)
-			body := NewClientLoginUnauthorizedResponseBody(res)
+			body := NewCustomerLoginUnauthorizedResponseBody(res)
 			w.Header().Set("goa-error", "unauthorized")
 			w.WriteHeader(http.StatusUnauthorized)
 			return enc.Encode(body)

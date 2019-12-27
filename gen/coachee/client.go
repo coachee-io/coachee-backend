@@ -26,13 +26,13 @@ type Client struct {
 	DeleteProgramEndpoint       goa.Endpoint
 	CreateAvailabilityEndpoint  goa.Endpoint
 	DeleteAvailabilityEndpoint  goa.Endpoint
-	CreateClientEndpoint        goa.Endpoint
-	ClientLoginEndpoint         goa.Endpoint
+	CreateCustomerEndpoint      goa.Endpoint
+	CustomerLoginEndpoint       goa.Endpoint
 	CreateOrderEndpoint         goa.Endpoint
 }
 
 // NewClient initializes a "coachee" service client given the endpoints.
-func NewClient(getCoaches, getCoach, lenCoaches, createCoach, updateCoach, createCertification, deleteCertification, createProgram, deleteProgram, createAvailability, deleteAvailability, createClient, clientLogin, createOrder goa.Endpoint) *Client {
+func NewClient(getCoaches, getCoach, lenCoaches, createCoach, updateCoach, createCertification, deleteCertification, createProgram, deleteProgram, createAvailability, deleteAvailability, createCustomer, customerLogin, createOrder goa.Endpoint) *Client {
 	return &Client{
 		GetCoachesEndpoint:          getCoaches,
 		GetCoachEndpoint:            getCoach,
@@ -45,8 +45,8 @@ func NewClient(getCoaches, getCoach, lenCoaches, createCoach, updateCoach, creat
 		DeleteProgramEndpoint:       deleteProgram,
 		CreateAvailabilityEndpoint:  createAvailability,
 		DeleteAvailabilityEndpoint:  deleteAvailability,
-		CreateClientEndpoint:        createClient,
-		ClientLoginEndpoint:         clientLogin,
+		CreateCustomerEndpoint:      createCustomer,
+		CustomerLoginEndpoint:       customerLogin,
 		CreateOrderEndpoint:         createOrder,
 	}
 }
@@ -137,24 +137,24 @@ func (c *Client) DeleteAvailability(ctx context.Context, p *DeleteAvailabilityPa
 	return
 }
 
-// CreateClient calls the "CreateClient" endpoint of the "coachee" service.
-func (c *Client) CreateClient(ctx context.Context, p *CreateClientPayload) (res *CreateClientResult, err error) {
+// CreateCustomer calls the "CreateCustomer" endpoint of the "coachee" service.
+func (c *Client) CreateCustomer(ctx context.Context, p *CreateCustomerPayload) (res *CreateCustomerResult, err error) {
 	var ires interface{}
-	ires, err = c.CreateClientEndpoint(ctx, p)
+	ires, err = c.CreateCustomerEndpoint(ctx, p)
 	if err != nil {
 		return
 	}
-	return ires.(*CreateClientResult), nil
+	return ires.(*CreateCustomerResult), nil
 }
 
-// ClientLogin calls the "ClientLogin" endpoint of the "coachee" service.
-func (c *Client) ClientLogin(ctx context.Context, p *ClientLoginPayload) (res *ClientLoginResult, err error) {
+// CustomerLogin calls the "CustomerLogin" endpoint of the "coachee" service.
+func (c *Client) CustomerLogin(ctx context.Context, p *CustomerLoginPayload) (res *CustomerLoginResult, err error) {
 	var ires interface{}
-	ires, err = c.ClientLoginEndpoint(ctx, p)
+	ires, err = c.CustomerLoginEndpoint(ctx, p)
 	if err != nil {
 		return
 	}
-	return ires.(*ClientLoginResult), nil
+	return ires.(*CustomerLoginResult), nil
 }
 
 // CreateOrder calls the "CreateOrder" endpoint of the "coachee" service.

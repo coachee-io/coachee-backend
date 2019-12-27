@@ -61,13 +61,13 @@ type Client struct {
 	// DeleteAvailability endpoint.
 	DeleteAvailabilityDoer goahttp.Doer
 
-	// CreateClient Doer is the HTTP client used to make requests to the
-	// CreateClient endpoint.
-	CreateClientDoer goahttp.Doer
+	// CreateCustomer Doer is the HTTP client used to make requests to the
+	// CreateCustomer endpoint.
+	CreateCustomerDoer goahttp.Doer
 
-	// ClientLogin Doer is the HTTP client used to make requests to the ClientLogin
-	// endpoint.
-	ClientLoginDoer goahttp.Doer
+	// CustomerLogin Doer is the HTTP client used to make requests to the
+	// CustomerLogin endpoint.
+	CustomerLoginDoer goahttp.Doer
 
 	// CreateOrder Doer is the HTTP client used to make requests to the CreateOrder
 	// endpoint.
@@ -104,8 +104,8 @@ func NewClient(
 		DeleteProgramDoer:       doer,
 		CreateAvailabilityDoer:  doer,
 		DeleteAvailabilityDoer:  doer,
-		CreateClientDoer:        doer,
-		ClientLoginDoer:         doer,
+		CreateCustomerDoer:      doer,
+		CustomerLoginDoer:       doer,
 		CreateOrderDoer:         doer,
 		RestoreResponseBody:     restoreBody,
 		scheme:                  scheme,
@@ -365,15 +365,15 @@ func (c *Client) DeleteAvailability() goa.Endpoint {
 	}
 }
 
-// CreateClient returns an endpoint that makes HTTP requests to the coachee
-// service CreateClient server.
-func (c *Client) CreateClient() goa.Endpoint {
+// CreateCustomer returns an endpoint that makes HTTP requests to the coachee
+// service CreateCustomer server.
+func (c *Client) CreateCustomer() goa.Endpoint {
 	var (
-		encodeRequest  = EncodeCreateClientRequest(c.encoder)
-		decodeResponse = DecodeCreateClientResponse(c.decoder, c.RestoreResponseBody)
+		encodeRequest  = EncodeCreateCustomerRequest(c.encoder)
+		decodeResponse = DecodeCreateCustomerResponse(c.decoder, c.RestoreResponseBody)
 	)
 	return func(ctx context.Context, v interface{}) (interface{}, error) {
-		req, err := c.BuildCreateClientRequest(ctx, v)
+		req, err := c.BuildCreateCustomerRequest(ctx, v)
 		if err != nil {
 			return nil, err
 		}
@@ -381,24 +381,24 @@ func (c *Client) CreateClient() goa.Endpoint {
 		if err != nil {
 			return nil, err
 		}
-		resp, err := c.CreateClientDoer.Do(req)
+		resp, err := c.CreateCustomerDoer.Do(req)
 
 		if err != nil {
-			return nil, goahttp.ErrRequestError("coachee", "CreateClient", err)
+			return nil, goahttp.ErrRequestError("coachee", "CreateCustomer", err)
 		}
 		return decodeResponse(resp)
 	}
 }
 
-// ClientLogin returns an endpoint that makes HTTP requests to the coachee
-// service ClientLogin server.
-func (c *Client) ClientLogin() goa.Endpoint {
+// CustomerLogin returns an endpoint that makes HTTP requests to the coachee
+// service CustomerLogin server.
+func (c *Client) CustomerLogin() goa.Endpoint {
 	var (
-		encodeRequest  = EncodeClientLoginRequest(c.encoder)
-		decodeResponse = DecodeClientLoginResponse(c.decoder, c.RestoreResponseBody)
+		encodeRequest  = EncodeCustomerLoginRequest(c.encoder)
+		decodeResponse = DecodeCustomerLoginResponse(c.decoder, c.RestoreResponseBody)
 	)
 	return func(ctx context.Context, v interface{}) (interface{}, error) {
-		req, err := c.BuildClientLoginRequest(ctx, v)
+		req, err := c.BuildCustomerLoginRequest(ctx, v)
 		if err != nil {
 			return nil, err
 		}
@@ -406,10 +406,10 @@ func (c *Client) ClientLogin() goa.Endpoint {
 		if err != nil {
 			return nil, err
 		}
-		resp, err := c.ClientLoginDoer.Do(req)
+		resp, err := c.CustomerLoginDoer.Do(req)
 
 		if err != nil {
-			return nil, goahttp.ErrRequestError("coachee", "ClientLogin", err)
+			return nil, goahttp.ErrRequestError("coachee", "CustomerLogin", err)
 		}
 		return decodeResponse(resp)
 	}

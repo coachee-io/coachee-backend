@@ -30,8 +30,8 @@ type Server struct {
 	DeleteProgram       http.Handler
 	CreateAvailability  http.Handler
 	DeleteAvailability  http.Handler
-	CreateClient        http.Handler
-	ClientLogin         http.Handler
+	CreateCustomer      http.Handler
+	CustomerLogin       http.Handler
 	CreateOrder         http.Handler
 }
 
@@ -73,8 +73,8 @@ func New(
 			{"DeleteProgram", "DELETE", "/coaches/{id}/programs/{programID}"},
 			{"CreateAvailability", "POST", "/coaches/{id}/availability"},
 			{"DeleteAvailability", "DELETE", "/coaches/{id}/availability/{avID}"},
-			{"CreateClient", "POST", "/clients"},
-			{"ClientLogin", "POST", "/clients/login"},
+			{"CreateCustomer", "POST", "/clients"},
+			{"CustomerLogin", "POST", "/clients/login"},
 			{"CreateOrder", "POST", "/orders"},
 		},
 		GetCoaches:          NewGetCoachesHandler(e.GetCoaches, mux, dec, enc, eh),
@@ -88,8 +88,8 @@ func New(
 		DeleteProgram:       NewDeleteProgramHandler(e.DeleteProgram, mux, dec, enc, eh),
 		CreateAvailability:  NewCreateAvailabilityHandler(e.CreateAvailability, mux, dec, enc, eh),
 		DeleteAvailability:  NewDeleteAvailabilityHandler(e.DeleteAvailability, mux, dec, enc, eh),
-		CreateClient:        NewCreateClientHandler(e.CreateClient, mux, dec, enc, eh),
-		ClientLogin:         NewClientLoginHandler(e.ClientLogin, mux, dec, enc, eh),
+		CreateCustomer:      NewCreateCustomerHandler(e.CreateCustomer, mux, dec, enc, eh),
+		CustomerLogin:       NewCustomerLoginHandler(e.CustomerLogin, mux, dec, enc, eh),
 		CreateOrder:         NewCreateOrderHandler(e.CreateOrder, mux, dec, enc, eh),
 	}
 }
@@ -110,8 +110,8 @@ func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.DeleteProgram = m(s.DeleteProgram)
 	s.CreateAvailability = m(s.CreateAvailability)
 	s.DeleteAvailability = m(s.DeleteAvailability)
-	s.CreateClient = m(s.CreateClient)
-	s.ClientLogin = m(s.ClientLogin)
+	s.CreateCustomer = m(s.CreateCustomer)
+	s.CustomerLogin = m(s.CustomerLogin)
 	s.CreateOrder = m(s.CreateOrder)
 }
 
@@ -128,8 +128,8 @@ func Mount(mux goahttp.Muxer, h *Server) {
 	MountDeleteProgramHandler(mux, h.DeleteProgram)
 	MountCreateAvailabilityHandler(mux, h.CreateAvailability)
 	MountDeleteAvailabilityHandler(mux, h.DeleteAvailability)
-	MountCreateClientHandler(mux, h.CreateClient)
-	MountClientLoginHandler(mux, h.ClientLogin)
+	MountCreateCustomerHandler(mux, h.CreateCustomer)
+	MountCustomerLoginHandler(mux, h.CustomerLogin)
 	MountCreateOrderHandler(mux, h.CreateOrder)
 }
 
@@ -705,9 +705,9 @@ func NewDeleteAvailabilityHandler(
 	})
 }
 
-// MountCreateClientHandler configures the mux to serve the "coachee" service
-// "CreateClient" endpoint.
-func MountCreateClientHandler(mux goahttp.Muxer, h http.Handler) {
+// MountCreateCustomerHandler configures the mux to serve the "coachee" service
+// "CreateCustomer" endpoint.
+func MountCreateCustomerHandler(mux goahttp.Muxer, h http.Handler) {
 	f, ok := h.(http.HandlerFunc)
 	if !ok {
 		f = func(w http.ResponseWriter, r *http.Request) {
@@ -717,9 +717,9 @@ func MountCreateClientHandler(mux goahttp.Muxer, h http.Handler) {
 	mux.Handle("POST", "/clients", f)
 }
 
-// NewCreateClientHandler creates a HTTP handler which loads the HTTP request
-// and calls the "coachee" service "CreateClient" endpoint.
-func NewCreateClientHandler(
+// NewCreateCustomerHandler creates a HTTP handler which loads the HTTP request
+// and calls the "coachee" service "CreateCustomer" endpoint.
+func NewCreateCustomerHandler(
 	endpoint goa.Endpoint,
 	mux goahttp.Muxer,
 	dec func(*http.Request) goahttp.Decoder,
@@ -727,13 +727,13 @@ func NewCreateClientHandler(
 	eh func(context.Context, http.ResponseWriter, error),
 ) http.Handler {
 	var (
-		decodeRequest  = DecodeCreateClientRequest(mux, dec)
-		encodeResponse = EncodeCreateClientResponse(enc)
-		encodeError    = EncodeCreateClientError(enc)
+		decodeRequest  = DecodeCreateCustomerRequest(mux, dec)
+		encodeResponse = EncodeCreateCustomerResponse(enc)
+		encodeError    = EncodeCreateCustomerError(enc)
 	)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
-		ctx = context.WithValue(ctx, goa.MethodKey, "CreateClient")
+		ctx = context.WithValue(ctx, goa.MethodKey, "CreateCustomer")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "coachee")
 		payload, err := decodeRequest(r)
 		if err != nil {
@@ -757,9 +757,9 @@ func NewCreateClientHandler(
 	})
 }
 
-// MountClientLoginHandler configures the mux to serve the "coachee" service
-// "ClientLogin" endpoint.
-func MountClientLoginHandler(mux goahttp.Muxer, h http.Handler) {
+// MountCustomerLoginHandler configures the mux to serve the "coachee" service
+// "CustomerLogin" endpoint.
+func MountCustomerLoginHandler(mux goahttp.Muxer, h http.Handler) {
 	f, ok := h.(http.HandlerFunc)
 	if !ok {
 		f = func(w http.ResponseWriter, r *http.Request) {
@@ -769,9 +769,9 @@ func MountClientLoginHandler(mux goahttp.Muxer, h http.Handler) {
 	mux.Handle("POST", "/clients/login", f)
 }
 
-// NewClientLoginHandler creates a HTTP handler which loads the HTTP request
-// and calls the "coachee" service "ClientLogin" endpoint.
-func NewClientLoginHandler(
+// NewCustomerLoginHandler creates a HTTP handler which loads the HTTP request
+// and calls the "coachee" service "CustomerLogin" endpoint.
+func NewCustomerLoginHandler(
 	endpoint goa.Endpoint,
 	mux goahttp.Muxer,
 	dec func(*http.Request) goahttp.Decoder,
@@ -779,13 +779,13 @@ func NewClientLoginHandler(
 	eh func(context.Context, http.ResponseWriter, error),
 ) http.Handler {
 	var (
-		decodeRequest  = DecodeClientLoginRequest(mux, dec)
-		encodeResponse = EncodeClientLoginResponse(enc)
-		encodeError    = EncodeClientLoginError(enc)
+		decodeRequest  = DecodeCustomerLoginRequest(mux, dec)
+		encodeResponse = EncodeCustomerLoginResponse(enc)
+		encodeError    = EncodeCustomerLoginError(enc)
 	)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
-		ctx = context.WithValue(ctx, goa.MethodKey, "ClientLogin")
+		ctx = context.WithValue(ctx, goa.MethodKey, "CustomerLogin")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "coachee")
 		payload, err := decodeRequest(r)
 		if err != nil {

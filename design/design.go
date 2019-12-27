@@ -98,7 +98,7 @@ var coachResult = Type("coach", func() {
 	Required("id", "firstName", "lastName", "tags", "description", "city", "country", "pictureURL")
 })
 
-var client = Type("baseClient", func() {
+var customer = Type("baseClient", func() {
 	Description("represents a client")
 
 	Attribute("id", UInt)
@@ -326,8 +326,8 @@ var _ = Service("coachee", func() {
 		})
 	})
 
-	Method("CreateClient", func() {
-		Description("creates a new client")
+	Method("CreateCustomer", func() {
+		Description("creates a new customer")
 		Payload(func() {
 			Attribute("email", String)
 			Attribute("firstName", String)
@@ -341,7 +341,7 @@ var _ = Service("coachee", func() {
 		Result(func() {
 			Attribute("token", String)
 			Attribute("expiry", Int64)
-			Attribute("user", client)
+			Attribute("user", customer)
 
 			Required("token", "expiry", "user")
 		})
@@ -352,7 +352,8 @@ var _ = Service("coachee", func() {
 		})
 	})
 
-	Method("ClientLogin", func() {
+	Method("CustomerLogin", func() {
+		Description("logs in a customer and returns a jwt")
 		Payload(func() {
 			Attribute("email", String)
 			Attribute("password", String)
@@ -363,7 +364,7 @@ var _ = Service("coachee", func() {
 		Result(func() {
 			Attribute("token", String)
 			Attribute("expiry", Int64)
-			Attribute("user", client)
+			Attribute("user", customer)
 
 			Required("token", "expiry", "user")
 		})
@@ -375,6 +376,7 @@ var _ = Service("coachee", func() {
 	})
 
 	Method("CreateOrder", func() {
+		Description("creates a new order")
 		Security(JWT, func() {
 			Scope("client")
 		})

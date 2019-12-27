@@ -23,7 +23,7 @@ import (
 //    command (subcommand1|subcommand2|...)
 //
 func UsageCommands() string {
-	return `coachee (get-coaches|get-coach|len-coaches|create-coach|update-coach|create-certification|delete-certification|create-program|delete-program|create-availability|delete-availability|create-client|client-login|create-order)
+	return `coachee (get-coaches|get-coach|len-coaches|create-coach|update-coach|create-certification|delete-certification|create-program|delete-program|create-availability|delete-availability|create-customer|customer-login|create-order)
 `
 }
 
@@ -87,11 +87,11 @@ func ParseEndpoint(
 		coacheeDeleteAvailabilityIDFlag   = coacheeDeleteAvailabilityFlags.String("id", "REQUIRED", "")
 		coacheeDeleteAvailabilityAvIDFlag = coacheeDeleteAvailabilityFlags.String("av-id", "REQUIRED", "")
 
-		coacheeCreateClientFlags    = flag.NewFlagSet("create-client", flag.ExitOnError)
-		coacheeCreateClientBodyFlag = coacheeCreateClientFlags.String("body", "REQUIRED", "")
+		coacheeCreateCustomerFlags    = flag.NewFlagSet("create-customer", flag.ExitOnError)
+		coacheeCreateCustomerBodyFlag = coacheeCreateCustomerFlags.String("body", "REQUIRED", "")
 
-		coacheeClientLoginFlags    = flag.NewFlagSet("client-login", flag.ExitOnError)
-		coacheeClientLoginBodyFlag = coacheeClientLoginFlags.String("body", "REQUIRED", "")
+		coacheeCustomerLoginFlags    = flag.NewFlagSet("customer-login", flag.ExitOnError)
+		coacheeCustomerLoginBodyFlag = coacheeCustomerLoginFlags.String("body", "REQUIRED", "")
 
 		coacheeCreateOrderFlags     = flag.NewFlagSet("create-order", flag.ExitOnError)
 		coacheeCreateOrderBodyFlag  = coacheeCreateOrderFlags.String("body", "REQUIRED", "")
@@ -109,8 +109,8 @@ func ParseEndpoint(
 	coacheeDeleteProgramFlags.Usage = coacheeDeleteProgramUsage
 	coacheeCreateAvailabilityFlags.Usage = coacheeCreateAvailabilityUsage
 	coacheeDeleteAvailabilityFlags.Usage = coacheeDeleteAvailabilityUsage
-	coacheeCreateClientFlags.Usage = coacheeCreateClientUsage
-	coacheeClientLoginFlags.Usage = coacheeClientLoginUsage
+	coacheeCreateCustomerFlags.Usage = coacheeCreateCustomerUsage
+	coacheeCustomerLoginFlags.Usage = coacheeCustomerLoginUsage
 	coacheeCreateOrderFlags.Usage = coacheeCreateOrderUsage
 
 	if err := flag.CommandLine.Parse(os.Args[1:]); err != nil {
@@ -180,11 +180,11 @@ func ParseEndpoint(
 			case "delete-availability":
 				epf = coacheeDeleteAvailabilityFlags
 
-			case "create-client":
-				epf = coacheeCreateClientFlags
+			case "create-customer":
+				epf = coacheeCreateCustomerFlags
 
-			case "client-login":
-				epf = coacheeClientLoginFlags
+			case "customer-login":
+				epf = coacheeCustomerLoginFlags
 
 			case "create-order":
 				epf = coacheeCreateOrderFlags
@@ -247,12 +247,12 @@ func ParseEndpoint(
 			case "delete-availability":
 				endpoint = c.DeleteAvailability()
 				data, err = coacheec.BuildDeleteAvailabilityPayload(*coacheeDeleteAvailabilityIDFlag, *coacheeDeleteAvailabilityAvIDFlag)
-			case "create-client":
-				endpoint = c.CreateClient()
-				data, err = coacheec.BuildCreateClientPayload(*coacheeCreateClientBodyFlag)
-			case "client-login":
-				endpoint = c.ClientLogin()
-				data, err = coacheec.BuildClientLoginPayload(*coacheeClientLoginBodyFlag)
+			case "create-customer":
+				endpoint = c.CreateCustomer()
+				data, err = coacheec.BuildCreateCustomerPayload(*coacheeCreateCustomerBodyFlag)
+			case "customer-login":
+				endpoint = c.CustomerLogin()
+				data, err = coacheec.BuildCustomerLoginPayload(*coacheeCustomerLoginBodyFlag)
 			case "create-order":
 				endpoint = c.CreateOrder()
 				data, err = coacheec.BuildCreateOrderPayload(*coacheeCreateOrderBodyFlag, *coacheeCreateOrderTokenFlag)
@@ -284,9 +284,9 @@ COMMAND:
     delete-program: deletes a program for a coach
     create-availability: creates an availability for a coach
     delete-availability: deletes an availability for a coach
-    create-client: creates a new client
-    client-login: ClientLogin implements ClientLogin.
-    create-order: CreateOrder implements CreateOrder.
+    create-customer: creates a new customer
+    customer-login: logs in a customer and returns a jwt
+    create-order: creates a new order
 
 Additional help:
     %s coachee COMMAND --help
@@ -475,14 +475,14 @@ Example:
 `, os.Args[0])
 }
 
-func coacheeCreateClientUsage() {
-	fmt.Fprintf(os.Stderr, `%s [flags] coachee create-client -body JSON
+func coacheeCreateCustomerUsage() {
+	fmt.Fprintf(os.Stderr, `%s [flags] coachee create-customer -body JSON
 
-creates a new client
+creates a new customer
     -body JSON: 
 
 Example:
-    `+os.Args[0]+` coachee create-client --body '{
+    `+os.Args[0]+` coachee create-customer --body '{
       "birthDate": 4576625523972506832,
       "email": "Id fugit delectus quia possimus perferendis tempore.",
       "firstName": "Porro nisi aut aut beatae.",
@@ -492,14 +492,14 @@ Example:
 `, os.Args[0])
 }
 
-func coacheeClientLoginUsage() {
-	fmt.Fprintf(os.Stderr, `%s [flags] coachee client-login -body JSON
+func coacheeCustomerLoginUsage() {
+	fmt.Fprintf(os.Stderr, `%s [flags] coachee customer-login -body JSON
 
-ClientLogin implements ClientLogin.
+logs in a customer and returns a jwt
     -body JSON: 
 
 Example:
-    `+os.Args[0]+` coachee client-login --body '{
+    `+os.Args[0]+` coachee customer-login --body '{
       "email": "Vel officia non et voluptates.",
       "password": "Illum dolore amet fugiat ab dolorum."
    }'
@@ -509,7 +509,7 @@ Example:
 func coacheeCreateOrderUsage() {
 	fmt.Fprintf(os.Stderr, `%s [flags] coachee create-order -body JSON -token STRING
 
-CreateOrder implements CreateOrder.
+creates a new order
     -body JSON: 
     -token STRING: 
 

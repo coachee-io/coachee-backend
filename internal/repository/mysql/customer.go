@@ -7,23 +7,23 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-// ClientRepository is the repository to access and persist clientes
-type ClientRepository struct {
+// CustomerRepository is the repository to access and persist clientes
+type CustomerRepository struct {
 	db *gorm.DB
 }
 
-// NewClientRepository initializes a ClientRepository
-func NewClientRepository(db *gorm.DB) *ClientRepository {
-	return &ClientRepository{db: db}
+// NewClientRepository initializes a CustomerRepository
+func NewClientRepository(db *gorm.DB) *CustomerRepository {
+	return &CustomerRepository{db: db}
 }
 
 // Begin starts a new Transaction
-func (r ClientRepository) Begin() repository.Transaction {
+func (r CustomerRepository) Begin() repository.Transaction {
 	return newTransaction(r.db)
 }
 
 // Create persists a client
-func (r ClientRepository) Create(transaction repository.Transaction, client *model.Client) error {
+func (r CustomerRepository) Create(transaction repository.Transaction, client *model.Customer) error {
 	tx := r.checkTransaction(transaction)
 
 	// create customer
@@ -35,10 +35,10 @@ func (r ClientRepository) Create(transaction repository.Transaction, client *mod
 }
 
 // GetByID returns a client by id
-func (r ClientRepository) GetByID(transaction repository.Transaction, id uint) (*model.Client, error) {
+func (r CustomerRepository) GetByID(transaction repository.Transaction, id uint) (*model.Customer, error) {
 	tx := r.checkTransaction(transaction)
 
-	var client model.Client
+	var client model.Customer
 	if err := tx.First(&client, id).Error; err != nil {
 		return nil, parseError(err)
 	}
@@ -47,10 +47,10 @@ func (r ClientRepository) GetByID(transaction repository.Transaction, id uint) (
 }
 
 // GetByEmail returns a client by id
-func (r ClientRepository) GetByEmail(transaction repository.Transaction, email string) (*model.Client, error) {
+func (r CustomerRepository) GetByEmail(transaction repository.Transaction, email string) (*model.Customer, error) {
 	tx := r.checkTransaction(transaction)
 
-	var client model.Client
+	var client model.Customer
 	if err := tx.Where("email = ?", email).First(&client).Error; err != nil {
 		return nil, parseError(err)
 	}
@@ -59,7 +59,7 @@ func (r ClientRepository) GetByEmail(transaction repository.Transaction, email s
 }
 
 // Update updates the changed fields in the db
-func (r ClientRepository) Update(transaction repository.Transaction, client *model.Client) error {
+func (r CustomerRepository) Update(transaction repository.Transaction, client *model.Customer) error {
 	tx := r.checkTransaction(transaction)
 
 	if err := tx.Model(client).Update(client).Error; err != nil {
@@ -71,7 +71,7 @@ func (r ClientRepository) Update(transaction repository.Transaction, client *mod
 
 // checkTransaction returns either a gorm.DB pointer either as a transaction or as a direct db access
 // this depends on the if the repository.Transaction is a transaction or a NoTransaction
-func (r ClientRepository) checkTransaction(in repository.Transaction) *gorm.DB {
+func (r CustomerRepository) checkTransaction(in repository.Transaction) *gorm.DB {
 	tx, ok := in.(*transaction)
 	if !ok {
 		return r.db

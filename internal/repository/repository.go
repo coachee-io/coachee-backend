@@ -15,12 +15,12 @@ type Coach interface {
 	Length(tx Transaction, tag string) (uint, error)
 }
 
-// Client is the repository to interact and persist clients
-type Client interface {
+// Customer is the repository to interact and persist clients
+type Customer interface {
 	Begin() Transaction
 
-	Create(tx Transaction, client *model.Client) error
-	GetByID(tx Transaction, id uint) (*model.Client, error)
-	GetByEmail(tx Transaction, email string) (*model.Client, error)
-	Update(tx Transaction, client *model.Client) error
+	Create(tx Transaction, client *model.Customer) error
+	GetByID(tx Transaction, id uint) (*model.Customer, error)
+	GetByEmail(tx Transaction, email string) (*model.Customer, error)
+	Update(tx Transaction, client *model.Customer) error
 }

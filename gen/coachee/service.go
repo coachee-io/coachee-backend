@@ -38,11 +38,11 @@ type Service interface {
 	CreateAvailability(context.Context, *CreateAvailabilityPayload) (err error)
 	// deletes an availability for a coach
 	DeleteAvailability(context.Context, *DeleteAvailabilityPayload) (err error)
-	// creates a new client
-	CreateClient(context.Context, *CreateClientPayload) (res *CreateClientResult, err error)
-	// ClientLogin implements ClientLogin.
-	ClientLogin(context.Context, *ClientLoginPayload) (res *ClientLoginResult, err error)
-	// CreateOrder implements CreateOrder.
+	// creates a new customer
+	CreateCustomer(context.Context, *CreateCustomerPayload) (res *CreateCustomerResult, err error)
+	// logs in a customer and returns a jwt
+	CustomerLogin(context.Context, *CustomerLoginPayload) (res *CustomerLoginResult, err error)
+	// creates a new order
 	CreateOrder(context.Context, *CreateOrderPayload) (err error)
 }
 
@@ -60,7 +60,7 @@ const ServiceName = "coachee"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [14]string{"GetCoaches", "GetCoach", "LenCoaches", "CreateCoach", "UpdateCoach", "CreateCertification", "DeleteCertification", "CreateProgram", "DeleteProgram", "CreateAvailability", "DeleteAvailability", "CreateClient", "ClientLogin", "CreateOrder"}
+var MethodNames = [14]string{"GetCoaches", "GetCoach", "LenCoaches", "CreateCoach", "UpdateCoach", "CreateCertification", "DeleteCertification", "CreateProgram", "DeleteProgram", "CreateAvailability", "DeleteAvailability", "CreateCustomer", "CustomerLogin", "CreateOrder"}
 
 // GetCoachesPayload is the payload type of the coachee service GetCoaches
 // method.
@@ -174,9 +174,9 @@ type DeleteAvailabilityPayload struct {
 	AvID string
 }
 
-// CreateClientPayload is the payload type of the coachee service CreateClient
-// method.
-type CreateClientPayload struct {
+// CreateCustomerPayload is the payload type of the coachee service
+// CreateCustomer method.
+type CreateCustomerPayload struct {
 	Email     string
 	FirstName string
 	LastName  string
@@ -184,24 +184,24 @@ type CreateClientPayload struct {
 	Password  string
 }
 
-// CreateClientResult is the result type of the coachee service CreateClient
-// method.
-type CreateClientResult struct {
+// CreateCustomerResult is the result type of the coachee service
+// CreateCustomer method.
+type CreateCustomerResult struct {
 	Token  string
 	Expiry int64
 	User   *BaseClient
 }
 
-// ClientLoginPayload is the payload type of the coachee service ClientLogin
-// method.
-type ClientLoginPayload struct {
+// CustomerLoginPayload is the payload type of the coachee service
+// CustomerLogin method.
+type CustomerLoginPayload struct {
 	Email    string
 	Password string
 }
 
-// ClientLoginResult is the result type of the coachee service ClientLogin
+// CustomerLoginResult is the result type of the coachee service CustomerLogin
 // method.
-type ClientLoginResult struct {
+type CustomerLoginResult struct {
 	Token  string
 	Expiry int64
 	User   *BaseClient

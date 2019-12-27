@@ -27,8 +27,8 @@ type Endpoints struct {
 	DeleteProgram       goa.Endpoint
 	CreateAvailability  goa.Endpoint
 	DeleteAvailability  goa.Endpoint
-	CreateClient        goa.Endpoint
-	ClientLogin         goa.Endpoint
+	CreateCustomer      goa.Endpoint
+	CustomerLogin       goa.Endpoint
 	CreateOrder         goa.Endpoint
 }
 
@@ -48,8 +48,8 @@ func NewEndpoints(s Service) *Endpoints {
 		DeleteProgram:       NewDeleteProgramEndpoint(s),
 		CreateAvailability:  NewCreateAvailabilityEndpoint(s),
 		DeleteAvailability:  NewDeleteAvailabilityEndpoint(s),
-		CreateClient:        NewCreateClientEndpoint(s),
-		ClientLogin:         NewClientLoginEndpoint(s),
+		CreateCustomer:      NewCreateCustomerEndpoint(s),
+		CustomerLogin:       NewCustomerLoginEndpoint(s),
 		CreateOrder:         NewCreateOrderEndpoint(s, a.JWTAuth),
 	}
 }
@@ -67,8 +67,8 @@ func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.DeleteProgram = m(e.DeleteProgram)
 	e.CreateAvailability = m(e.CreateAvailability)
 	e.DeleteAvailability = m(e.DeleteAvailability)
-	e.CreateClient = m(e.CreateClient)
-	e.ClientLogin = m(e.ClientLogin)
+	e.CreateCustomer = m(e.CreateCustomer)
+	e.CustomerLogin = m(e.CustomerLogin)
 	e.CreateOrder = m(e.CreateOrder)
 }
 
@@ -171,21 +171,21 @@ func NewDeleteAvailabilityEndpoint(s Service) goa.Endpoint {
 	}
 }
 
-// NewCreateClientEndpoint returns an endpoint function that calls the method
-// "CreateClient" of service "coachee".
-func NewCreateClientEndpoint(s Service) goa.Endpoint {
+// NewCreateCustomerEndpoint returns an endpoint function that calls the method
+// "CreateCustomer" of service "coachee".
+func NewCreateCustomerEndpoint(s Service) goa.Endpoint {
 	return func(ctx context.Context, req interface{}) (interface{}, error) {
-		p := req.(*CreateClientPayload)
-		return s.CreateClient(ctx, p)
+		p := req.(*CreateCustomerPayload)
+		return s.CreateCustomer(ctx, p)
 	}
 }
 
-// NewClientLoginEndpoint returns an endpoint function that calls the method
-// "ClientLogin" of service "coachee".
-func NewClientLoginEndpoint(s Service) goa.Endpoint {
+// NewCustomerLoginEndpoint returns an endpoint function that calls the method
+// "CustomerLogin" of service "coachee".
+func NewCustomerLoginEndpoint(s Service) goa.Endpoint {
 	return func(ctx context.Context, req interface{}) (interface{}, error) {
-		p := req.(*ClientLoginPayload)
-		return s.ClientLogin(ctx, p)
+		p := req.(*CustomerLoginPayload)
+		return s.CustomerLogin(ctx, p)
 	}
 }
 

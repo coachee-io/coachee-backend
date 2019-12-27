@@ -8,7 +8,7 @@ import (
 	"github.com/go-ozzo/ozzo-validation/is"
 )
 
-type Client struct {
+type Customer struct {
 	ID        uint `gorm:"primary_key"`
 	StripeID  string
 	FirstName string
@@ -22,7 +22,7 @@ type Client struct {
 	DeletedAt *time.Time `sql:"index"`
 }
 
-func (c *Client) Validate() error {
+func (c *Customer) Validate() error {
 	if c == nil {
 		return errors.New("nil client")
 	}

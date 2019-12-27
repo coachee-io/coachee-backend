@@ -1657,13 +1657,13 @@ func DecodeDeleteAvailabilityResponse(decoder func(*http.Response) goahttp.Decod
 	}
 }
 
-// BuildCreateClientRequest instantiates a HTTP request object with method and
-// path set to call the "coachee" service "CreateClient" endpoint
-func (c *Client) BuildCreateClientRequest(ctx context.Context, v interface{}) (*http.Request, error) {
-	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: CreateClientCoacheePath()}
+// BuildCreateCustomerRequest instantiates a HTTP request object with method
+// and path set to call the "coachee" service "CreateCustomer" endpoint
+func (c *Client) BuildCreateCustomerRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: CreateCustomerCoacheePath()}
 	req, err := http.NewRequest("POST", u.String(), nil)
 	if err != nil {
-		return nil, goahttp.ErrInvalidURL("coachee", "CreateClient", u.String(), err)
+		return nil, goahttp.ErrInvalidURL("coachee", "CreateCustomer", u.String(), err)
 	}
 	if ctx != nil {
 		req = req.WithContext(ctx)
@@ -1672,33 +1672,33 @@ func (c *Client) BuildCreateClientRequest(ctx context.Context, v interface{}) (*
 	return req, nil
 }
 
-// EncodeCreateClientRequest returns an encoder for requests sent to the
-// coachee CreateClient server.
-func EncodeCreateClientRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+// EncodeCreateCustomerRequest returns an encoder for requests sent to the
+// coachee CreateCustomer server.
+func EncodeCreateCustomerRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
 	return func(req *http.Request, v interface{}) error {
-		p, ok := v.(*coachee.CreateClientPayload)
+		p, ok := v.(*coachee.CreateCustomerPayload)
 		if !ok {
-			return goahttp.ErrInvalidType("coachee", "CreateClient", "*coachee.CreateClientPayload", v)
+			return goahttp.ErrInvalidType("coachee", "CreateCustomer", "*coachee.CreateCustomerPayload", v)
 		}
-		body := NewCreateClientRequestBody(p)
+		body := NewCreateCustomerRequestBody(p)
 		if err := encoder(req).Encode(&body); err != nil {
-			return goahttp.ErrEncodingError("coachee", "CreateClient", err)
+			return goahttp.ErrEncodingError("coachee", "CreateCustomer", err)
 		}
 		return nil
 	}
 }
 
-// DecodeCreateClientResponse returns a decoder for responses returned by the
-// coachee CreateClient endpoint. restoreBody controls whether the response
+// DecodeCreateCustomerResponse returns a decoder for responses returned by the
+// coachee CreateCustomer endpoint. restoreBody controls whether the response
 // body should be restored after having been read.
-// DecodeCreateClientResponse may return the following errors:
+// DecodeCreateCustomerResponse may return the following errors:
 //	- "internal" (type *goa.ServiceError): http.StatusInternalServerError
 //	- "transient" (type *goa.ServiceError): http.StatusInternalServerError
 //	- "notFound" (type *goa.ServiceError): http.StatusNotFound
 //	- "validation" (type *goa.ServiceError): http.StatusBadRequest
 //	- "unauthorized" (type *goa.ServiceError): http.StatusUnauthorized
 //	- error: internal error
-func DecodeCreateClientResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+func DecodeCreateCustomerResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
 	return func(resp *http.Response) (interface{}, error) {
 		if restoreBody {
 			b, err := ioutil.ReadAll(resp.Body)
@@ -1715,110 +1715,110 @@ func DecodeCreateClientResponse(decoder func(*http.Response) goahttp.Decoder, re
 		switch resp.StatusCode {
 		case http.StatusCreated:
 			var (
-				body CreateClientResponseBody
+				body CreateCustomerResponseBody
 				err  error
 			)
 			err = decoder(resp).Decode(&body)
 			if err != nil {
-				return nil, goahttp.ErrDecodingError("coachee", "CreateClient", err)
+				return nil, goahttp.ErrDecodingError("coachee", "CreateCustomer", err)
 			}
-			err = ValidateCreateClientResponseBody(&body)
+			err = ValidateCreateCustomerResponseBody(&body)
 			if err != nil {
-				return nil, goahttp.ErrValidationError("coachee", "CreateClient", err)
+				return nil, goahttp.ErrValidationError("coachee", "CreateCustomer", err)
 			}
-			res := NewCreateClientResultCreated(&body)
+			res := NewCreateCustomerResultCreated(&body)
 			return res, nil
 		case http.StatusInternalServerError:
 			en := resp.Header.Get("goa-error")
 			switch en {
 			case "internal":
 				var (
-					body CreateClientInternalResponseBody
+					body CreateCustomerInternalResponseBody
 					err  error
 				)
 				err = decoder(resp).Decode(&body)
 				if err != nil {
-					return nil, goahttp.ErrDecodingError("coachee", "CreateClient", err)
+					return nil, goahttp.ErrDecodingError("coachee", "CreateCustomer", err)
 				}
-				err = ValidateCreateClientInternalResponseBody(&body)
+				err = ValidateCreateCustomerInternalResponseBody(&body)
 				if err != nil {
-					return nil, goahttp.ErrValidationError("coachee", "CreateClient", err)
+					return nil, goahttp.ErrValidationError("coachee", "CreateCustomer", err)
 				}
-				return nil, NewCreateClientInternal(&body)
+				return nil, NewCreateCustomerInternal(&body)
 			case "transient":
 				var (
-					body CreateClientTransientResponseBody
+					body CreateCustomerTransientResponseBody
 					err  error
 				)
 				err = decoder(resp).Decode(&body)
 				if err != nil {
-					return nil, goahttp.ErrDecodingError("coachee", "CreateClient", err)
+					return nil, goahttp.ErrDecodingError("coachee", "CreateCustomer", err)
 				}
-				err = ValidateCreateClientTransientResponseBody(&body)
+				err = ValidateCreateCustomerTransientResponseBody(&body)
 				if err != nil {
-					return nil, goahttp.ErrValidationError("coachee", "CreateClient", err)
+					return nil, goahttp.ErrValidationError("coachee", "CreateCustomer", err)
 				}
-				return nil, NewCreateClientTransient(&body)
+				return nil, NewCreateCustomerTransient(&body)
 			default:
 				body, _ := ioutil.ReadAll(resp.Body)
-				return nil, goahttp.ErrInvalidResponse("coachee", "CreateClient", resp.StatusCode, string(body))
+				return nil, goahttp.ErrInvalidResponse("coachee", "CreateCustomer", resp.StatusCode, string(body))
 			}
 		case http.StatusNotFound:
 			var (
-				body CreateClientNotFoundResponseBody
+				body CreateCustomerNotFoundResponseBody
 				err  error
 			)
 			err = decoder(resp).Decode(&body)
 			if err != nil {
-				return nil, goahttp.ErrDecodingError("coachee", "CreateClient", err)
+				return nil, goahttp.ErrDecodingError("coachee", "CreateCustomer", err)
 			}
-			err = ValidateCreateClientNotFoundResponseBody(&body)
+			err = ValidateCreateCustomerNotFoundResponseBody(&body)
 			if err != nil {
-				return nil, goahttp.ErrValidationError("coachee", "CreateClient", err)
+				return nil, goahttp.ErrValidationError("coachee", "CreateCustomer", err)
 			}
-			return nil, NewCreateClientNotFound(&body)
+			return nil, NewCreateCustomerNotFound(&body)
 		case http.StatusBadRequest:
 			var (
-				body CreateClientValidationResponseBody
+				body CreateCustomerValidationResponseBody
 				err  error
 			)
 			err = decoder(resp).Decode(&body)
 			if err != nil {
-				return nil, goahttp.ErrDecodingError("coachee", "CreateClient", err)
+				return nil, goahttp.ErrDecodingError("coachee", "CreateCustomer", err)
 			}
-			err = ValidateCreateClientValidationResponseBody(&body)
+			err = ValidateCreateCustomerValidationResponseBody(&body)
 			if err != nil {
-				return nil, goahttp.ErrValidationError("coachee", "CreateClient", err)
+				return nil, goahttp.ErrValidationError("coachee", "CreateCustomer", err)
 			}
-			return nil, NewCreateClientValidation(&body)
+			return nil, NewCreateCustomerValidation(&body)
 		case http.StatusUnauthorized:
 			var (
-				body CreateClientUnauthorizedResponseBody
+				body CreateCustomerUnauthorizedResponseBody
 				err  error
 			)
 			err = decoder(resp).Decode(&body)
 			if err != nil {
-				return nil, goahttp.ErrDecodingError("coachee", "CreateClient", err)
+				return nil, goahttp.ErrDecodingError("coachee", "CreateCustomer", err)
 			}
-			err = ValidateCreateClientUnauthorizedResponseBody(&body)
+			err = ValidateCreateCustomerUnauthorizedResponseBody(&body)
 			if err != nil {
-				return nil, goahttp.ErrValidationError("coachee", "CreateClient", err)
+				return nil, goahttp.ErrValidationError("coachee", "CreateCustomer", err)
 			}
-			return nil, NewCreateClientUnauthorized(&body)
+			return nil, NewCreateCustomerUnauthorized(&body)
 		default:
 			body, _ := ioutil.ReadAll(resp.Body)
-			return nil, goahttp.ErrInvalidResponse("coachee", "CreateClient", resp.StatusCode, string(body))
+			return nil, goahttp.ErrInvalidResponse("coachee", "CreateCustomer", resp.StatusCode, string(body))
 		}
 	}
 }
 
-// BuildClientLoginRequest instantiates a HTTP request object with method and
-// path set to call the "coachee" service "ClientLogin" endpoint
-func (c *Client) BuildClientLoginRequest(ctx context.Context, v interface{}) (*http.Request, error) {
-	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: ClientLoginCoacheePath()}
+// BuildCustomerLoginRequest instantiates a HTTP request object with method and
+// path set to call the "coachee" service "CustomerLogin" endpoint
+func (c *Client) BuildCustomerLoginRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: CustomerLoginCoacheePath()}
 	req, err := http.NewRequest("POST", u.String(), nil)
 	if err != nil {
-		return nil, goahttp.ErrInvalidURL("coachee", "ClientLogin", u.String(), err)
+		return nil, goahttp.ErrInvalidURL("coachee", "CustomerLogin", u.String(), err)
 	}
 	if ctx != nil {
 		req = req.WithContext(ctx)
@@ -1827,33 +1827,33 @@ func (c *Client) BuildClientLoginRequest(ctx context.Context, v interface{}) (*h
 	return req, nil
 }
 
-// EncodeClientLoginRequest returns an encoder for requests sent to the coachee
-// ClientLogin server.
-func EncodeClientLoginRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+// EncodeCustomerLoginRequest returns an encoder for requests sent to the
+// coachee CustomerLogin server.
+func EncodeCustomerLoginRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
 	return func(req *http.Request, v interface{}) error {
-		p, ok := v.(*coachee.ClientLoginPayload)
+		p, ok := v.(*coachee.CustomerLoginPayload)
 		if !ok {
-			return goahttp.ErrInvalidType("coachee", "ClientLogin", "*coachee.ClientLoginPayload", v)
+			return goahttp.ErrInvalidType("coachee", "CustomerLogin", "*coachee.CustomerLoginPayload", v)
 		}
-		body := NewClientLoginRequestBody(p)
+		body := NewCustomerLoginRequestBody(p)
 		if err := encoder(req).Encode(&body); err != nil {
-			return goahttp.ErrEncodingError("coachee", "ClientLogin", err)
+			return goahttp.ErrEncodingError("coachee", "CustomerLogin", err)
 		}
 		return nil
 	}
 }
 
-// DecodeClientLoginResponse returns a decoder for responses returned by the
-// coachee ClientLogin endpoint. restoreBody controls whether the response body
-// should be restored after having been read.
-// DecodeClientLoginResponse may return the following errors:
+// DecodeCustomerLoginResponse returns a decoder for responses returned by the
+// coachee CustomerLogin endpoint. restoreBody controls whether the response
+// body should be restored after having been read.
+// DecodeCustomerLoginResponse may return the following errors:
 //	- "internal" (type *goa.ServiceError): http.StatusInternalServerError
 //	- "transient" (type *goa.ServiceError): http.StatusInternalServerError
 //	- "notFound" (type *goa.ServiceError): http.StatusNotFound
 //	- "validation" (type *goa.ServiceError): http.StatusBadRequest
 //	- "unauthorized" (type *goa.ServiceError): http.StatusUnauthorized
 //	- error: internal error
-func DecodeClientLoginResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+func DecodeCustomerLoginResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
 	return func(resp *http.Response) (interface{}, error) {
 		if restoreBody {
 			b, err := ioutil.ReadAll(resp.Body)
@@ -1870,99 +1870,99 @@ func DecodeClientLoginResponse(decoder func(*http.Response) goahttp.Decoder, res
 		switch resp.StatusCode {
 		case http.StatusOK:
 			var (
-				body ClientLoginResponseBody
+				body CustomerLoginResponseBody
 				err  error
 			)
 			err = decoder(resp).Decode(&body)
 			if err != nil {
-				return nil, goahttp.ErrDecodingError("coachee", "ClientLogin", err)
+				return nil, goahttp.ErrDecodingError("coachee", "CustomerLogin", err)
 			}
-			err = ValidateClientLoginResponseBody(&body)
+			err = ValidateCustomerLoginResponseBody(&body)
 			if err != nil {
-				return nil, goahttp.ErrValidationError("coachee", "ClientLogin", err)
+				return nil, goahttp.ErrValidationError("coachee", "CustomerLogin", err)
 			}
-			res := NewClientLoginResultOK(&body)
+			res := NewCustomerLoginResultOK(&body)
 			return res, nil
 		case http.StatusInternalServerError:
 			en := resp.Header.Get("goa-error")
 			switch en {
 			case "internal":
 				var (
-					body ClientLoginInternalResponseBody
+					body CustomerLoginInternalResponseBody
 					err  error
 				)
 				err = decoder(resp).Decode(&body)
 				if err != nil {
-					return nil, goahttp.ErrDecodingError("coachee", "ClientLogin", err)
+					return nil, goahttp.ErrDecodingError("coachee", "CustomerLogin", err)
 				}
-				err = ValidateClientLoginInternalResponseBody(&body)
+				err = ValidateCustomerLoginInternalResponseBody(&body)
 				if err != nil {
-					return nil, goahttp.ErrValidationError("coachee", "ClientLogin", err)
+					return nil, goahttp.ErrValidationError("coachee", "CustomerLogin", err)
 				}
-				return nil, NewClientLoginInternal(&body)
+				return nil, NewCustomerLoginInternal(&body)
 			case "transient":
 				var (
-					body ClientLoginTransientResponseBody
+					body CustomerLoginTransientResponseBody
 					err  error
 				)
 				err = decoder(resp).Decode(&body)
 				if err != nil {
-					return nil, goahttp.ErrDecodingError("coachee", "ClientLogin", err)
+					return nil, goahttp.ErrDecodingError("coachee", "CustomerLogin", err)
 				}
-				err = ValidateClientLoginTransientResponseBody(&body)
+				err = ValidateCustomerLoginTransientResponseBody(&body)
 				if err != nil {
-					return nil, goahttp.ErrValidationError("coachee", "ClientLogin", err)
+					return nil, goahttp.ErrValidationError("coachee", "CustomerLogin", err)
 				}
-				return nil, NewClientLoginTransient(&body)
+				return nil, NewCustomerLoginTransient(&body)
 			default:
 				body, _ := ioutil.ReadAll(resp.Body)
-				return nil, goahttp.ErrInvalidResponse("coachee", "ClientLogin", resp.StatusCode, string(body))
+				return nil, goahttp.ErrInvalidResponse("coachee", "CustomerLogin", resp.StatusCode, string(body))
 			}
 		case http.StatusNotFound:
 			var (
-				body ClientLoginNotFoundResponseBody
+				body CustomerLoginNotFoundResponseBody
 				err  error
 			)
 			err = decoder(resp).Decode(&body)
 			if err != nil {
-				return nil, goahttp.ErrDecodingError("coachee", "ClientLogin", err)
+				return nil, goahttp.ErrDecodingError("coachee", "CustomerLogin", err)
 			}
-			err = ValidateClientLoginNotFoundResponseBody(&body)
+			err = ValidateCustomerLoginNotFoundResponseBody(&body)
 			if err != nil {
-				return nil, goahttp.ErrValidationError("coachee", "ClientLogin", err)
+				return nil, goahttp.ErrValidationError("coachee", "CustomerLogin", err)
 			}
-			return nil, NewClientLoginNotFound(&body)
+			return nil, NewCustomerLoginNotFound(&body)
 		case http.StatusBadRequest:
 			var (
-				body ClientLoginValidationResponseBody
+				body CustomerLoginValidationResponseBody
 				err  error
 			)
 			err = decoder(resp).Decode(&body)
 			if err != nil {
-				return nil, goahttp.ErrDecodingError("coachee", "ClientLogin", err)
+				return nil, goahttp.ErrDecodingError("coachee", "CustomerLogin", err)
 			}
-			err = ValidateClientLoginValidationResponseBody(&body)
+			err = ValidateCustomerLoginValidationResponseBody(&body)
 			if err != nil {
-				return nil, goahttp.ErrValidationError("coachee", "ClientLogin", err)
+				return nil, goahttp.ErrValidationError("coachee", "CustomerLogin", err)
 			}
-			return nil, NewClientLoginValidation(&body)
+			return nil, NewCustomerLoginValidation(&body)
 		case http.StatusUnauthorized:
 			var (
-				body ClientLoginUnauthorizedResponseBody
+				body CustomerLoginUnauthorizedResponseBody
 				err  error
 			)
 			err = decoder(resp).Decode(&body)
 			if err != nil {
-				return nil, goahttp.ErrDecodingError("coachee", "ClientLogin", err)
+				return nil, goahttp.ErrDecodingError("coachee", "CustomerLogin", err)
 			}
-			err = ValidateClientLoginUnauthorizedResponseBody(&body)
+			err = ValidateCustomerLoginUnauthorizedResponseBody(&body)
 			if err != nil {
-				return nil, goahttp.ErrValidationError("coachee", "ClientLogin", err)
+				return nil, goahttp.ErrValidationError("coachee", "CustomerLogin", err)
 			}
-			return nil, NewClientLoginUnauthorized(&body)
+			return nil, NewCustomerLoginUnauthorized(&body)
 		default:
 			body, _ := ioutil.ReadAll(resp.Body)
-			return nil, goahttp.ErrInvalidResponse("coachee", "ClientLogin", resp.StatusCode, string(body))
+			return nil, goahttp.ErrInvalidResponse("coachee", "CustomerLogin", resp.StatusCode, string(body))
 		}
 	}
 }
