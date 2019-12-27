@@ -158,7 +158,11 @@ func (c *Client) CustomerLogin(ctx context.Context, p *CustomerLoginPayload) (re
 }
 
 // CreateOrder calls the "CreateOrder" endpoint of the "coachee" service.
-func (c *Client) CreateOrder(ctx context.Context, p *CreateOrderPayload) (err error) {
-	_, err = c.CreateOrderEndpoint(ctx, p)
-	return
+func (c *Client) CreateOrder(ctx context.Context, p *CreateOrderPayload) (res *CreateOrderResult, err error) {
+	var ires interface{}
+	ires, err = c.CreateOrderEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.(*CreateOrderResult), nil
 }

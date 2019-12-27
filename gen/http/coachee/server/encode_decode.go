@@ -1235,8 +1235,11 @@ func EncodeCustomerLoginError(encoder func(context.Context, http.ResponseWriter)
 // coachee CreateOrder endpoint.
 func EncodeCreateOrderResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
 	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		res := v.(*coachee.CreateOrderResult)
+		enc := encoder(ctx, w)
+		body := NewCreateOrderResponseBody(res)
 		w.WriteHeader(http.StatusCreated)
-		return nil
+		return enc.Encode(body)
 	}
 }
 

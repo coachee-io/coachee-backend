@@ -2025,7 +2025,16 @@ func DecodeCreateOrderResponse(decoder func(*http.Response) goahttp.Decoder, res
 		}
 		switch resp.StatusCode {
 		case http.StatusCreated:
-			return nil, nil
+			var (
+				body CreateOrderResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("coachee", "CreateOrder", err)
+			}
+			res := NewCreateOrderResultCreated(&body)
+			return res, nil
 		case http.StatusInternalServerError:
 			en := resp.Header.Get("goa-error")
 			switch en {

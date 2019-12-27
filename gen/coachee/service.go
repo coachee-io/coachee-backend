@@ -43,7 +43,7 @@ type Service interface {
 	// logs in a customer and returns a jwt
 	CustomerLogin(context.Context, *CustomerLoginPayload) (res *CustomerLoginResult, err error)
 	// creates a new order
-	CreateOrder(context.Context, *CreateOrderPayload) (err error)
+	CreateOrder(context.Context, *CreateOrderPayload) (res *CreateOrderResult, err error)
 }
 
 // Auther defines the authorization functions to be implemented by the service.
@@ -215,6 +215,13 @@ type CreateOrderPayload struct {
 	CoachID   uint
 	ProgramID string
 	IntroCall int64
+}
+
+// CreateOrderResult is the result type of the coachee service CreateOrder
+// method.
+type CreateOrderResult struct {
+	ClientSecret *string
+	OrderID      *uint
 }
 
 // represents a coach certification

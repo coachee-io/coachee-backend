@@ -204,6 +204,6 @@ func NewCreateOrderEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpo
 		if err != nil {
 			return nil, err
 		}
-		return nil, s.CreateOrder(ctx, p)
+		return s.CreateOrder(ctx, p)
 	}
 }

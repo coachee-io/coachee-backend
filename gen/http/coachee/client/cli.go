@@ -98,7 +98,7 @@ func BuildCreateCoachPayload(coacheeCreateCoachBody string) (*coachee.CreateCoac
 	{
 		err = json.Unmarshal([]byte(coacheeCreateCoachBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, example of valid JSON:\n%s", "'{\n      \"city\": \"Veritatis aut.\",\n      \"country\": \"Est culpa.\",\n      \"description\": \"Quia blanditiis doloribus nam facilis.\",\n      \"email\": \"Omnis debitis omnis in aperiam quia.\",\n      \"firstName\": \"Sit itaque ipsam similique.\",\n      \"introCall\": 16322891051095473377,\n      \"lastName\": \"Iusto rerum voluptas rerum amet id deserunt.\",\n      \"phone\": \"Facilis dolorem debitis assumenda ipsum eligendi.\",\n      \"tags\": \"Doloribus culpa amet dolor sunt eos illo.\",\n      \"textAvailability\": \"Quidem sint.\",\n      \"textCertifications\": \"Sit est enim.\",\n      \"textPrograms\": \"Illo dolorem ut cum et magnam.\",\n      \"vat\": \"Voluptates tenetur in ut qui blanditiis quidem.\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, example of valid JSON:\n%s", "'{\n      \"city\": \"Quia sit est enim unde illo dolorem.\",\n      \"country\": \"Cum et magnam.\",\n      \"description\": \"Est culpa.\",\n      \"email\": \"Doloribus culpa amet dolor sunt eos illo.\",\n      \"firstName\": \"Omnis debitis omnis in aperiam quia.\",\n      \"introCall\": 8909263196681236987,\n      \"lastName\": \"Facilis dolorem debitis assumenda ipsum eligendi.\",\n      \"phone\": \"Quia blanditiis doloribus nam facilis.\",\n      \"tags\": \"Veritatis aut.\",\n      \"textAvailability\": \"Tenetur rerum nulla optio quisquam.\",\n      \"textCertifications\": \"Sint et voluptates tenetur in ut qui.\",\n      \"textPrograms\": \"Quidem qui accusamus mollitia.\",\n      \"vat\": \"Harum facere ipsa voluptate.\"\n   }'")
 		}
 	}
 	v := &coachee.CreateCoachPayload{
@@ -127,7 +127,7 @@ func BuildUpdateCoachPayload(coacheeUpdateCoachBody string, coacheeUpdateCoachID
 	{
 		err = json.Unmarshal([]byte(coacheeUpdateCoachBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, example of valid JSON:\n%s", "'{\n      \"city\": \"Est tempora iure id aspernatur.\",\n      \"country\": \"Esse molestiae eum et et.\",\n      \"description\": \"Inventore fugit distinctio delectus culpa doloremque.\",\n      \"email\": \"Fuga saepe sed.\",\n      \"firstName\": \"Nisi quam.\",\n      \"introCall\": 14891428555685395878,\n      \"lastName\": \"Provident porro doloremque repellendus nemo.\",\n      \"phone\": \"Quia voluptatem.\",\n      \"pictureURL\": \"Quo incidunt ad recusandae quam.\",\n      \"stripeID\": \"Incidunt odio.\",\n      \"tags\": \"Et autem voluptatem veniam.\",\n      \"vat\": \"Sint facilis.\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, example of valid JSON:\n%s", "'{\n      \"city\": \"Iusto incidunt odio.\",\n      \"country\": \"Quo incidunt ad recusandae quam.\",\n      \"description\": \"Eum et et.\",\n      \"email\": \"Ut inventore fugit.\",\n      \"firstName\": \"Voluptatem repellat.\",\n      \"introCall\": 2484851915066860437,\n      \"lastName\": \"Autem voluptatem.\",\n      \"phone\": \"Delectus culpa doloremque aliquid.\",\n      \"pictureURL\": \"Vero autem magnam rerum ut autem harum.\",\n      \"stripeID\": \"Facilis qui rerum laborum sapiente quae magnam.\",\n      \"tags\": \"Tempora iure id aspernatur nam esse.\",\n      \"vat\": \"Beatae vel repellat id aperiam.\"\n   }'")
 		}
 	}
 	var id uint
@@ -165,7 +165,7 @@ func BuildCreateCertificationPayload(coacheeCreateCertificationBody string, coac
 	{
 		err = json.Unmarshal([]byte(coacheeCreateCertificationBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, example of valid JSON:\n%s", "'{\n      \"certification\": {\n         \"description\": \"Rerum necessitatibus debitis praesentium accusamus.\",\n         \"id\": \"Id aperiam fugit facere repellat distinctio architecto.\",\n         \"institution\": \"Autem quo.\",\n         \"month\": 8,\n         \"title\": \"Sint facere est.\",\n         \"year\": 1941\n      }\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, example of valid JSON:\n%s", "'{\n      \"certification\": {\n         \"description\": \"Ut qui laboriosam id.\",\n         \"id\": \"Sit sit accusantium neque ad enim.\",\n         \"institution\": \"Recusandae ab sint.\",\n         \"month\": 2,\n         \"title\": \"Iste assumenda.\",\n         \"year\": 2026\n      }\n   }'")
 		}
 		if body.Certification == nil {
 			err = goa.MergeErrors(err, goa.MissingFieldError("certification", "body"))
@@ -228,7 +228,7 @@ func BuildCreateProgramPayload(coacheeCreateProgramBody string, coacheeCreatePro
 	{
 		err = json.Unmarshal([]byte(coacheeCreateProgramBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, example of valid JSON:\n%s", "'{\n      \"program\": {\n         \"description\": \"Repudiandae occaecati.\",\n         \"duration\": 935254225676850829,\n         \"id\": \"Expedita vero maxime sint illo.\",\n         \"name\": \"Sit aliquam non qui aliquam in.\",\n         \"sessions\": 17712998355210063996,\n         \"taxPercent\": 17579214390789932921,\n         \"totalPrice\": 12089975538047492576\n      }\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, example of valid JSON:\n%s", "'{\n      \"program\": {\n         \"description\": \"Repellendus alias velit eveniet soluta.\",\n         \"duration\": 6103343100881137032,\n         \"id\": \"Consectetur in consequatur labore esse aut soluta.\",\n         \"name\": \"Labore tempora fugit et.\",\n         \"sessions\": 17501346860314557738,\n         \"taxPercent\": 8905936226137563789,\n         \"totalPrice\": 6575205625408737613\n      }\n   }'")
 		}
 		if body.Program == nil {
 			err = goa.MergeErrors(err, goa.MissingFieldError("program", "body"))
@@ -286,7 +286,7 @@ func BuildCreateAvailabilityPayload(coacheeCreateAvailabilityBody string, coache
 	{
 		err = json.Unmarshal([]byte(coacheeCreateAvailabilityBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, example of valid JSON:\n%s", "'{\n      \"availability\": {\n         \"end\": 1328,\n         \"id\": \"Dolores eius.\",\n         \"start\": 710,\n         \"weekDay\": 1\n      }\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, example of valid JSON:\n%s", "'{\n      \"availability\": {\n         \"end\": 1137,\n         \"id\": \"Odio minima repudiandae.\",\n         \"start\": 39,\n         \"weekDay\": 0\n      }\n   }'")
 		}
 		if body.Availability == nil {
 			err = goa.MergeErrors(err, goa.MissingFieldError("availability", "body"))
@@ -349,7 +349,7 @@ func BuildCreateCustomerPayload(coacheeCreateCustomerBody string) (*coachee.Crea
 	{
 		err = json.Unmarshal([]byte(coacheeCreateCustomerBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, example of valid JSON:\n%s", "'{\n      \"birthDate\": 4576625523972506832,\n      \"email\": \"Id fugit delectus quia possimus perferendis tempore.\",\n      \"firstName\": \"Porro nisi aut aut beatae.\",\n      \"lastName\": \"Quia blanditiis similique necessitatibus sint.\",\n      \"password\": \"Quia voluptas labore voluptatum.\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, example of valid JSON:\n%s", "'{\n      \"birthDate\": 3385436270829203418,\n      \"email\": \"Voluptatum nulla assumenda distinctio.\",\n      \"firstName\": \"Neque quis sunt esse placeat consequatur.\",\n      \"lastName\": \"Dolorem quo.\",\n      \"password\": \"Reprehenderit exercitationem est dolores harum eius.\"\n   }'")
 		}
 	}
 	v := &coachee.CreateCustomerPayload{
@@ -370,7 +370,7 @@ func BuildCustomerLoginPayload(coacheeCustomerLoginBody string) (*coachee.Custom
 	{
 		err = json.Unmarshal([]byte(coacheeCustomerLoginBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, example of valid JSON:\n%s", "'{\n      \"email\": \"Vel officia non et voluptates.\",\n      \"password\": \"Illum dolore amet fugiat ab dolorum.\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, example of valid JSON:\n%s", "'{\n      \"email\": \"Sit dolor.\",\n      \"password\": \"Et sint sit laboriosam tempora modi facere.\"\n   }'")
 		}
 	}
 	v := &coachee.CustomerLoginPayload{
@@ -388,7 +388,7 @@ func BuildCreateOrderPayload(coacheeCreateOrderBody string, coacheeCreateOrderTo
 	{
 		err = json.Unmarshal([]byte(coacheeCreateOrderBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, example of valid JSON:\n%s", "'{\n      \"coachId\": 17165600852348217374,\n      \"introCall\": 6582573386058109301,\n      \"programId\": \"Quidem aut libero rerum mollitia accusantium.\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, example of valid JSON:\n%s", "'{\n      \"coachId\": 11357658429475809902,\n      \"introCall\": 8387831286000968232,\n      \"programId\": \"In enim quo commodi quia nihil.\"\n   }'")
 		}
 	}
 	var token string

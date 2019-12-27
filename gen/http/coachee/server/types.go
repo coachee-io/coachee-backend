@@ -127,6 +127,13 @@ type CustomerLoginResponseBody struct {
 	User   *BaseClientResponseBody `form:"user" json:"user" xml:"user"`
 }
 
+// CreateOrderResponseBody is the type of the "coachee" service "CreateOrder"
+// endpoint HTTP response body.
+type CreateOrderResponseBody struct {
+	ClientSecret *string `form:"clientSecret,omitempty" json:"clientSecret,omitempty" xml:"clientSecret,omitempty"`
+	OrderID      *uint   `form:"orderID,omitempty" json:"orderID,omitempty" xml:"orderID,omitempty"`
+}
+
 // GetCoachesInternalResponseBody is the type of the "coachee" service
 // "GetCoaches" endpoint HTTP response body for the "internal" error.
 type GetCoachesInternalResponseBody struct {
@@ -1599,6 +1606,16 @@ func NewCustomerLoginResponseBody(res *coachee.CustomerLoginResult) *CustomerLog
 	}
 	if res.User != nil {
 		body.User = marshalCoacheeBaseClientToBaseClientResponseBody(res.User)
+	}
+	return body
+}
+
+// NewCreateOrderResponseBody builds the HTTP response body from the result of
+// the "CreateOrder" endpoint of the "coachee" service.
+func NewCreateOrderResponseBody(res *coachee.CreateOrderResult) *CreateOrderResponseBody {
+	body := &CreateOrderResponseBody{
+		ClientSecret: res.ClientSecret,
+		OrderID:      res.OrderID,
 	}
 	return body
 }

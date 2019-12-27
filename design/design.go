@@ -390,6 +390,11 @@ var _ = Service("coachee", func() {
 			Required("token", "coachId", "programId", "introCall")
 		})
 
+		Result(func() {
+			Attribute("clientSecret", String)
+			Attribute("orderID", UInt)
+		})
+
 		HTTP(func() {
 			POST("/orders")
 			Response(StatusCreated)
