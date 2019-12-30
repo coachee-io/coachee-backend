@@ -1,7 +1,7 @@
 package main
 
 import (
-	coachee "coachee-backend/gen/coachee"
+	"coachee-backend/gen/coachee"
 	"coachee-backend/internal/model"
 	"coachee-backend/internal/repository/mysql"
 	"coachee-backend/internal/repository/mysql/connector"
@@ -16,6 +16,8 @@ import (
 	"os/signal"
 	"strings"
 	"sync"
+
+	"github.com/rs/zerolog"
 )
 
 func main() {
@@ -31,6 +33,14 @@ func main() {
 		pubKey    = flag.String("pub-key", "pk_test_bmGuB7UJfIeeeofOouGHeJcd00MQjvjYVL", "pub key")
 	)
 	flag.Parse()
+
+	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+	// Default level for this example is info, unless debug flag is present
+	zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	if *dbgF {
+		zerolog.SetGlobalLevel(zerolog.DebugLevel)
+	}
+
 	// initialize app context
 	appCtx := context.Background()
 

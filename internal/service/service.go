@@ -4,6 +4,7 @@ import (
 	"coachee-backend/internal/model"
 	"coachee-backend/internal/repository"
 	"context"
+	"os"
 
 	"github.com/rs/zerolog"
 )
@@ -35,7 +36,7 @@ func NewCoachee(ctx context.Context,
 	stripe Stripe,
 	pubKey string) *Service {
 
-	log := zerolog.Ctx(ctx).With().Str("component", "service").Logger()
+	log := zerolog.New(os.Stderr).With().Timestamp().Str("component", "service").Logger()
 	return &Service{
 		logger:             &log,
 		coachRepository:    coach,

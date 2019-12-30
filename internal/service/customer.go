@@ -62,8 +62,8 @@ func (s *Service) CreateCustomer(ctx context.Context, p *coachee.CreateCustomerP
 		return nil, coachee.MakeTransient(err)
 	}
 
-	expiry := time.Now().Add(30 * time.Minute)
-	token, err := auth.CreateUserToken(client.ID, expiry)
+	createdAt := time.Now()
+	token, err := auth.CreateUserToken(client.ID, createdAt)
 	if err != nil {
 		l.Error().Err(err).Msg("failed to generate jwt")
 		_ = tx.Rollback()
@@ -77,7 +77,7 @@ func (s *Service) CreateCustomer(ctx context.Context, p *coachee.CreateCustomerP
 
 	return &coachee.CreateCustomerResult{
 		Token:  token,
-		Expiry: expiry.Unix(),
+		Expiry: createdAt.Add(30 * time.Minute).Unix(),
 		User: &coachee.BaseClient{
 			ID:        client.ID,
 			FirstName: client.FirstName,
@@ -102,8 +102,8 @@ func (s *Service) CustomerLogin(ctx context.Context, p *coachee.CustomerLoginPay
 		return nil, coachee.MakeValidation(errors.New("wrong password"))
 	}
 
-	expiry := time.Now().Add(30 * time.Minute)
-	token, err := auth.CreateUserToken(client.ID, expiry)
+	createdAt := time.Now()
+	token, err := auth.CreateUserToken(client.ID, createdAt)
 	if err != nil {
 		l.Error().Err(err).Msg("failed to generate jwt")
 		return nil, coachee.MakeInternal(err)
@@ -111,7 +111,7 @@ func (s *Service) CustomerLogin(ctx context.Context, p *coachee.CustomerLoginPay
 
 	return &coachee.CustomerLoginResult{
 		Token:  token,
-		Expiry: expiry.Unix(),
+		Expiry: createdAt.Add(30 * time.Minute).Unix(),
 		User: &coachee.BaseClient{
 			ID:        client.ID,
 			FirstName: client.FirstName,
