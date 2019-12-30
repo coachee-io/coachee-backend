@@ -4,6 +4,7 @@ import (
 	"coachee-backend/gen/coachee"
 	"database/sql/driver"
 	"encoding/json"
+	"errors"
 	"time"
 
 	"github.com/pborman/uuid"
@@ -166,4 +167,14 @@ func (Program) New(p *coachee.Program) *Program {
 		TotalPrice:       p.TotalPrice,
 		TaxPercent:       p.TaxPercent,
 	}
+}
+
+// GetProgram
+func (c Coach) GetProgram(id string) (*Program, error) {
+	for _, program := range c.Programs {
+		if program.ID == id {
+			return program, nil
+		}
+	}
+	return nil, coachee.MakeNotFound(errors.New("program not found"))
 }

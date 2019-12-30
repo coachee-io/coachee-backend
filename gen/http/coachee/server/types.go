@@ -130,8 +130,8 @@ type CustomerLoginResponseBody struct {
 // CreateOrderResponseBody is the type of the "coachee" service "CreateOrder"
 // endpoint HTTP response body.
 type CreateOrderResponseBody struct {
-	ClientSecret *string `form:"clientSecret,omitempty" json:"clientSecret,omitempty" xml:"clientSecret,omitempty"`
-	OrderID      *uint   `form:"orderID,omitempty" json:"orderID,omitempty" xml:"orderID,omitempty"`
+	ClientSecret  string `form:"clientSecret" json:"clientSecret" xml:"clientSecret"`
+	PublishingKey string `form:"publishingKey" json:"publishingKey" xml:"publishingKey"`
 }
 
 // GetCoachesInternalResponseBody is the type of the "coachee" service
@@ -1614,8 +1614,8 @@ func NewCustomerLoginResponseBody(res *coachee.CustomerLoginResult) *CustomerLog
 // the "CreateOrder" endpoint of the "coachee" service.
 func NewCreateOrderResponseBody(res *coachee.CreateOrderResult) *CreateOrderResponseBody {
 	body := &CreateOrderResponseBody{
-		ClientSecret: res.ClientSecret,
-		OrderID:      res.OrderID,
+		ClientSecret:  res.ClientSecret,
+		PublishingKey: res.PublishingKey,
 	}
 	return body
 }

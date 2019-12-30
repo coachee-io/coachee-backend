@@ -98,7 +98,7 @@ func BuildCreateCoachPayload(coacheeCreateCoachBody string) (*coachee.CreateCoac
 	{
 		err = json.Unmarshal([]byte(coacheeCreateCoachBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, example of valid JSON:\n%s", "'{\n      \"city\": \"Quia sit est enim unde illo dolorem.\",\n      \"country\": \"Cum et magnam.\",\n      \"description\": \"Est culpa.\",\n      \"email\": \"Doloribus culpa amet dolor sunt eos illo.\",\n      \"firstName\": \"Omnis debitis omnis in aperiam quia.\",\n      \"introCall\": 8909263196681236987,\n      \"lastName\": \"Facilis dolorem debitis assumenda ipsum eligendi.\",\n      \"phone\": \"Quia blanditiis doloribus nam facilis.\",\n      \"tags\": \"Veritatis aut.\",\n      \"textAvailability\": \"Tenetur rerum nulla optio quisquam.\",\n      \"textCertifications\": \"Sint et voluptates tenetur in ut qui.\",\n      \"textPrograms\": \"Quidem qui accusamus mollitia.\",\n      \"vat\": \"Harum facere ipsa voluptate.\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, example of valid JSON:\n%s", "'{\n      \"city\": \"Quidem sint.\",\n      \"country\": \"Voluptates tenetur in ut qui blanditiis quidem.\",\n      \"description\": \"Illo dolorem ut cum et magnam.\",\n      \"email\": \"Facilis aut.\",\n      \"firstName\": \"Assumenda ipsum eligendi et doloribus culpa amet.\",\n      \"introCall\": 11671010134317199316,\n      \"lastName\": \"Sunt eos illo quia quia blanditiis doloribus.\",\n      \"phone\": \"Aut nam est culpa enim.\",\n      \"tags\": \"Sit est enim.\",\n      \"textAvailability\": \"Facere ipsa voluptate.\",\n      \"textCertifications\": \"Mollitia reiciendis.\",\n      \"textPrograms\": \"Rerum nulla optio quisquam vitae.\",\n      \"vat\": \"Excepturi natus nesciunt.\"\n   }'")
 		}
 	}
 	v := &coachee.CreateCoachPayload{
@@ -127,7 +127,7 @@ func BuildUpdateCoachPayload(coacheeUpdateCoachBody string, coacheeUpdateCoachID
 	{
 		err = json.Unmarshal([]byte(coacheeUpdateCoachBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, example of valid JSON:\n%s", "'{\n      \"city\": \"Iusto incidunt odio.\",\n      \"country\": \"Quo incidunt ad recusandae quam.\",\n      \"description\": \"Eum et et.\",\n      \"email\": \"Ut inventore fugit.\",\n      \"firstName\": \"Voluptatem repellat.\",\n      \"introCall\": 2484851915066860437,\n      \"lastName\": \"Autem voluptatem.\",\n      \"phone\": \"Delectus culpa doloremque aliquid.\",\n      \"pictureURL\": \"Vero autem magnam rerum ut autem harum.\",\n      \"stripeID\": \"Facilis qui rerum laborum sapiente quae magnam.\",\n      \"tags\": \"Tempora iure id aspernatur nam esse.\",\n      \"vat\": \"Beatae vel repellat id aperiam.\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, example of valid JSON:\n%s", "'{\n      \"city\": \"Sint facilis.\",\n      \"country\": \"Rerum laborum.\",\n      \"description\": \"Quo incidunt ad recusandae quam.\",\n      \"email\": \"Aliquid est tempora iure id aspernatur.\",\n      \"firstName\": \"Voluptatem veniam ut inventore.\",\n      \"introCall\": 6235021646192451417,\n      \"lastName\": \"Distinctio delectus culpa.\",\n      \"phone\": \"Esse molestiae eum et et.\",\n      \"pictureURL\": \"Rerum ut autem harum.\",\n      \"stripeID\": \"Magnam ut vero autem.\",\n      \"tags\": \"Iusto incidunt odio.\",\n      \"vat\": \"Beatae vel repellat id aperiam.\"\n   }'")
 		}
 	}
 	var id uint

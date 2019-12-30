@@ -31,3 +31,25 @@ func ParseToken(token string) (map[string]interface{}, error) {
 
 	return claims, nil
 }
+
+// GetCustomerID returns the id from the jwt
+func GetCustomerID(token string) (uint, error) {
+	claims := make(jwt.MapClaims)
+
+	_, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (i interface{}, e error) {
+		return secret, nil
+	})
+	if err != nil {
+		return 0, coachee.MakeUnauthorized(errors.New("invalid token"))
+	}
+
+	inter, ok := claims["id"]
+	if !ok {
+		return 0, coachee.MakeInternal(errors.New("missing id"))
+	}
+	id, ok := inter.(uint)
+	if !ok {
+		return 0, coachee.MakeInternal(errors.New("failed type conversion"))
+	}
+	return id, nil
+}

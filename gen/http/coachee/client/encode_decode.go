@@ -2033,6 +2033,10 @@ func DecodeCreateOrderResponse(decoder func(*http.Response) goahttp.Decoder, res
 			if err != nil {
 				return nil, goahttp.ErrDecodingError("coachee", "CreateOrder", err)
 			}
+			err = ValidateCreateOrderResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("coachee", "CreateOrder", err)
+			}
 			res := NewCreateOrderResultCreated(&body)
 			return res, nil
 		case http.StatusInternalServerError:

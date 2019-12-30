@@ -220,8 +220,8 @@ type CreateOrderPayload struct {
 // CreateOrderResult is the result type of the coachee service CreateOrder
 // method.
 type CreateOrderResult struct {
-	ClientSecret *string
-	OrderID      *uint
+	ClientSecret  string
+	PublishingKey string
 }
 
 // represents a coach certification

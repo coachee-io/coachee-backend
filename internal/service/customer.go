@@ -40,8 +40,8 @@ func (s *Service) CreateCustomer(ctx context.Context, p *coachee.CreateCustomerP
 		return nil, coachee.MakeValidation(err)
 	}
 
-	tx := s.clientRepository.Begin()
-	err = s.clientRepository.Create(tx, client)
+	tx := s.customerRepository.Begin()
+	err = s.customerRepository.Create(tx, client)
 	if err != nil {
 		l.Error().Err(err).Msg("failed to persist client")
 		_ = tx.Rollback()
@@ -55,7 +55,7 @@ func (s *Service) CreateCustomer(ctx context.Context, p *coachee.CreateCustomerP
 		return nil, coachee.MakeTransient(err)
 	}
 
-	err = s.clientRepository.Update(tx, client)
+	err = s.customerRepository.Update(tx, client)
 	if err != nil {
 		l.Error().Err(err).Msg("failed to update client")
 		_ = tx.Rollback()
@@ -90,7 +90,7 @@ func (s *Service) CreateCustomer(ctx context.Context, p *coachee.CreateCustomerP
 func (s *Service) CustomerLogin(ctx context.Context, p *coachee.CustomerLoginPayload) (res *coachee.CustomerLoginResult, err error) {
 	l := s.logger.With().Str("service", "ClientLogin").Logger()
 
-	client, err := s.clientRepository.GetByEmail(repository.DefaultNoTransaction, p.Email)
+	client, err := s.customerRepository.GetByEmail(repository.DefaultNoTransaction, p.Email)
 	if err != nil {
 		l.Debug().Err(err).Msg("failed to retrieve client")
 		return nil, err

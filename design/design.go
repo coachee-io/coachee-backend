@@ -392,7 +392,9 @@ var _ = Service("coachee", func() {
 
 		Result(func() {
 			Attribute("clientSecret", String)
-			Attribute("orderID", UInt)
+			Attribute("publishingKey", String)
+
+			Required("clientSecret", "publishingKey")
 		})
 
 		HTTP(func() {

@@ -130,8 +130,8 @@ type CustomerLoginResponseBody struct {
 // CreateOrderResponseBody is the type of the "coachee" service "CreateOrder"
 // endpoint HTTP response body.
 type CreateOrderResponseBody struct {
-	ClientSecret *string `form:"clientSecret,omitempty" json:"clientSecret,omitempty" xml:"clientSecret,omitempty"`
-	OrderID      *uint   `form:"orderID,omitempty" json:"orderID,omitempty" xml:"orderID,omitempty"`
+	ClientSecret  *string `form:"clientSecret,omitempty" json:"clientSecret,omitempty" xml:"clientSecret,omitempty"`
+	PublishingKey *string `form:"publishingKey,omitempty" json:"publishingKey,omitempty" xml:"publishingKey,omitempty"`
 }
 
 // GetCoachesInternalResponseBody is the type of the "coachee" service
@@ -2625,8 +2625,8 @@ func NewCustomerLoginUnauthorized(body *CustomerLoginUnauthorizedResponseBody) *
 // endpoint result from a HTTP "Created" response.
 func NewCreateOrderResultCreated(body *CreateOrderResponseBody) *coachee.CreateOrderResult {
 	v := &coachee.CreateOrderResult{
-		ClientSecret: body.ClientSecret,
-		OrderID:      body.OrderID,
+		ClientSecret:  *body.ClientSecret,
+		PublishingKey: *body.PublishingKey,
 	}
 	return v
 }
@@ -2788,6 +2788,18 @@ func ValidateCustomerLoginResponseBody(body *CustomerLoginResponseBody) (err err
 		if err2 := ValidateBaseClientResponseBody(body.User); err2 != nil {
 			err = goa.MergeErrors(err, err2)
 		}
+	}
+	return
+}
+
+// ValidateCreateOrderResponseBody runs the validations defined on
+// CreateOrderResponseBody
+func ValidateCreateOrderResponseBody(body *CreateOrderResponseBody) (err error) {
+	if body.ClientSecret == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("clientSecret", "body"))
+	}
+	if body.PublishingKey == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("publishingKey", "body"))
 	}
 	return
 }

@@ -29,7 +29,7 @@ func UsageCommands() string {
 
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
-	return os.Args[0] + ` coachee get-coaches --tag "Sint doloribus consequatur sed dolorem aut et." --limit 17847149750640580513 --page 1942921888573123469` + "\n" +
+	return os.Args[0] + ` coachee get-coaches --tag "Dolorem aut et a doloremque ut reprehenderit." --limit 8681139670447670254 --page 1150258549287143979` + "\n" +
 		""
 }
 
@@ -301,7 +301,7 @@ GetCoaches returns an array of coaches according to a tag and pagination
     -page UINT: 
 
 Example:
-    `+os.Args[0]+` coachee get-coaches --tag "Sint doloribus consequatur sed dolorem aut et." --limit 17847149750640580513 --page 1942921888573123469
+    `+os.Args[0]+` coachee get-coaches --tag "Dolorem aut et a doloremque ut reprehenderit." --limit 8681139670447670254 --page 1150258549287143979
 `, os.Args[0])
 }
 
@@ -312,7 +312,7 @@ GetCoach returns one coach according to the id
     -id UINT: 
 
 Example:
-    `+os.Args[0]+` coachee get-coach --id 11014761483333541135
+    `+os.Args[0]+` coachee get-coach --id 15524985453472415853
 `, os.Args[0])
 }
 
@@ -323,7 +323,7 @@ LenCoaches returns the amount of coaches with a given tag
     -tag STRING: 
 
 Example:
-    `+os.Args[0]+` coachee len-coaches --tag "Fuga quod suscipit enim explicabo."
+    `+os.Args[0]+` coachee len-coaches --tag "Similique eum."
 `, os.Args[0])
 }
 
@@ -335,19 +335,19 @@ CreateCoaches creates a base coach
 
 Example:
     `+os.Args[0]+` coachee create-coach --body '{
-      "city": "Quia sit est enim unde illo dolorem.",
-      "country": "Cum et magnam.",
-      "description": "Est culpa.",
-      "email": "Doloribus culpa amet dolor sunt eos illo.",
-      "firstName": "Omnis debitis omnis in aperiam quia.",
-      "introCall": 8909263196681236987,
-      "lastName": "Facilis dolorem debitis assumenda ipsum eligendi.",
-      "phone": "Quia blanditiis doloribus nam facilis.",
-      "tags": "Veritatis aut.",
-      "textAvailability": "Tenetur rerum nulla optio quisquam.",
-      "textCertifications": "Sint et voluptates tenetur in ut qui.",
-      "textPrograms": "Quidem qui accusamus mollitia.",
-      "vat": "Harum facere ipsa voluptate."
+      "city": "Quidem sint.",
+      "country": "Voluptates tenetur in ut qui blanditiis quidem.",
+      "description": "Illo dolorem ut cum et magnam.",
+      "email": "Facilis aut.",
+      "firstName": "Assumenda ipsum eligendi et doloribus culpa amet.",
+      "introCall": 11671010134317199316,
+      "lastName": "Sunt eos illo quia quia blanditiis doloribus.",
+      "phone": "Aut nam est culpa enim.",
+      "tags": "Sit est enim.",
+      "textAvailability": "Facere ipsa voluptate.",
+      "textCertifications": "Mollitia reiciendis.",
+      "textPrograms": "Rerum nulla optio quisquam vitae.",
+      "vat": "Excepturi natus nesciunt."
    }'
 `, os.Args[0])
 }
@@ -361,17 +361,17 @@ UpdateCoaches updates a coach
 
 Example:
     `+os.Args[0]+` coachee update-coach --body '{
-      "city": "Iusto incidunt odio.",
-      "country": "Quo incidunt ad recusandae quam.",
-      "description": "Eum et et.",
-      "email": "Ut inventore fugit.",
-      "firstName": "Voluptatem repellat.",
-      "introCall": 2484851915066860437,
-      "lastName": "Autem voluptatem.",
-      "phone": "Delectus culpa doloremque aliquid.",
-      "pictureURL": "Vero autem magnam rerum ut autem harum.",
-      "stripeID": "Facilis qui rerum laborum sapiente quae magnam.",
-      "tags": "Tempora iure id aspernatur nam esse.",
+      "city": "Sint facilis.",
+      "country": "Rerum laborum.",
+      "description": "Quo incidunt ad recusandae quam.",
+      "email": "Aliquid est tempora iure id aspernatur.",
+      "firstName": "Voluptatem veniam ut inventore.",
+      "introCall": 6235021646192451417,
+      "lastName": "Distinctio delectus culpa.",
+      "phone": "Esse molestiae eum et et.",
+      "pictureURL": "Rerum ut autem harum.",
+      "stripeID": "Magnam ut vero autem.",
+      "tags": "Iusto incidunt odio.",
       "vat": "Beatae vel repellat id aperiam."
    }' --id 1382361784040124259
 `, os.Args[0])

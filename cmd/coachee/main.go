@@ -27,7 +27,8 @@ func main() {
 		httpPortF = flag.String("http-port", "", "HTTP port (overrides host HTTP port specified in service design)")
 		secureF   = flag.Bool("secure", false, "Use secure scheme (https or grpcs)")
 		dbgF      = flag.Bool("debug", false, "Log request and response bodies")
-		stripeKey = flag.String("stripe-Key", "sk_test_yKV7Mo9kSpokxpFvwxKRtbyd00knjXTpJh", "stripe key")
+		stripeKey = flag.String("stripe-key", "sk_test_yKV7Mo9kSpokxpFvwxKRtbyd00knjXTpJh", "stripe key")
+		pubKey    = flag.String("pub-key", "pk_test_bmGuB7UJfIeeeofOouGHeJcd00MQjvjYVL", "pub key")
 	)
 	flag.Parse()
 	// initialize app context
@@ -52,12 +53,13 @@ func main() {
 	// Initialize repositories
 	coachRepository := mysql.NewCoachRepository(conn)
 	clientRepository := mysql.NewCustomerRepository(conn)
+	orderRepository := mysql.NewOrderRepository(conn)
 
 	// Initialize stripe client
 	stripeClient := stripe.NewClient(appCtx, *stripeKey)
 
 	// Initialize the services.
-	coacheeSvc := service.NewCoachee(appCtx, coachRepository, clientRepository, stripeClient)
+	coacheeSvc := service.NewCoachee(appCtx, coachRepository, clientRepository, orderRepository, stripeClient, *pubKey)
 
 	// Wrap the services in endpoints that can be invoked from other services
 	// potentially running in different processes.
