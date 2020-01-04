@@ -53,7 +53,7 @@ func handleHTTPServer(ctx context.Context, u *url.URL, coacheeEndpoints *coachee
 	)
 	{
 		eh := errorHandler(logger)
-		coacheeServer = coacheesvr.New(coacheeEndpoints, mux, dec, enc, eh)
+		coacheeServer = coacheesvr.New(coacheeEndpoints, mux, dec, enc, eh, nil)
 	}
 	// Configure the mux.
 	coacheesvr.Mount(mux, coacheeServer)
