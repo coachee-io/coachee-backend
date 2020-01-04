@@ -58,17 +58,16 @@ func (s *Service) LenCoaches(ctx context.Context, p *coachee.LenCoachesPayload) 
 // CreateCoaches creates a base coach
 func (s *Service) CreateCoach(ctx context.Context, p *coachee.CreateCoachPayload) (uint, error) {
 	var city, country, vat, textAvailability string
-	switch {
-	case p.City != nil:
+	if p.City != nil {
 		city = *p.City
-		fallthrough
-	case p.Country != nil:
+	}
+	if p.Country != nil {
 		country = *p.Country
-		fallthrough
-	case p.Vat != nil:
+	}
+	if p.Vat != nil {
 		vat = *p.Vat
-		fallthrough
-	case p.TextAvailability != nil:
+	}
+	if p.TextAvailability != nil {
 		textAvailability = *p.TextAvailability
 	}
 
@@ -104,41 +103,40 @@ func (s *Service) UpdateCoach(ctx context.Context, p *coachee.UpdateCoachPayload
 		ID: p.ID,
 	}
 
-	switch {
-	case p.FirstName != nil:
+	if p.FirstName != nil {
 		coach.FirstName = *p.FirstName
-		fallthrough
-	case p.LastName != nil:
+	}
+	if p.LastName != nil {
 		coach.LastName = *p.LastName
-		fallthrough
-	case p.Email != nil:
+	}
+	if p.Email != nil {
 		coach.Email = *p.Email
-		fallthrough
-	case p.Phone != nil:
+	}
+	if p.Phone != nil {
 		coach.Phone = *p.Phone
-		fallthrough
-	case p.Tags != nil:
+	}
+	if p.Tags != nil {
 		coach.Tags = *p.Tags
-		fallthrough
-	case p.Description != nil:
+	}
+	if p.Description != nil {
 		coach.Description = *p.Description
-		fallthrough
-	case p.City != nil:
+	}
+	if p.City != nil {
 		coach.City = *p.City
-		fallthrough
-	case p.Country != nil:
+	}
+	if p.Country != nil {
 		coach.Country = *p.Country
-		fallthrough
-	case p.IntroCall != nil:
+	}
+	if p.IntroCall != nil {
 		coach.IntroCall = time.Unix(int64(*p.IntroCall), 0)
-		fallthrough
-	case p.StripeID != nil:
+	}
+	if p.StripeID != nil {
 		coach.StripeID = *p.StripeID
-		fallthrough
-	case p.PictureURL != nil:
+	}
+	if p.PictureURL != nil {
 		coach.PictureUrl = *p.PictureURL
-		fallthrough
-	case p.Vat != nil:
+	}
+	if p.Vat != nil {
 		coach.Vat = *p.Vat
 	}
 
