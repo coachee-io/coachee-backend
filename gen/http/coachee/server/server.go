@@ -942,9 +942,11 @@ func handleCoacheeOrigin(h http.Handler) http.Handler {
 		}
 		if cors.MatchOrigin(origin, "*") {
 			w.Header().Set("Access-Control-Allow-Origin", origin)
-			w.Header().Set("Access-Control-Allow-Credentials", "false")
+			w.Header().Set("Access-Control-Allow-Credentials", "true")
 			if acrm := r.Header.Get("Access-Control-Request-Method"); acrm != "" {
 				// We are handling a preflight request
+				w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
+				w.Header().Set("Access-Control-Allow-Headers", "*")
 			}
 			origHndlr(w, r)
 			return
@@ -952,9 +954,11 @@ func handleCoacheeOrigin(h http.Handler) http.Handler {
 		if cors.MatchOrigin(origin, "localhost") {
 			w.Header().Set("Access-Control-Allow-Origin", origin)
 			w.Header().Set("Vary", "Origin")
-			w.Header().Set("Access-Control-Allow-Credentials", "false")
+			w.Header().Set("Access-Control-Allow-Credentials", "true")
 			if acrm := r.Header.Get("Access-Control-Request-Method"); acrm != "" {
 				// We are handling a preflight request
+				w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
+				w.Header().Set("Access-Control-Allow-Headers", "*")
 			}
 			origHndlr(w, r)
 			return
