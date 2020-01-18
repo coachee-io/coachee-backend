@@ -69,6 +69,18 @@ type Client struct {
 	// CustomerLogin endpoint.
 	CustomerLoginDoer goahttp.Doer
 
+	// StartPasswordRecoveryFlow Doer is the HTTP client used to make requests to
+	// the StartPasswordRecoveryFlow endpoint.
+	StartPasswordRecoveryFlowDoer goahttp.Doer
+
+	// CheckPasswordRecoveryToken Doer is the HTTP client used to make requests to
+	// the CheckPasswordRecoveryToken endpoint.
+	CheckPasswordRecoveryTokenDoer goahttp.Doer
+
+	// FinalizePasswordRecoveryFlow Doer is the HTTP client used to make requests
+	// to the FinalizePasswordRecoveryFlow endpoint.
+	FinalizePasswordRecoveryFlowDoer goahttp.Doer
+
 	// CreateOrder Doer is the HTTP client used to make requests to the CreateOrder
 	// endpoint.
 	CreateOrderDoer goahttp.Doer
@@ -96,26 +108,29 @@ func NewClient(
 	restoreBody bool,
 ) *Client {
 	return &Client{
-		GetCoachesDoer:          doer,
-		GetCoachDoer:            doer,
-		LenCoachesDoer:          doer,
-		CreateCoachDoer:         doer,
-		UpdateCoachDoer:         doer,
-		CreateCertificationDoer: doer,
-		DeleteCertificationDoer: doer,
-		CreateProgramDoer:       doer,
-		DeleteProgramDoer:       doer,
-		CreateAvailabilityDoer:  doer,
-		DeleteAvailabilityDoer:  doer,
-		CreateCustomerDoer:      doer,
-		CustomerLoginDoer:       doer,
-		CreateOrderDoer:         doer,
-		CORSDoer:                doer,
-		RestoreResponseBody:     restoreBody,
-		scheme:                  scheme,
-		host:                    host,
-		decoder:                 dec,
-		encoder:                 enc,
+		GetCoachesDoer:                   doer,
+		GetCoachDoer:                     doer,
+		LenCoachesDoer:                   doer,
+		CreateCoachDoer:                  doer,
+		UpdateCoachDoer:                  doer,
+		CreateCertificationDoer:          doer,
+		DeleteCertificationDoer:          doer,
+		CreateProgramDoer:                doer,
+		DeleteProgramDoer:                doer,
+		CreateAvailabilityDoer:           doer,
+		DeleteAvailabilityDoer:           doer,
+		CreateCustomerDoer:               doer,
+		CustomerLoginDoer:                doer,
+		StartPasswordRecoveryFlowDoer:    doer,
+		CheckPasswordRecoveryTokenDoer:   doer,
+		FinalizePasswordRecoveryFlowDoer: doer,
+		CreateOrderDoer:                  doer,
+		CORSDoer:                         doer,
+		RestoreResponseBody:              restoreBody,
+		scheme:                           scheme,
+		host:                             host,
+		decoder:                          dec,
+		encoder:                          enc,
 	}
 }
 
@@ -414,6 +429,76 @@ func (c *Client) CustomerLogin() goa.Endpoint {
 
 		if err != nil {
 			return nil, goahttp.ErrRequestError("coachee", "CustomerLogin", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// StartPasswordRecoveryFlow returns an endpoint that makes HTTP requests to
+// the coachee service StartPasswordRecoveryFlow server.
+func (c *Client) StartPasswordRecoveryFlow() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeStartPasswordRecoveryFlowRequest(c.encoder)
+		decodeResponse = DecodeStartPasswordRecoveryFlowResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildStartPasswordRecoveryFlowRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.StartPasswordRecoveryFlowDoer.Do(req)
+
+		if err != nil {
+			return nil, goahttp.ErrRequestError("coachee", "StartPasswordRecoveryFlow", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// CheckPasswordRecoveryToken returns an endpoint that makes HTTP requests to
+// the coachee service CheckPasswordRecoveryToken server.
+func (c *Client) CheckPasswordRecoveryToken() goa.Endpoint {
+	var (
+		decodeResponse = DecodeCheckPasswordRecoveryTokenResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildCheckPasswordRecoveryTokenRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.CheckPasswordRecoveryTokenDoer.Do(req)
+
+		if err != nil {
+			return nil, goahttp.ErrRequestError("coachee", "CheckPasswordRecoveryToken", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// FinalizePasswordRecoveryFlow returns an endpoint that makes HTTP requests to
+// the coachee service FinalizePasswordRecoveryFlow server.
+func (c *Client) FinalizePasswordRecoveryFlow() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeFinalizePasswordRecoveryFlowRequest(c.encoder)
+		decodeResponse = DecodeFinalizePasswordRecoveryFlowResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildFinalizePasswordRecoveryFlowRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.FinalizePasswordRecoveryFlowDoer.Do(req)
+
+		if err != nil {
+			return nil, goahttp.ErrRequestError("coachee", "FinalizePasswordRecoveryFlow", err)
 		}
 		return decodeResponse(resp)
 	}

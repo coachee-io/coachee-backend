@@ -387,6 +387,49 @@ var _ = Service("coachee", func() {
 		})
 	})
 
+	Method("StartPasswordRecoveryFlow", func() {
+		Description("starts the process of recovering a password")
+		Payload(func() {
+			Attribute("email", String)
+
+			Required("email")
+		})
+
+		HTTP(func() {
+			POST("/recovery")
+			Response(StatusOK)
+		})
+	})
+
+	Method("CheckPasswordRecoveryToken", func() {
+		Description("verifies if a recovery token is still valid")
+		Payload(func() {
+			Attribute("token", String)
+
+			Required("token")
+		})
+
+		HTTP(func() {
+			GET("/recovery/{token}")
+			Response(StatusOK)
+		})
+	})
+
+	Method("FinalizePasswordRecoveryFlow", func() {
+		Description("finalizes the password recovery flow by resetting a new password ")
+		Payload(func() {
+			Attribute("token", String)
+			Attribute("password", String)
+
+			Required("token", "password")
+		})
+
+		HTTP(func() {
+			POST("/recovery/{token}")
+			Response(StatusOK)
+		})
+	})
+
 	Method("CreateOrder", func() {
 		Description("creates a new order")
 		Security(JWT, func() {

@@ -76,6 +76,21 @@ func CustomerLoginCoacheePath() string {
 	return "/clients/login"
 }
 
+// StartPasswordRecoveryFlowCoacheePath returns the URL path to the coachee service StartPasswordRecoveryFlow HTTP endpoint.
+func StartPasswordRecoveryFlowCoacheePath() string {
+	return "/recovery"
+}
+
+// CheckPasswordRecoveryTokenCoacheePath returns the URL path to the coachee service CheckPasswordRecoveryToken HTTP endpoint.
+func CheckPasswordRecoveryTokenCoacheePath(token string) string {
+	return fmt.Sprintf("/recovery/%v", token)
+}
+
+// FinalizePasswordRecoveryFlowCoacheePath returns the URL path to the coachee service FinalizePasswordRecoveryFlow HTTP endpoint.
+func FinalizePasswordRecoveryFlowCoacheePath(token string) string {
+	return fmt.Sprintf("/recovery/%v", token)
+}
+
 // CreateOrderCoacheePath returns the URL path to the coachee service CreateOrder HTTP endpoint.
 func CreateOrderCoacheePath() string {
 	return "/orders"

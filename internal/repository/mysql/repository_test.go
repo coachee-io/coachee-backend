@@ -30,12 +30,14 @@ func NewDatabase(t *testing.T) *gorm.DB {
 		model.Coach{},
 		model.Customer{},
 		model.Order{},
+		model.Recovery{},
 	)
 
 	sql.AutoMigrate(
 		model.Coach{},
 		model.Customer{},
 		model.Order{},
+		model.Recovery{},
 	)
 	return sql
 }

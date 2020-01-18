@@ -15,39 +15,45 @@ import (
 
 // Client is the "coachee" service client.
 type Client struct {
-	GetCoachesEndpoint          goa.Endpoint
-	GetCoachEndpoint            goa.Endpoint
-	LenCoachesEndpoint          goa.Endpoint
-	CreateCoachEndpoint         goa.Endpoint
-	UpdateCoachEndpoint         goa.Endpoint
-	CreateCertificationEndpoint goa.Endpoint
-	DeleteCertificationEndpoint goa.Endpoint
-	CreateProgramEndpoint       goa.Endpoint
-	DeleteProgramEndpoint       goa.Endpoint
-	CreateAvailabilityEndpoint  goa.Endpoint
-	DeleteAvailabilityEndpoint  goa.Endpoint
-	CreateCustomerEndpoint      goa.Endpoint
-	CustomerLoginEndpoint       goa.Endpoint
-	CreateOrderEndpoint         goa.Endpoint
+	GetCoachesEndpoint                   goa.Endpoint
+	GetCoachEndpoint                     goa.Endpoint
+	LenCoachesEndpoint                   goa.Endpoint
+	CreateCoachEndpoint                  goa.Endpoint
+	UpdateCoachEndpoint                  goa.Endpoint
+	CreateCertificationEndpoint          goa.Endpoint
+	DeleteCertificationEndpoint          goa.Endpoint
+	CreateProgramEndpoint                goa.Endpoint
+	DeleteProgramEndpoint                goa.Endpoint
+	CreateAvailabilityEndpoint           goa.Endpoint
+	DeleteAvailabilityEndpoint           goa.Endpoint
+	CreateCustomerEndpoint               goa.Endpoint
+	CustomerLoginEndpoint                goa.Endpoint
+	StartPasswordRecoveryFlowEndpoint    goa.Endpoint
+	CheckPasswordRecoveryTokenEndpoint   goa.Endpoint
+	FinalizePasswordRecoveryFlowEndpoint goa.Endpoint
+	CreateOrderEndpoint                  goa.Endpoint
 }
 
 // NewClient initializes a "coachee" service client given the endpoints.
-func NewClient(getCoaches, getCoach, lenCoaches, createCoach, updateCoach, createCertification, deleteCertification, createProgram, deleteProgram, createAvailability, deleteAvailability, createCustomer, customerLogin, createOrder goa.Endpoint) *Client {
+func NewClient(getCoaches, getCoach, lenCoaches, createCoach, updateCoach, createCertification, deleteCertification, createProgram, deleteProgram, createAvailability, deleteAvailability, createCustomer, customerLogin, startPasswordRecoveryFlow, checkPasswordRecoveryToken, finalizePasswordRecoveryFlow, createOrder goa.Endpoint) *Client {
 	return &Client{
-		GetCoachesEndpoint:          getCoaches,
-		GetCoachEndpoint:            getCoach,
-		LenCoachesEndpoint:          lenCoaches,
-		CreateCoachEndpoint:         createCoach,
-		UpdateCoachEndpoint:         updateCoach,
-		CreateCertificationEndpoint: createCertification,
-		DeleteCertificationEndpoint: deleteCertification,
-		CreateProgramEndpoint:       createProgram,
-		DeleteProgramEndpoint:       deleteProgram,
-		CreateAvailabilityEndpoint:  createAvailability,
-		DeleteAvailabilityEndpoint:  deleteAvailability,
-		CreateCustomerEndpoint:      createCustomer,
-		CustomerLoginEndpoint:       customerLogin,
-		CreateOrderEndpoint:         createOrder,
+		GetCoachesEndpoint:                   getCoaches,
+		GetCoachEndpoint:                     getCoach,
+		LenCoachesEndpoint:                   lenCoaches,
+		CreateCoachEndpoint:                  createCoach,
+		UpdateCoachEndpoint:                  updateCoach,
+		CreateCertificationEndpoint:          createCertification,
+		DeleteCertificationEndpoint:          deleteCertification,
+		CreateProgramEndpoint:                createProgram,
+		DeleteProgramEndpoint:                deleteProgram,
+		CreateAvailabilityEndpoint:           createAvailability,
+		DeleteAvailabilityEndpoint:           deleteAvailability,
+		CreateCustomerEndpoint:               createCustomer,
+		CustomerLoginEndpoint:                customerLogin,
+		StartPasswordRecoveryFlowEndpoint:    startPasswordRecoveryFlow,
+		CheckPasswordRecoveryTokenEndpoint:   checkPasswordRecoveryToken,
+		FinalizePasswordRecoveryFlowEndpoint: finalizePasswordRecoveryFlow,
+		CreateOrderEndpoint:                  createOrder,
 	}
 }
 
@@ -155,6 +161,27 @@ func (c *Client) CustomerLogin(ctx context.Context, p *CustomerLoginPayload) (re
 		return
 	}
 	return ires.(*CustomerLoginResult), nil
+}
+
+// StartPasswordRecoveryFlow calls the "StartPasswordRecoveryFlow" endpoint of
+// the "coachee" service.
+func (c *Client) StartPasswordRecoveryFlow(ctx context.Context, p *StartPasswordRecoveryFlowPayload) (err error) {
+	_, err = c.StartPasswordRecoveryFlowEndpoint(ctx, p)
+	return
+}
+
+// CheckPasswordRecoveryToken calls the "CheckPasswordRecoveryToken" endpoint
+// of the "coachee" service.
+func (c *Client) CheckPasswordRecoveryToken(ctx context.Context, p *CheckPasswordRecoveryTokenPayload) (err error) {
+	_, err = c.CheckPasswordRecoveryTokenEndpoint(ctx, p)
+	return
+}
+
+// FinalizePasswordRecoveryFlow calls the "FinalizePasswordRecoveryFlow"
+// endpoint of the "coachee" service.
+func (c *Client) FinalizePasswordRecoveryFlow(ctx context.Context, p *FinalizePasswordRecoveryFlowPayload) (err error) {
+	_, err = c.FinalizePasswordRecoveryFlowEndpoint(ctx, p)
+	return
 }
 
 // CreateOrder calls the "CreateOrder" endpoint of the "coachee" service.

@@ -23,13 +23,13 @@ import (
 //    command (subcommand1|subcommand2|...)
 //
 func UsageCommands() string {
-	return `coachee (get-coaches|get-coach|len-coaches|create-coach|update-coach|create-certification|delete-certification|create-program|delete-program|create-availability|delete-availability|create-customer|customer-login|create-order)
+	return `coachee (get-coaches|get-coach|len-coaches|create-coach|update-coach|create-certification|delete-certification|create-program|delete-program|create-availability|delete-availability|create-customer|customer-login|start-password-recovery-flow|check-password-recovery-token|finalize-password-recovery-flow|create-order)
 `
 }
 
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
-	return os.Args[0] + ` coachee get-coaches --tag "Dolorem aut et a doloremque ut reprehenderit." --limit 8681139670447670254 --page 1150258549287143979` + "\n" +
+	return os.Args[0] + ` coachee get-coaches --tag "Eligendi rerum animi tenetur ipsa debitis molestiae." --limit 11288226732923642920 --page 13359164744457656323` + "\n" +
 		""
 }
 
@@ -93,6 +93,16 @@ func ParseEndpoint(
 		coacheeCustomerLoginFlags    = flag.NewFlagSet("customer-login", flag.ExitOnError)
 		coacheeCustomerLoginBodyFlag = coacheeCustomerLoginFlags.String("body", "REQUIRED", "")
 
+		coacheeStartPasswordRecoveryFlowFlags    = flag.NewFlagSet("start-password-recovery-flow", flag.ExitOnError)
+		coacheeStartPasswordRecoveryFlowBodyFlag = coacheeStartPasswordRecoveryFlowFlags.String("body", "REQUIRED", "")
+
+		coacheeCheckPasswordRecoveryTokenFlags     = flag.NewFlagSet("check-password-recovery-token", flag.ExitOnError)
+		coacheeCheckPasswordRecoveryTokenTokenFlag = coacheeCheckPasswordRecoveryTokenFlags.String("token", "REQUIRED", "")
+
+		coacheeFinalizePasswordRecoveryFlowFlags     = flag.NewFlagSet("finalize-password-recovery-flow", flag.ExitOnError)
+		coacheeFinalizePasswordRecoveryFlowBodyFlag  = coacheeFinalizePasswordRecoveryFlowFlags.String("body", "REQUIRED", "")
+		coacheeFinalizePasswordRecoveryFlowTokenFlag = coacheeFinalizePasswordRecoveryFlowFlags.String("token", "REQUIRED", "")
+
 		coacheeCreateOrderFlags     = flag.NewFlagSet("create-order", flag.ExitOnError)
 		coacheeCreateOrderBodyFlag  = coacheeCreateOrderFlags.String("body", "REQUIRED", "")
 		coacheeCreateOrderTokenFlag = coacheeCreateOrderFlags.String("token", "REQUIRED", "")
@@ -111,6 +121,9 @@ func ParseEndpoint(
 	coacheeDeleteAvailabilityFlags.Usage = coacheeDeleteAvailabilityUsage
 	coacheeCreateCustomerFlags.Usage = coacheeCreateCustomerUsage
 	coacheeCustomerLoginFlags.Usage = coacheeCustomerLoginUsage
+	coacheeStartPasswordRecoveryFlowFlags.Usage = coacheeStartPasswordRecoveryFlowUsage
+	coacheeCheckPasswordRecoveryTokenFlags.Usage = coacheeCheckPasswordRecoveryTokenUsage
+	coacheeFinalizePasswordRecoveryFlowFlags.Usage = coacheeFinalizePasswordRecoveryFlowUsage
 	coacheeCreateOrderFlags.Usage = coacheeCreateOrderUsage
 
 	if err := flag.CommandLine.Parse(os.Args[1:]); err != nil {
@@ -186,6 +199,15 @@ func ParseEndpoint(
 			case "customer-login":
 				epf = coacheeCustomerLoginFlags
 
+			case "start-password-recovery-flow":
+				epf = coacheeStartPasswordRecoveryFlowFlags
+
+			case "check-password-recovery-token":
+				epf = coacheeCheckPasswordRecoveryTokenFlags
+
+			case "finalize-password-recovery-flow":
+				epf = coacheeFinalizePasswordRecoveryFlowFlags
+
 			case "create-order":
 				epf = coacheeCreateOrderFlags
 
@@ -253,6 +275,15 @@ func ParseEndpoint(
 			case "customer-login":
 				endpoint = c.CustomerLogin()
 				data, err = coacheec.BuildCustomerLoginPayload(*coacheeCustomerLoginBodyFlag)
+			case "start-password-recovery-flow":
+				endpoint = c.StartPasswordRecoveryFlow()
+				data, err = coacheec.BuildStartPasswordRecoveryFlowPayload(*coacheeStartPasswordRecoveryFlowBodyFlag)
+			case "check-password-recovery-token":
+				endpoint = c.CheckPasswordRecoveryToken()
+				data, err = coacheec.BuildCheckPasswordRecoveryTokenPayload(*coacheeCheckPasswordRecoveryTokenTokenFlag)
+			case "finalize-password-recovery-flow":
+				endpoint = c.FinalizePasswordRecoveryFlow()
+				data, err = coacheec.BuildFinalizePasswordRecoveryFlowPayload(*coacheeFinalizePasswordRecoveryFlowBodyFlag, *coacheeFinalizePasswordRecoveryFlowTokenFlag)
 			case "create-order":
 				endpoint = c.CreateOrder()
 				data, err = coacheec.BuildCreateOrderPayload(*coacheeCreateOrderBodyFlag, *coacheeCreateOrderTokenFlag)
@@ -286,6 +317,9 @@ COMMAND:
     delete-availability: deletes an availability for a coach
     create-customer: creates a new customer
     customer-login: logs in a customer and returns a jwt
+    start-password-recovery-flow: starts the process of recovering a password
+    check-password-recovery-token: verifies if a recovery token is still valid
+    finalize-password-recovery-flow: finalizes the password recovery flow by resetting a new password 
     create-order: creates a new order
 
 Additional help:
@@ -301,7 +335,7 @@ GetCoaches returns an array of coaches according to a tag and pagination
     -page UINT: 
 
 Example:
-    `+os.Args[0]+` coachee get-coaches --tag "Dolorem aut et a doloremque ut reprehenderit." --limit 8681139670447670254 --page 1150258549287143979
+    `+os.Args[0]+` coachee get-coaches --tag "Eligendi rerum animi tenetur ipsa debitis molestiae." --limit 11288226732923642920 --page 13359164744457656323
 `, os.Args[0])
 }
 
@@ -312,7 +346,7 @@ GetCoach returns one coach according to the id
     -id UINT: 
 
 Example:
-    `+os.Args[0]+` coachee get-coach --id 15524985453472415853
+    `+os.Args[0]+` coachee get-coach --id 11687188891161822163
 `, os.Args[0])
 }
 
@@ -323,7 +357,7 @@ LenCoaches returns the amount of coaches with a given tag
     -tag STRING: 
 
 Example:
-    `+os.Args[0]+` coachee len-coaches --tag "Similique eum."
+    `+os.Args[0]+` coachee len-coaches --tag "Iusto rerum voluptas rerum amet id deserunt."
 `, os.Args[0])
 }
 
@@ -337,13 +371,13 @@ Example:
     `+os.Args[0]+` coachee create-coach --body '{
       "city": "Quidem sint.",
       "country": "Voluptates tenetur in ut qui blanditiis quidem.",
-      "description": "Illo dolorem ut cum et magnam.",
-      "email": "Facilis aut.",
-      "firstName": "Assumenda ipsum eligendi et doloribus culpa amet.",
+      "description": "Cum et magnam.",
+      "email": "Nam facilis aut veritatis aut.",
+      "firstName": "Dolor sunt eos.",
       "introCall": 11671010134317199316,
-      "lastName": "Sunt eos illo quia quia blanditiis doloribus.",
-      "phone": "Aut nam est culpa enim.",
-      "tags": "Sit est enim.",
+      "lastName": "Quia quia blanditiis.",
+      "phone": "Est culpa.",
+      "tags": "Quia sit est enim unde illo dolorem.",
       "textAvailability": "Facere ipsa voluptate.",
       "textCertifications": "Mollitia reiciendis.",
       "textPrograms": "Rerum nulla optio quisquam vitae.",
@@ -506,6 +540,44 @@ Example:
 `, os.Args[0])
 }
 
+func coacheeStartPasswordRecoveryFlowUsage() {
+	fmt.Fprintf(os.Stderr, `%s [flags] coachee start-password-recovery-flow -body JSON
+
+starts the process of recovering a password
+    -body JSON: 
+
+Example:
+    `+os.Args[0]+` coachee start-password-recovery-flow --body '{
+      "email": "Vel in enim quo."
+   }'
+`, os.Args[0])
+}
+
+func coacheeCheckPasswordRecoveryTokenUsage() {
+	fmt.Fprintf(os.Stderr, `%s [flags] coachee check-password-recovery-token -token STRING
+
+verifies if a recovery token is still valid
+    -token STRING: 
+
+Example:
+    `+os.Args[0]+` coachee check-password-recovery-token --token "Provident nemo optio."
+`, os.Args[0])
+}
+
+func coacheeFinalizePasswordRecoveryFlowUsage() {
+	fmt.Fprintf(os.Stderr, `%s [flags] coachee finalize-password-recovery-flow -body JSON -token STRING
+
+finalizes the password recovery flow by resetting a new password 
+    -body JSON: 
+    -token STRING: 
+
+Example:
+    `+os.Args[0]+` coachee finalize-password-recovery-flow --body '{
+      "password": "Quo sit sit et ad sapiente."
+   }' --token "Harum vitae iusto illo sit voluptatem."
+`, os.Args[0])
+}
+
 func coacheeCreateOrderUsage() {
 	fmt.Fprintf(os.Stderr, `%s [flags] coachee create-order -body JSON -token STRING
 
@@ -515,9 +587,9 @@ creates a new order
 
 Example:
     `+os.Args[0]+` coachee create-order --body '{
-      "coachId": 11357658429475809902,
-      "introCall": 8387831286000968232,
-      "programId": "In enim quo commodi quia nihil."
-   }' --token "Ut est nam."
+      "coachId": 3567435490198949662,
+      "introCall": 817331013112598158,
+      "programId": "Ad quia."
+   }' --token "Eos libero numquam sit aut optio sunt."
 `, os.Args[0])
 }

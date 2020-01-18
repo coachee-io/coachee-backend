@@ -33,3 +33,11 @@ type Order interface {
 	GetByID(transaction Transaction, id uint) (*model.Order, error)
 	Update(transaction Transaction, client *model.Order) error
 }
+
+// Recovery is the repository to interact and persist password recovery flows
+type Recovery interface {
+	Begin() Transaction
+
+	Create(transaction Transaction, client *model.Recovery) error
+	GetByID(transaction Transaction, id string) (*model.Recovery, error)
+}

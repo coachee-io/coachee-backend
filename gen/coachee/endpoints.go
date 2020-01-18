@@ -16,20 +16,23 @@ import (
 
 // Endpoints wraps the "coachee" service endpoints.
 type Endpoints struct {
-	GetCoaches          goa.Endpoint
-	GetCoach            goa.Endpoint
-	LenCoaches          goa.Endpoint
-	CreateCoach         goa.Endpoint
-	UpdateCoach         goa.Endpoint
-	CreateCertification goa.Endpoint
-	DeleteCertification goa.Endpoint
-	CreateProgram       goa.Endpoint
-	DeleteProgram       goa.Endpoint
-	CreateAvailability  goa.Endpoint
-	DeleteAvailability  goa.Endpoint
-	CreateCustomer      goa.Endpoint
-	CustomerLogin       goa.Endpoint
-	CreateOrder         goa.Endpoint
+	GetCoaches                   goa.Endpoint
+	GetCoach                     goa.Endpoint
+	LenCoaches                   goa.Endpoint
+	CreateCoach                  goa.Endpoint
+	UpdateCoach                  goa.Endpoint
+	CreateCertification          goa.Endpoint
+	DeleteCertification          goa.Endpoint
+	CreateProgram                goa.Endpoint
+	DeleteProgram                goa.Endpoint
+	CreateAvailability           goa.Endpoint
+	DeleteAvailability           goa.Endpoint
+	CreateCustomer               goa.Endpoint
+	CustomerLogin                goa.Endpoint
+	StartPasswordRecoveryFlow    goa.Endpoint
+	CheckPasswordRecoveryToken   goa.Endpoint
+	FinalizePasswordRecoveryFlow goa.Endpoint
+	CreateOrder                  goa.Endpoint
 }
 
 // NewEndpoints wraps the methods of the "coachee" service with endpoints.
@@ -37,20 +40,23 @@ func NewEndpoints(s Service) *Endpoints {
 	// Casting service to Auther interface
 	a := s.(Auther)
 	return &Endpoints{
-		GetCoaches:          NewGetCoachesEndpoint(s),
-		GetCoach:            NewGetCoachEndpoint(s),
-		LenCoaches:          NewLenCoachesEndpoint(s),
-		CreateCoach:         NewCreateCoachEndpoint(s),
-		UpdateCoach:         NewUpdateCoachEndpoint(s),
-		CreateCertification: NewCreateCertificationEndpoint(s),
-		DeleteCertification: NewDeleteCertificationEndpoint(s),
-		CreateProgram:       NewCreateProgramEndpoint(s),
-		DeleteProgram:       NewDeleteProgramEndpoint(s),
-		CreateAvailability:  NewCreateAvailabilityEndpoint(s),
-		DeleteAvailability:  NewDeleteAvailabilityEndpoint(s),
-		CreateCustomer:      NewCreateCustomerEndpoint(s),
-		CustomerLogin:       NewCustomerLoginEndpoint(s),
-		CreateOrder:         NewCreateOrderEndpoint(s, a.JWTAuth),
+		GetCoaches:                   NewGetCoachesEndpoint(s),
+		GetCoach:                     NewGetCoachEndpoint(s),
+		LenCoaches:                   NewLenCoachesEndpoint(s),
+		CreateCoach:                  NewCreateCoachEndpoint(s),
+		UpdateCoach:                  NewUpdateCoachEndpoint(s),
+		CreateCertification:          NewCreateCertificationEndpoint(s),
+		DeleteCertification:          NewDeleteCertificationEndpoint(s),
+		CreateProgram:                NewCreateProgramEndpoint(s),
+		DeleteProgram:                NewDeleteProgramEndpoint(s),
+		CreateAvailability:           NewCreateAvailabilityEndpoint(s),
+		DeleteAvailability:           NewDeleteAvailabilityEndpoint(s),
+		CreateCustomer:               NewCreateCustomerEndpoint(s),
+		CustomerLogin:                NewCustomerLoginEndpoint(s),
+		StartPasswordRecoveryFlow:    NewStartPasswordRecoveryFlowEndpoint(s),
+		CheckPasswordRecoveryToken:   NewCheckPasswordRecoveryTokenEndpoint(s),
+		FinalizePasswordRecoveryFlow: NewFinalizePasswordRecoveryFlowEndpoint(s),
+		CreateOrder:                  NewCreateOrderEndpoint(s, a.JWTAuth),
 	}
 }
 
@@ -69,6 +75,9 @@ func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.DeleteAvailability = m(e.DeleteAvailability)
 	e.CreateCustomer = m(e.CreateCustomer)
 	e.CustomerLogin = m(e.CustomerLogin)
+	e.StartPasswordRecoveryFlow = m(e.StartPasswordRecoveryFlow)
+	e.CheckPasswordRecoveryToken = m(e.CheckPasswordRecoveryToken)
+	e.FinalizePasswordRecoveryFlow = m(e.FinalizePasswordRecoveryFlow)
 	e.CreateOrder = m(e.CreateOrder)
 }
 
@@ -186,6 +195,33 @@ func NewCustomerLoginEndpoint(s Service) goa.Endpoint {
 	return func(ctx context.Context, req interface{}) (interface{}, error) {
 		p := req.(*CustomerLoginPayload)
 		return s.CustomerLogin(ctx, p)
+	}
+}
+
+// NewStartPasswordRecoveryFlowEndpoint returns an endpoint function that calls
+// the method "StartPasswordRecoveryFlow" of service "coachee".
+func NewStartPasswordRecoveryFlowEndpoint(s Service) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*StartPasswordRecoveryFlowPayload)
+		return nil, s.StartPasswordRecoveryFlow(ctx, p)
+	}
+}
+
+// NewCheckPasswordRecoveryTokenEndpoint returns an endpoint function that
+// calls the method "CheckPasswordRecoveryToken" of service "coachee".
+func NewCheckPasswordRecoveryTokenEndpoint(s Service) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*CheckPasswordRecoveryTokenPayload)
+		return nil, s.CheckPasswordRecoveryToken(ctx, p)
+	}
+}
+
+// NewFinalizePasswordRecoveryFlowEndpoint returns an endpoint function that
+// calls the method "FinalizePasswordRecoveryFlow" of service "coachee".
+func NewFinalizePasswordRecoveryFlowEndpoint(s Service) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*FinalizePasswordRecoveryFlowPayload)
+		return nil, s.FinalizePasswordRecoveryFlow(ctx, p)
 	}
 }
 

@@ -58,18 +58,20 @@ func main() {
 		model.Coach{},
 		model.Customer{},
 		model.Order{},
+		model.Recovery{},
 	)
 
 	// Initialize repositories
 	coachRepository := mysql.NewCoachRepository(conn)
 	clientRepository := mysql.NewCustomerRepository(conn)
 	orderRepository := mysql.NewOrderRepository(conn)
+	recoveryRepository := mysql.NewRecoveryRepository(conn)
 
 	// Initialize stripe client
 	stripeClient := stripe.NewClient(appCtx, *stripeKey)
 
 	// Initialize the services.
-	coacheeSvc := service.NewCoachee(appCtx, coachRepository, clientRepository, orderRepository, stripeClient, *pubKey)
+	coacheeSvc := service.NewCoachee(appCtx, coachRepository, clientRepository, orderRepository, recoveryRepository, stripeClient, *pubKey)
 
 	// Wrap the services in endpoints that can be invoked from other services
 	// potentially running in different processes.

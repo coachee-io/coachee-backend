@@ -42,6 +42,12 @@ type Service interface {
 	CreateCustomer(context.Context, *CreateCustomerPayload) (res *CreateCustomerResult, err error)
 	// logs in a customer and returns a jwt
 	CustomerLogin(context.Context, *CustomerLoginPayload) (res *CustomerLoginResult, err error)
+	// starts the process of recovering a password
+	StartPasswordRecoveryFlow(context.Context, *StartPasswordRecoveryFlowPayload) (err error)
+	// verifies if a recovery token is still valid
+	CheckPasswordRecoveryToken(context.Context, *CheckPasswordRecoveryTokenPayload) (err error)
+	// finalizes the password recovery flow by resetting a new password
+	FinalizePasswordRecoveryFlow(context.Context, *FinalizePasswordRecoveryFlowPayload) (err error)
 	// creates a new order
 	CreateOrder(context.Context, *CreateOrderPayload) (res *CreateOrderResult, err error)
 }
@@ -60,7 +66,7 @@ const ServiceName = "coachee"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [14]string{"GetCoaches", "GetCoach", "LenCoaches", "CreateCoach", "UpdateCoach", "CreateCertification", "DeleteCertification", "CreateProgram", "DeleteProgram", "CreateAvailability", "DeleteAvailability", "CreateCustomer", "CustomerLogin", "CreateOrder"}
+var MethodNames = [17]string{"GetCoaches", "GetCoach", "LenCoaches", "CreateCoach", "UpdateCoach", "CreateCertification", "DeleteCertification", "CreateProgram", "DeleteProgram", "CreateAvailability", "DeleteAvailability", "CreateCustomer", "CustomerLogin", "StartPasswordRecoveryFlow", "CheckPasswordRecoveryToken", "FinalizePasswordRecoveryFlow", "CreateOrder"}
 
 // GetCoachesPayload is the payload type of the coachee service GetCoaches
 // method.
@@ -205,6 +211,25 @@ type CustomerLoginResult struct {
 	Token  string
 	Expiry int64
 	User   *BaseClient
+}
+
+// StartPasswordRecoveryFlowPayload is the payload type of the coachee service
+// StartPasswordRecoveryFlow method.
+type StartPasswordRecoveryFlowPayload struct {
+	Email string
+}
+
+// CheckPasswordRecoveryTokenPayload is the payload type of the coachee service
+// CheckPasswordRecoveryToken method.
+type CheckPasswordRecoveryTokenPayload struct {
+	Token string
+}
+
+// FinalizePasswordRecoveryFlowPayload is the payload type of the coachee
+// service FinalizePasswordRecoveryFlow method.
+type FinalizePasswordRecoveryFlowPayload struct {
+	Token    string
+	Password string
 }
 
 // CreateOrderPayload is the payload type of the coachee service CreateOrder

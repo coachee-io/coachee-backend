@@ -17,6 +17,7 @@ type Service struct {
 	coachRepository    repository.Coach
 	customerRepository repository.Customer
 	orderRepository    repository.Order
+	recoveryRepository repository.Recovery
 
 	stripe         Stripe
 	publishableKey string
@@ -33,6 +34,7 @@ func NewCoachee(ctx context.Context,
 	coach repository.Coach,
 	client repository.Customer,
 	order repository.Order,
+	recovery repository.Recovery,
 	stripe Stripe,
 	pubKey string) *Service {
 
@@ -42,6 +44,7 @@ func NewCoachee(ctx context.Context,
 		coachRepository:    coach,
 		customerRepository: client,
 		orderRepository:    order,
+		recoveryRepository: recovery,
 		stripe:             stripe,
 		publishableKey:     pubKey,
 	}

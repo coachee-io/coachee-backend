@@ -83,6 +83,18 @@ type CustomerLoginRequestBody struct {
 	Password string `form:"password" json:"password" xml:"password"`
 }
 
+// StartPasswordRecoveryFlowRequestBody is the type of the "coachee" service
+// "StartPasswordRecoveryFlow" endpoint HTTP request body.
+type StartPasswordRecoveryFlowRequestBody struct {
+	Email string `form:"email" json:"email" xml:"email"`
+}
+
+// FinalizePasswordRecoveryFlowRequestBody is the type of the "coachee" service
+// "FinalizePasswordRecoveryFlow" endpoint HTTP request body.
+type FinalizePasswordRecoveryFlowRequestBody struct {
+	Password string `form:"password" json:"password" xml:"password"`
+}
+
 // CreateOrderRequestBody is the type of the "coachee" service "CreateOrder"
 // endpoint HTTP request body.
 type CreateOrderRequestBody struct {
@@ -1314,6 +1326,291 @@ type CustomerLoginUnauthorizedResponseBody struct {
 	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
 }
 
+// StartPasswordRecoveryFlowInternalResponseBody is the type of the "coachee"
+// service "StartPasswordRecoveryFlow" endpoint HTTP response body for the
+// "internal" error.
+type StartPasswordRecoveryFlowInternalResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// StartPasswordRecoveryFlowTransientResponseBody is the type of the "coachee"
+// service "StartPasswordRecoveryFlow" endpoint HTTP response body for the
+// "transient" error.
+type StartPasswordRecoveryFlowTransientResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// StartPasswordRecoveryFlowNotFoundResponseBody is the type of the "coachee"
+// service "StartPasswordRecoveryFlow" endpoint HTTP response body for the
+// "notFound" error.
+type StartPasswordRecoveryFlowNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// StartPasswordRecoveryFlowValidationResponseBody is the type of the "coachee"
+// service "StartPasswordRecoveryFlow" endpoint HTTP response body for the
+// "validation" error.
+type StartPasswordRecoveryFlowValidationResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// StartPasswordRecoveryFlowUnauthorizedResponseBody is the type of the
+// "coachee" service "StartPasswordRecoveryFlow" endpoint HTTP response body
+// for the "unauthorized" error.
+type StartPasswordRecoveryFlowUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// CheckPasswordRecoveryTokenInternalResponseBody is the type of the "coachee"
+// service "CheckPasswordRecoveryToken" endpoint HTTP response body for the
+// "internal" error.
+type CheckPasswordRecoveryTokenInternalResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// CheckPasswordRecoveryTokenTransientResponseBody is the type of the "coachee"
+// service "CheckPasswordRecoveryToken" endpoint HTTP response body for the
+// "transient" error.
+type CheckPasswordRecoveryTokenTransientResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// CheckPasswordRecoveryTokenNotFoundResponseBody is the type of the "coachee"
+// service "CheckPasswordRecoveryToken" endpoint HTTP response body for the
+// "notFound" error.
+type CheckPasswordRecoveryTokenNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// CheckPasswordRecoveryTokenValidationResponseBody is the type of the
+// "coachee" service "CheckPasswordRecoveryToken" endpoint HTTP response body
+// for the "validation" error.
+type CheckPasswordRecoveryTokenValidationResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// CheckPasswordRecoveryTokenUnauthorizedResponseBody is the type of the
+// "coachee" service "CheckPasswordRecoveryToken" endpoint HTTP response body
+// for the "unauthorized" error.
+type CheckPasswordRecoveryTokenUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// FinalizePasswordRecoveryFlowInternalResponseBody is the type of the
+// "coachee" service "FinalizePasswordRecoveryFlow" endpoint HTTP response body
+// for the "internal" error.
+type FinalizePasswordRecoveryFlowInternalResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// FinalizePasswordRecoveryFlowTransientResponseBody is the type of the
+// "coachee" service "FinalizePasswordRecoveryFlow" endpoint HTTP response body
+// for the "transient" error.
+type FinalizePasswordRecoveryFlowTransientResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// FinalizePasswordRecoveryFlowNotFoundResponseBody is the type of the
+// "coachee" service "FinalizePasswordRecoveryFlow" endpoint HTTP response body
+// for the "notFound" error.
+type FinalizePasswordRecoveryFlowNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// FinalizePasswordRecoveryFlowValidationResponseBody is the type of the
+// "coachee" service "FinalizePasswordRecoveryFlow" endpoint HTTP response body
+// for the "validation" error.
+type FinalizePasswordRecoveryFlowValidationResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// FinalizePasswordRecoveryFlowUnauthorizedResponseBody is the type of the
+// "coachee" service "FinalizePasswordRecoveryFlow" endpoint HTTP response body
+// for the "unauthorized" error.
+type FinalizePasswordRecoveryFlowUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
 // CreateOrderInternalResponseBody is the type of the "coachee" service
 // "CreateOrder" endpoint HTTP response body for the "internal" error.
 type CreateOrderInternalResponseBody struct {
@@ -1602,6 +1899,26 @@ func NewCreateCustomerRequestBody(p *coachee.CreateCustomerPayload) *CreateCusto
 func NewCustomerLoginRequestBody(p *coachee.CustomerLoginPayload) *CustomerLoginRequestBody {
 	body := &CustomerLoginRequestBody{
 		Email:    p.Email,
+		Password: p.Password,
+	}
+	return body
+}
+
+// NewStartPasswordRecoveryFlowRequestBody builds the HTTP request body from
+// the payload of the "StartPasswordRecoveryFlow" endpoint of the "coachee"
+// service.
+func NewStartPasswordRecoveryFlowRequestBody(p *coachee.StartPasswordRecoveryFlowPayload) *StartPasswordRecoveryFlowRequestBody {
+	body := &StartPasswordRecoveryFlowRequestBody{
+		Email: p.Email,
+	}
+	return body
+}
+
+// NewFinalizePasswordRecoveryFlowRequestBody builds the HTTP request body from
+// the payload of the "FinalizePasswordRecoveryFlow" endpoint of the "coachee"
+// service.
+func NewFinalizePasswordRecoveryFlowRequestBody(p *coachee.FinalizePasswordRecoveryFlowPayload) *FinalizePasswordRecoveryFlowRequestBody {
+	body := &FinalizePasswordRecoveryFlowRequestBody{
 		Password: p.Password,
 	}
 	return body
@@ -2610,6 +2927,216 @@ func NewCustomerLoginValidation(body *CustomerLoginValidationResponseBody) *goa.
 // NewCustomerLoginUnauthorized builds a coachee service CustomerLogin endpoint
 // unauthorized error.
 func NewCustomerLoginUnauthorized(body *CustomerLoginUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewStartPasswordRecoveryFlowInternal builds a coachee service
+// StartPasswordRecoveryFlow endpoint internal error.
+func NewStartPasswordRecoveryFlowInternal(body *StartPasswordRecoveryFlowInternalResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewStartPasswordRecoveryFlowTransient builds a coachee service
+// StartPasswordRecoveryFlow endpoint transient error.
+func NewStartPasswordRecoveryFlowTransient(body *StartPasswordRecoveryFlowTransientResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewStartPasswordRecoveryFlowNotFound builds a coachee service
+// StartPasswordRecoveryFlow endpoint notFound error.
+func NewStartPasswordRecoveryFlowNotFound(body *StartPasswordRecoveryFlowNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewStartPasswordRecoveryFlowValidation builds a coachee service
+// StartPasswordRecoveryFlow endpoint validation error.
+func NewStartPasswordRecoveryFlowValidation(body *StartPasswordRecoveryFlowValidationResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewStartPasswordRecoveryFlowUnauthorized builds a coachee service
+// StartPasswordRecoveryFlow endpoint unauthorized error.
+func NewStartPasswordRecoveryFlowUnauthorized(body *StartPasswordRecoveryFlowUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewCheckPasswordRecoveryTokenInternal builds a coachee service
+// CheckPasswordRecoveryToken endpoint internal error.
+func NewCheckPasswordRecoveryTokenInternal(body *CheckPasswordRecoveryTokenInternalResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewCheckPasswordRecoveryTokenTransient builds a coachee service
+// CheckPasswordRecoveryToken endpoint transient error.
+func NewCheckPasswordRecoveryTokenTransient(body *CheckPasswordRecoveryTokenTransientResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewCheckPasswordRecoveryTokenNotFound builds a coachee service
+// CheckPasswordRecoveryToken endpoint notFound error.
+func NewCheckPasswordRecoveryTokenNotFound(body *CheckPasswordRecoveryTokenNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewCheckPasswordRecoveryTokenValidation builds a coachee service
+// CheckPasswordRecoveryToken endpoint validation error.
+func NewCheckPasswordRecoveryTokenValidation(body *CheckPasswordRecoveryTokenValidationResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewCheckPasswordRecoveryTokenUnauthorized builds a coachee service
+// CheckPasswordRecoveryToken endpoint unauthorized error.
+func NewCheckPasswordRecoveryTokenUnauthorized(body *CheckPasswordRecoveryTokenUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewFinalizePasswordRecoveryFlowInternal builds a coachee service
+// FinalizePasswordRecoveryFlow endpoint internal error.
+func NewFinalizePasswordRecoveryFlowInternal(body *FinalizePasswordRecoveryFlowInternalResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewFinalizePasswordRecoveryFlowTransient builds a coachee service
+// FinalizePasswordRecoveryFlow endpoint transient error.
+func NewFinalizePasswordRecoveryFlowTransient(body *FinalizePasswordRecoveryFlowTransientResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewFinalizePasswordRecoveryFlowNotFound builds a coachee service
+// FinalizePasswordRecoveryFlow endpoint notFound error.
+func NewFinalizePasswordRecoveryFlowNotFound(body *FinalizePasswordRecoveryFlowNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewFinalizePasswordRecoveryFlowValidation builds a coachee service
+// FinalizePasswordRecoveryFlow endpoint validation error.
+func NewFinalizePasswordRecoveryFlowValidation(body *FinalizePasswordRecoveryFlowValidationResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewFinalizePasswordRecoveryFlowUnauthorized builds a coachee service
+// FinalizePasswordRecoveryFlow endpoint unauthorized error.
+func NewFinalizePasswordRecoveryFlowUnauthorized(body *FinalizePasswordRecoveryFlowUnauthorizedResponseBody) *goa.ServiceError {
 	v := &goa.ServiceError{
 		Name:      *body.Name,
 		ID:        *body.ID,
@@ -4343,6 +4870,367 @@ func ValidateCustomerLoginValidationResponseBody(body *CustomerLoginValidationRe
 // ValidateCustomerLoginUnauthorizedResponseBody runs the validations defined
 // on CustomerLogin_unauthorized_Response_Body
 func ValidateCustomerLoginUnauthorizedResponseBody(body *CustomerLoginUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateStartPasswordRecoveryFlowInternalResponseBody runs the validations
+// defined on StartPasswordRecoveryFlow_internal_Response_Body
+func ValidateStartPasswordRecoveryFlowInternalResponseBody(body *StartPasswordRecoveryFlowInternalResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateStartPasswordRecoveryFlowTransientResponseBody runs the validations
+// defined on StartPasswordRecoveryFlow_transient_Response_Body
+func ValidateStartPasswordRecoveryFlowTransientResponseBody(body *StartPasswordRecoveryFlowTransientResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateStartPasswordRecoveryFlowNotFoundResponseBody runs the validations
+// defined on StartPasswordRecoveryFlow_notFound_Response_Body
+func ValidateStartPasswordRecoveryFlowNotFoundResponseBody(body *StartPasswordRecoveryFlowNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateStartPasswordRecoveryFlowValidationResponseBody runs the validations
+// defined on StartPasswordRecoveryFlow_validation_Response_Body
+func ValidateStartPasswordRecoveryFlowValidationResponseBody(body *StartPasswordRecoveryFlowValidationResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateStartPasswordRecoveryFlowUnauthorizedResponseBody runs the
+// validations defined on StartPasswordRecoveryFlow_unauthorized_Response_Body
+func ValidateStartPasswordRecoveryFlowUnauthorizedResponseBody(body *StartPasswordRecoveryFlowUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateCheckPasswordRecoveryTokenInternalResponseBody runs the validations
+// defined on CheckPasswordRecoveryToken_internal_Response_Body
+func ValidateCheckPasswordRecoveryTokenInternalResponseBody(body *CheckPasswordRecoveryTokenInternalResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateCheckPasswordRecoveryTokenTransientResponseBody runs the validations
+// defined on CheckPasswordRecoveryToken_transient_Response_Body
+func ValidateCheckPasswordRecoveryTokenTransientResponseBody(body *CheckPasswordRecoveryTokenTransientResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateCheckPasswordRecoveryTokenNotFoundResponseBody runs the validations
+// defined on CheckPasswordRecoveryToken_notFound_Response_Body
+func ValidateCheckPasswordRecoveryTokenNotFoundResponseBody(body *CheckPasswordRecoveryTokenNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateCheckPasswordRecoveryTokenValidationResponseBody runs the
+// validations defined on CheckPasswordRecoveryToken_validation_Response_Body
+func ValidateCheckPasswordRecoveryTokenValidationResponseBody(body *CheckPasswordRecoveryTokenValidationResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateCheckPasswordRecoveryTokenUnauthorizedResponseBody runs the
+// validations defined on CheckPasswordRecoveryToken_unauthorized_Response_Body
+func ValidateCheckPasswordRecoveryTokenUnauthorizedResponseBody(body *CheckPasswordRecoveryTokenUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateFinalizePasswordRecoveryFlowInternalResponseBody runs the
+// validations defined on FinalizePasswordRecoveryFlow_internal_Response_Body
+func ValidateFinalizePasswordRecoveryFlowInternalResponseBody(body *FinalizePasswordRecoveryFlowInternalResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateFinalizePasswordRecoveryFlowTransientResponseBody runs the
+// validations defined on FinalizePasswordRecoveryFlow_transient_Response_Body
+func ValidateFinalizePasswordRecoveryFlowTransientResponseBody(body *FinalizePasswordRecoveryFlowTransientResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateFinalizePasswordRecoveryFlowNotFoundResponseBody runs the
+// validations defined on FinalizePasswordRecoveryFlow_notFound_Response_Body
+func ValidateFinalizePasswordRecoveryFlowNotFoundResponseBody(body *FinalizePasswordRecoveryFlowNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateFinalizePasswordRecoveryFlowValidationResponseBody runs the
+// validations defined on FinalizePasswordRecoveryFlow_validation_Response_Body
+func ValidateFinalizePasswordRecoveryFlowValidationResponseBody(body *FinalizePasswordRecoveryFlowValidationResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateFinalizePasswordRecoveryFlowUnauthorizedResponseBody runs the
+// validations defined on
+// FinalizePasswordRecoveryFlow_unauthorized_Response_Body
+func ValidateFinalizePasswordRecoveryFlowUnauthorizedResponseBody(body *FinalizePasswordRecoveryFlowUnauthorizedResponseBody) (err error) {
 	if body.Name == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
 	}
