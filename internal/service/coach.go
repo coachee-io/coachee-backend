@@ -2,9 +2,11 @@ package service
 
 import (
 	"coachee-backend/gen/coachee"
+	"coachee-backend/internal/auth"
 	"coachee-backend/internal/model"
 	"coachee-backend/internal/repository"
 	"context"
+	"errors"
 	"time"
 )
 
@@ -57,6 +59,8 @@ func (s *Service) LenCoaches(ctx context.Context, p *coachee.LenCoachesPayload) 
 
 // CreateCoaches creates a base coach
 func (s *Service) CreateCoach(ctx context.Context, p *coachee.CreateCoachPayload) (uint, error) {
+	l := s.logger.With().Str("service", "CreateCoach").Logger()
+
 	var city, country, vat, textAvailability string
 	if p.City != nil {
 		city = *p.City
@@ -71,10 +75,23 @@ func (s *Service) CreateCoach(ctx context.Context, p *coachee.CreateCoachPayload
 		textAvailability = *p.TextAvailability
 	}
 
+	if len(p.Password) < 8 {
+		msg := "password needs to be longer than 8 characters"
+		l.Debug().Msg(msg)
+		return 0, coachee.MakeValidation(errors.New(msg))
+	}
+
+	hashedPass, err := auth.Hash(p.Password)
+	if err != nil {
+		l.Info().Err(err).Msg("failed to hash password")
+		return 0, coachee.MakeValidation(err)
+	}
+
 	coach := &model.Coach{
 		FirstName:          p.FirstName,
 		LastName:           p.LastName,
 		Email:              p.Email,
+		Password:           string(hashedPass),
 		Phone:              p.Phone,
 		Tags:               p.Tags,
 		Description:        p.Description,
@@ -88,7 +105,7 @@ func (s *Service) CreateCoach(ctx context.Context, p *coachee.CreateCoachPayload
 		TextPrograms:       p.TextPrograms,
 	}
 
-	err := s.coachRepository.Create(repository.DefaultNoTransaction, coach)
+	err = s.coachRepository.Create(repository.DefaultNoTransaction, coach)
 	if err != nil {
 		s.logger.Error().Err(err).Msg("failed to create coach")
 		return 0, err

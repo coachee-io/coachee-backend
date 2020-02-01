@@ -19,6 +19,7 @@ type CreateCoachRequestBody struct {
 	FirstName          string  `form:"firstName" json:"firstName" xml:"firstName"`
 	LastName           string  `form:"lastName" json:"lastName" xml:"lastName"`
 	Email              string  `form:"email" json:"email" xml:"email"`
+	Password           string  `form:"password" json:"password" xml:"password"`
 	Phone              string  `form:"phone" json:"phone" xml:"phone"`
 	Tags               string  `form:"tags" json:"tags" xml:"tags"`
 	Description        string  `form:"description" json:"description" xml:"description"`
@@ -1918,6 +1919,7 @@ func NewCreateCoachRequestBody(p *coachee.CreateCoachPayload) *CreateCoachReques
 		FirstName:          p.FirstName,
 		LastName:           p.LastName,
 		Email:              p.Email,
+		Password:           p.Password,
 		Phone:              p.Phone,
 		Tags:               p.Tags,
 		Description:        p.Description,

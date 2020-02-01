@@ -19,6 +19,7 @@ type CreateCoachRequestBody struct {
 	FirstName          *string `form:"firstName,omitempty" json:"firstName,omitempty" xml:"firstName,omitempty"`
 	LastName           *string `form:"lastName,omitempty" json:"lastName,omitempty" xml:"lastName,omitempty"`
 	Email              *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
+	Password           *string `form:"password,omitempty" json:"password,omitempty" xml:"password,omitempty"`
 	Phone              *string `form:"phone,omitempty" json:"phone,omitempty" xml:"phone,omitempty"`
 	Tags               *string `form:"tags,omitempty" json:"tags,omitempty" xml:"tags,omitempty"`
 	Description        *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
@@ -3343,6 +3344,7 @@ func NewCreateCoachPayload(body *CreateCoachRequestBody) *coachee.CreateCoachPay
 		FirstName:          *body.FirstName,
 		LastName:           *body.LastName,
 		Email:              *body.Email,
+		Password:           *body.Password,
 		Phone:              *body.Phone,
 		Tags:               *body.Tags,
 		Description:        *body.Description,
@@ -3513,6 +3515,9 @@ func ValidateCreateCoachRequestBody(body *CreateCoachRequestBody) (err error) {
 	}
 	if body.Email == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("email", "body"))
+	}
+	if body.Password == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("password", "body"))
 	}
 	if body.Phone == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("phone", "body"))

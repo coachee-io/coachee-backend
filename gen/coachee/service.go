@@ -110,6 +110,7 @@ type CreateCoachPayload struct {
 	FirstName          string
 	LastName           string
 	Email              string
+	Password           string
 	Phone              string
 	Tags               string
 	Description        string

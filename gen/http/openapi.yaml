@@ -159,6 +159,7 @@ paths:
           - firstName
           - lastName
           - email
+          - password
           - phone
           - tags
           - description
@@ -1069,9 +1070,9 @@ definitions:
         $ref: '#/definitions/availabilityRequestBody'
     example:
       availability:
-        end: 1137
-        id: Odio minima repudiandae.
-        start: 39
+        end: 465
+        id: Rerum officiis.
+        start: 184
         weekDay: 0
     required:
     - availability
@@ -1310,12 +1311,12 @@ definitions:
         $ref: '#/definitions/certificationRequestBody'
     example:
       certification:
-        description: Ut qui laboriosam id.
-        id: Sit sit accusantium neque ad enim.
-        institution: Recusandae ab sint.
-        month: 2
-        title: Iste assumenda.
-        year: 2026
+        description: Quia totam quia minima doloremque necessitatibus pariatur.
+        id: Recusandae ab sint.
+        institution: Iste sint.
+        month: 9
+        title: Est qui laborum qui.
+        year: 2001
     required:
     - certification
   CoacheeCreateCertificationTransientResponseBody:
@@ -1552,13 +1553,13 @@ definitions:
     properties:
       city:
         type: string
-        example: Eum ipsam.
+        example: Illo saepe et nihil.
       country:
         type: string
-        example: Illo saepe et nihil.
+        example: Voluptatem sed eius eos.
       description:
         type: string
-        example: Perferendis labore dolore aliquid.
+        example: Eum ipsam.
       email:
         type: string
         example: Et perspiciatis.
@@ -1567,47 +1568,52 @@ definitions:
         example: Et saepe accusantium facere tempora.
       introCall:
         type: integer
-        example: 10479441839278929356
+        example: 5493710107119041057
         format: int64
       lastName:
         type: string
         example: Cum et esse facere minus incidunt.
-      phone:
+      password:
         type: string
         example: Voluptas sint nemo vitae dolores.
-      tags:
+      phone:
         type: string
         example: Laboriosam recusandae reprehenderit qui.
+      tags:
+        type: string
+        example: Perferendis labore dolore aliquid.
       textAvailability:
         type: string
-        example: Recusandae qui.
+        example: Hic minus.
       textCertifications:
         type: string
-        example: Sed eius eos aspernatur.
+        example: Illo molestias voluptatum doloribus repellat.
       textPrograms:
         type: string
-        example: Illo molestias voluptatum doloribus repellat.
+        example: Recusandae qui.
       vat:
         type: string
-        example: Hic minus.
+        example: Dolor nostrum eius.
     example:
-      city: Numquam atque iure quia placeat minus quasi.
-      country: Facilis beatae ullam molestiae exercitationem rerum.
-      description: Maxime ad enim molestiae et illum rerum.
-      email: Tenetur animi aut velit natus.
-      firstName: Dolor nostrum eius.
-      introCall: 8104143915985917504
-      lastName: Voluptates aliquid non dolorem asperiores veniam incidunt.
-      phone: Ipsam tenetur.
-      tags: Enim ad.
-      textAvailability: Esse sed aut dolore debitis.
-      textCertifications: Ut ab et qui reiciendis.
-      textPrograms: Repellat omnis omnis quisquam eos cupiditate.
-      vat: Sit veritatis rerum.
+      city: Adipisci ut.
+      country: Et qui reiciendis reprehenderit repellat.
+      description: Facilis beatae ullam molestiae exercitationem rerum.
+      email: Ipsam tenetur.
+      firstName: Voluptates aliquid non dolorem asperiores veniam incidunt.
+      introCall: 17877321859187422397
+      lastName: Tenetur animi aut velit natus.
+      password: Enim ad.
+      phone: Maxime ad enim molestiae et illum rerum.
+      tags: Numquam atque iure quia placeat minus quasi.
+      textAvailability: Sit veritatis rerum.
+      textCertifications: Quisquam eos cupiditate.
+      textPrograms: Esse sed aut dolore debitis.
+      vat: Tempora et aspernatur deleniti praesentium ea.
     required:
     - firstName
     - lastName
     - email
+    - password
     - phone
     - tags
     - description
@@ -1888,9 +1894,9 @@ definitions:
       expiry: 8115270302418129820
       token: Explicabo dignissimos magni ipsam nostrum sed.
       user:
-        firstName: Sapiente deserunt molestiae.
-        id: 2951058717071938166
-        lastName: Qui laboriosam eveniet animi est et suscipit.
+        firstName: Laboriosam eveniet animi est et suscipit.
+        id: 16773765413436263084
+        lastName: Iure vel officia non et voluptates.
     required:
     - token
     - expiry
@@ -2392,13 +2398,13 @@ definitions:
         $ref: '#/definitions/programRequestBody'
     example:
       program:
-        description: Repellendus alias velit eveniet soluta.
-        duration: 6103343100881137032
-        id: Consectetur in consequatur labore esse aut soluta.
-        name: Labore tempora fugit et.
-        sessions: 17501346860314557738
-        taxPercent: 8905936226137563789
-        totalPrice: 6575205625408737613
+        description: Numquam velit dolor sit dolor.
+        duration: 14591392219494929222
+        id: Velit eveniet.
+        name: Aliquid saepe velit suscipit delectus fugit.
+        sessions: 8578413014643017611
+        taxPercent: 8855644995256618976
+        totalPrice: 17901160786247009004
     required:
     - program
   CoacheeCreateProgramTransientResponseBody:
@@ -2659,9 +2665,9 @@ definitions:
       expiry: 1172244767111455115
       token: Quaerat dolorem ut dolorem eveniet ex sunt.
       user:
-        firstName: Sapiente deserunt molestiae.
-        id: 2951058717071938166
-        lastName: Qui laboriosam eveniet animi est et suscipit.
+        firstName: Laboriosam eveniet animi est et suscipit.
+        id: 16773765413436263084
+        lastName: Iure vel officia non et voluptates.
     required:
     - token
     - expiry
@@ -5045,7 +5051,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -5063,11 +5069,11 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: UpdateCoach_internal_Response_Body result type (default view)
     example:
       fault: false
@@ -5112,10 +5118,10 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: UpdateCoach_notFound_Response_Body result type (default view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
@@ -5143,20 +5149,20 @@ definitions:
         example: Sint repudiandae.
       email:
         type: string
-        example: Rerum sed iure quasi in aut aperiam.
+        example: Iure quasi in aut aperiam doloribus.
       firstName:
         type: string
-        example: Qui maiores minima.
+        example: Commodi occaecati.
       introCall:
         type: integer
         example: 18364331548759311819
         format: int64
       lastName:
         type: string
-        example: Odit quia aut commodi occaecati quia sit.
+        example: Sit maxime rerum.
       phone:
         type: string
-        example: Suscipit ipsam rem ipsa id.
+        example: Ipsam rem ipsa id dicta ipsam consectetur.
       pictureURL:
         type: string
         example: Commodi excepturi dolorem laboriosam nihil eius.
@@ -5165,7 +5171,7 @@ definitions:
         example: Consequatur dolores velit nostrum quasi.
       tags:
         type: string
-        example: Ipsam consectetur sit eos odio.
+        example: Eos odio.
       vat:
         type: string
         example: Consequatur animi perferendis.
@@ -5189,7 +5195,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: true
+        example: false
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -5207,19 +5213,19 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: false
+        example: true
       timeout:
         type: boolean
         description: Is the error a timeout?
         example: false
     description: UpdateCoach_transient_Response_Body result type (default view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
-      timeout: true
+      temporary: false
+      timeout: false
     required:
     - name
     - id
@@ -5234,7 +5240,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: true
+        example: false
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -5263,7 +5269,7 @@ definitions:
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
+      temporary: true
       timeout: false
     required:
     - name
@@ -5297,11 +5303,11 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: UpdateCoach_validation_Response_Body result type (default view)
     example:
       fault: false
@@ -5309,7 +5315,7 @@ definitions:
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: false
-      timeout: false
+      timeout: true
     required:
     - name
     - id
@@ -5355,28 +5361,28 @@ definitions:
     properties:
       end:
         type: integer
-        example: 172
+        example: 309
         minimum: 0
         maximum: 1440
       id:
         type: string
-        example: Placeat ducimus autem dolor officia ipsam et.
+        example: Natus ut.
       start:
         type: integer
-        example: 942
+        example: 567
         minimum: 0
         maximum: 1440
       weekDay:
         type: integer
-        example: 0
+        example: 1
         minimum: 0
         maximum: 6
     description: represents a coach availability
     example:
-      end: 160
-      id: Sed et nihil exercitationem est et ea.
-      start: 1319
-      weekDay: 4
+      end: 909
+      id: Est et ea consequatur officiis dolorem.
+      start: 1408
+      weekDay: 3
     required:
     - weekDay
     - start
@@ -5482,34 +5488,34 @@ definitions:
     properties:
       description:
         type: string
-        example: Omnis rerum dolorem id ut et.
+        example: Non explicabo veritatis ea natus non at.
       id:
         type: string
-        example: Quod molestias optio commodi deleniti.
+        example: Omnis rerum dolorem id ut et.
       institution:
         type: string
-        example: Et expedita.
+        example: Mollitia ea.
       month:
         type: integer
-        example: 5
+        example: 3
         minimum: 1
         maximum: 12
       title:
         type: string
-        example: Ut alias dicta.
+        example: Et expedita.
       year:
         type: integer
-        example: 2062
+        example: 1921
         minimum: 1900
         maximum: 2100
     description: represents a coach certification
     example:
-      description: Laudantium non eos.
-      id: Veritatis ea natus non.
-      institution: Qui tempora consequuntur excepturi delectus rerum.
-      month: 1
-      title: Vero mollitia ea autem.
-      year: 2013
+      description: Distinctio officia repellat quisquam.
+      id: Non eos amet.
+      institution: Quam doloribus nisi id ullam cum id.
+      month: 10
+      title: Tempora consequuntur excepturi delectus rerum ratione.
+      year: 1991
     required:
     - title
     - description
@@ -5573,6 +5579,14 @@ definitions:
           id: Quis cum ratione aut.
           start: 630
           weekDay: 0
+        - end: 1149
+          id: Quis cum ratione aut.
+          start: 630
+          weekDay: 0
+        - end: 1149
+          id: Quis cum ratione aut.
+          start: 630
+          weekDay: 0
       certifications:
         type: array
         items:
@@ -5590,28 +5604,34 @@ definitions:
           month: 2
           title: Sequi dolorem.
           year: 2088
+        - description: Qui sequi omnis.
+          id: Rem possimus voluptatem possimus.
+          institution: Praesentium voluptatum exercitationem.
+          month: 2
+          title: Sequi dolorem.
+          year: 2088
       city:
         type: string
-        example: Et omnis incidunt facere et consequatur fuga.
+        example: Aut ex explicabo aut provident qui et.
       country:
         type: string
-        example: Quaerat quia voluptates.
+        example: Quod molestias optio commodi deleniti.
       description:
         type: string
-        example: Iste natus doloribus sunt magni.
+        example: Quaerat quia voluptates.
       firstName:
         type: string
-        example: Voluptatem vel rerum eum praesentium eum.
+        example: Ut et.
       id:
         type: integer
-        example: 18337240075319240260
+        example: 16494380960390763785
         format: int64
       lastName:
         type: string
-        example: Nemo sit voluptatem dolorem libero assumenda molestias.
+        example: Iste natus doloribus sunt magni.
       pictureURL:
         type: string
-        example: Aut ex explicabo aut provident qui et.
+        example: Ut alias dicta.
       programs:
         type: array
         items:
@@ -5631,9 +5651,16 @@ definitions:
           sessions: 2441335488459010132
           taxPercent: 3549655043771117271
           totalPrice: 12048739738535841943
+        - description: Culpa recusandae reiciendis laudantium deserunt reiciendis.
+          duration: 17310686705191564156
+          id: Magnam quidem reprehenderit.
+          name: Officiis illum.
+          sessions: 2441335488459010132
+          taxPercent: 3549655043771117271
+          totalPrice: 12048739738535841943
       tags:
         type: string
-        example: Nobis voluptatem delectus ut et.
+        example: Et omnis incidunt facere et consequatur fuga.
     description: represents a coach and all his relevant info
     example:
       availability:
@@ -5667,8 +5694,8 @@ definitions:
       city: Officiis et.
       country: Consequuntur et quod quis aut nostrum odio.
       description: Exercitationem rerum expedita molestiae iure voluptas.
-      firstName: Et dignissimos quae voluptatem voluptate rem dolor.
-      id: 17636597161177102528
+      firstName: Voluptatem voluptate rem dolor.
+      id: 17088069723864147752
       lastName: Qui et eligendi illum.
       pictureURL: Ea et aut qui est.
       programs:
@@ -5754,38 +5781,38 @@ definitions:
     properties:
       description:
         type: string
-        example: Iste possimus quas ad perspiciatis.
+        example: Quo praesentium quis et id vel.
       duration:
-        type: integer
-        example: 16363372857271105005
-        format: int64
-      id:
-        type: string
-        example: Repellat quisquam at quam doloribus nisi id.
-      name:
-        type: string
-        example: Cum id necessitatibus non pariatur cumque facilis.
-      sessions:
-        type: integer
-        example: 18405230192729830018
-        format: int64
-      taxPercent:
         type: integer
         example: 17648558901963197086
         format: int64
-      totalPrice:
+      id:
+        type: string
+        example: Facilis ut.
+      name:
+        type: string
+        example: Quia iste possimus quas ad perspiciatis.
+      sessions:
         type: integer
         example: 9905555740748052211
         format: int64
+      taxPercent:
+        type: integer
+        example: 7630961382691549766
+        format: int64
+      totalPrice:
+        type: integer
+        example: 4715346759500313812
+        format: int64
     description: represents a coach's programs
     example:
-      description: Sint odio sint dolor eum.
-      duration: 14789201130694119165
-      id: Quo praesentium quis et id vel.
-      name: Ipsam est magni natus in aut illum.
-      sessions: 4361438354368673299
-      taxPercent: 13315595510178612560
-      totalPrice: 4014935064152875587
+      description: Itaque dolor placeat ducimus autem dolor officia.
+      duration: 4014935064152875587
+      id: Magni natus in aut.
+      name: Officiis aut praesentium sint odio sint dolor.
+      sessions: 5545342716191663675
+      taxPercent: 14408790989250441153
+      totalPrice: 2046408287628691225
     required:
     - name
     - sessions

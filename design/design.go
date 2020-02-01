@@ -199,6 +199,7 @@ var _ = Service("coachee", func() {
 			Attribute("firstName", String)
 			Attribute("lastName", String)
 			Attribute("email", String)
+			Attribute("password", String)
 			Attribute("phone", String)
 			Attribute("tags", String)
 			Attribute("description", String)
@@ -210,7 +211,7 @@ var _ = Service("coachee", func() {
 			Attribute("textAvailability", String)
 			Attribute("vat", String)
 
-			Required("firstName", "lastName", "email", "phone", "tags", "description", "introCall",
+			Required("firstName", "lastName", "email", "password", "phone", "tags", "description", "introCall",
 				"textCertifications", "textPrograms")
 		})
 
@@ -219,6 +220,13 @@ var _ = Service("coachee", func() {
 		HTTP(func() {
 			POST("/coaches")
 			Response(StatusCreated)
+		})
+	})
+
+	Method("LoginCoach", func() {
+		Description("Logs in a coach to stripe express")
+		Payload(func() {
+
 		})
 	})
 
