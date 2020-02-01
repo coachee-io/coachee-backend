@@ -27,6 +27,7 @@ type Service struct {
 type Stripe interface {
 	CreateCustomer(customer *model.Customer) error
 	CreatePaymentIntent(order *model.Order, customer *model.Customer) (string, error)
+	RegisterStripeExpress(authCode string) (string, error)
 }
 
 // NewCoachee returns the coachee service implementation.

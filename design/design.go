@@ -457,4 +457,20 @@ var _ = Service("coachee", func() {
 			Response(StatusCreated)
 		})
 	})
+
+	Method("RegisterStripeExpress", func() {
+		Description("registers a stripe express account in stripe and associates it to a coach")
+
+		Payload(func() {
+			Attribute("id", UInt)
+			Attribute("expressId", String)
+
+			Required("id", "expressId")
+		})
+
+		HTTP(func() {
+			POST("/coaches/{id}/stripe")
+			Response(StatusCreated)
+		})
+	})
 })

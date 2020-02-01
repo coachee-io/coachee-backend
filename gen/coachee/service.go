@@ -50,6 +50,8 @@ type Service interface {
 	FinalizePasswordRecoveryFlow(context.Context, *FinalizePasswordRecoveryFlowPayload) (err error)
 	// creates a new order
 	CreateOrder(context.Context, *CreateOrderPayload) (res *CreateOrderResult, err error)
+	// registers a stripe express account in stripe and associates it to a coach
+	RegisterStripeExpress(context.Context, *RegisterStripeExpressPayload) (err error)
 }
 
 // Auther defines the authorization functions to be implemented by the service.
@@ -66,7 +68,7 @@ const ServiceName = "coachee"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [17]string{"GetCoaches", "GetCoach", "LenCoaches", "CreateCoach", "UpdateCoach", "CreateCertification", "DeleteCertification", "CreateProgram", "DeleteProgram", "CreateAvailability", "DeleteAvailability", "CreateCustomer", "CustomerLogin", "StartPasswordRecoveryFlow", "CheckPasswordRecoveryToken", "FinalizePasswordRecoveryFlow", "CreateOrder"}
+var MethodNames = [18]string{"GetCoaches", "GetCoach", "LenCoaches", "CreateCoach", "UpdateCoach", "CreateCertification", "DeleteCertification", "CreateProgram", "DeleteProgram", "CreateAvailability", "DeleteAvailability", "CreateCustomer", "CustomerLogin", "StartPasswordRecoveryFlow", "CheckPasswordRecoveryToken", "FinalizePasswordRecoveryFlow", "CreateOrder", "RegisterStripeExpress"}
 
 // GetCoachesPayload is the payload type of the coachee service GetCoaches
 // method.
@@ -247,6 +249,13 @@ type CreateOrderPayload struct {
 type CreateOrderResult struct {
 	ClientSecret  string
 	PublishingKey string
+}
+
+// RegisterStripeExpressPayload is the payload type of the coachee service
+// RegisterStripeExpress method.
+type RegisterStripeExpressPayload struct {
+	ID        uint
+	ExpressID string
 }
 
 // represents a coach certification

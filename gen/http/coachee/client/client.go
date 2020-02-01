@@ -85,6 +85,10 @@ type Client struct {
 	// endpoint.
 	CreateOrderDoer goahttp.Doer
 
+	// RegisterStripeExpress Doer is the HTTP client used to make requests to the
+	// RegisterStripeExpress endpoint.
+	RegisterStripeExpressDoer goahttp.Doer
+
 	// CORS Doer is the HTTP client used to make requests to the  endpoint.
 	CORSDoer goahttp.Doer
 
@@ -125,6 +129,7 @@ func NewClient(
 		CheckPasswordRecoveryTokenDoer:   doer,
 		FinalizePasswordRecoveryFlowDoer: doer,
 		CreateOrderDoer:                  doer,
+		RegisterStripeExpressDoer:        doer,
 		CORSDoer:                         doer,
 		RestoreResponseBody:              restoreBody,
 		scheme:                           scheme,
@@ -524,6 +529,31 @@ func (c *Client) CreateOrder() goa.Endpoint {
 
 		if err != nil {
 			return nil, goahttp.ErrRequestError("coachee", "CreateOrder", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// RegisterStripeExpress returns an endpoint that makes HTTP requests to the
+// coachee service RegisterStripeExpress server.
+func (c *Client) RegisterStripeExpress() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeRegisterStripeExpressRequest(c.encoder)
+		decodeResponse = DecodeRegisterStripeExpressResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildRegisterStripeExpressRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.RegisterStripeExpressDoer.Do(req)
+
+		if err != nil {
+			return nil, goahttp.ErrRequestError("coachee", "RegisterStripeExpress", err)
 		}
 		return decodeResponse(resp)
 	}

@@ -23,13 +23,13 @@ import (
 //    command (subcommand1|subcommand2|...)
 //
 func UsageCommands() string {
-	return `coachee (get-coaches|get-coach|len-coaches|create-coach|update-coach|create-certification|delete-certification|create-program|delete-program|create-availability|delete-availability|create-customer|customer-login|start-password-recovery-flow|check-password-recovery-token|finalize-password-recovery-flow|create-order)
+	return `coachee (get-coaches|get-coach|len-coaches|create-coach|update-coach|create-certification|delete-certification|create-program|delete-program|create-availability|delete-availability|create-customer|customer-login|start-password-recovery-flow|check-password-recovery-token|finalize-password-recovery-flow|create-order|register-stripe-express)
 `
 }
 
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
-	return os.Args[0] + ` coachee get-coaches --tag "Eligendi rerum animi tenetur ipsa debitis molestiae." --limit 11288226732923642920 --page 13359164744457656323` + "\n" +
+	return os.Args[0] + ` coachee get-coaches --tag "Debitis molestiae et sit eos saepe." --limit 6604467783455990843 --page 17042997039165179651` + "\n" +
 		""
 }
 
@@ -106,6 +106,10 @@ func ParseEndpoint(
 		coacheeCreateOrderFlags     = flag.NewFlagSet("create-order", flag.ExitOnError)
 		coacheeCreateOrderBodyFlag  = coacheeCreateOrderFlags.String("body", "REQUIRED", "")
 		coacheeCreateOrderTokenFlag = coacheeCreateOrderFlags.String("token", "REQUIRED", "")
+
+		coacheeRegisterStripeExpressFlags    = flag.NewFlagSet("register-stripe-express", flag.ExitOnError)
+		coacheeRegisterStripeExpressBodyFlag = coacheeRegisterStripeExpressFlags.String("body", "REQUIRED", "")
+		coacheeRegisterStripeExpressIDFlag   = coacheeRegisterStripeExpressFlags.String("id", "REQUIRED", "")
 	)
 	coacheeFlags.Usage = coacheeUsage
 	coacheeGetCoachesFlags.Usage = coacheeGetCoachesUsage
@@ -125,6 +129,7 @@ func ParseEndpoint(
 	coacheeCheckPasswordRecoveryTokenFlags.Usage = coacheeCheckPasswordRecoveryTokenUsage
 	coacheeFinalizePasswordRecoveryFlowFlags.Usage = coacheeFinalizePasswordRecoveryFlowUsage
 	coacheeCreateOrderFlags.Usage = coacheeCreateOrderUsage
+	coacheeRegisterStripeExpressFlags.Usage = coacheeRegisterStripeExpressUsage
 
 	if err := flag.CommandLine.Parse(os.Args[1:]); err != nil {
 		return nil, nil, err
@@ -211,6 +216,9 @@ func ParseEndpoint(
 			case "create-order":
 				epf = coacheeCreateOrderFlags
 
+			case "register-stripe-express":
+				epf = coacheeRegisterStripeExpressFlags
+
 			}
 
 		}
@@ -287,6 +295,9 @@ func ParseEndpoint(
 			case "create-order":
 				endpoint = c.CreateOrder()
 				data, err = coacheec.BuildCreateOrderPayload(*coacheeCreateOrderBodyFlag, *coacheeCreateOrderTokenFlag)
+			case "register-stripe-express":
+				endpoint = c.RegisterStripeExpress()
+				data, err = coacheec.BuildRegisterStripeExpressPayload(*coacheeRegisterStripeExpressBodyFlag, *coacheeRegisterStripeExpressIDFlag)
 			}
 		}
 	}
@@ -321,6 +332,7 @@ COMMAND:
     check-password-recovery-token: verifies if a recovery token is still valid
     finalize-password-recovery-flow: finalizes the password recovery flow by resetting a new password 
     create-order: creates a new order
+    register-stripe-express: registers a stripe express account in stripe and associates it to a coach
 
 Additional help:
     %s coachee COMMAND --help
@@ -335,7 +347,7 @@ GetCoaches returns an array of coaches according to a tag and pagination
     -page UINT: 
 
 Example:
-    `+os.Args[0]+` coachee get-coaches --tag "Eligendi rerum animi tenetur ipsa debitis molestiae." --limit 11288226732923642920 --page 13359164744457656323
+    `+os.Args[0]+` coachee get-coaches --tag "Debitis molestiae et sit eos saepe." --limit 6604467783455990843 --page 17042997039165179651
 `, os.Args[0])
 }
 
@@ -591,5 +603,19 @@ Example:
       "introCall": 817331013112598158,
       "programId": "Ad quia."
    }' --token "Eos libero numquam sit aut optio sunt."
+`, os.Args[0])
+}
+
+func coacheeRegisterStripeExpressUsage() {
+	fmt.Fprintf(os.Stderr, `%s [flags] coachee register-stripe-express -body JSON -id UINT
+
+registers a stripe express account in stripe and associates it to a coach
+    -body JSON: 
+    -id UINT: 
+
+Example:
+    `+os.Args[0]+` coachee register-stripe-express --body '{
+      "expressId": "Adipisci error."
+   }' --id 12612822409335084581
 `, os.Args[0])
 }

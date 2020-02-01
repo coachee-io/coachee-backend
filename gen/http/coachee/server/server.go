@@ -37,6 +37,7 @@ type Server struct {
 	CheckPasswordRecoveryToken   http.Handler
 	FinalizePasswordRecoveryFlow http.Handler
 	CreateOrder                  http.Handler
+	RegisterStripeExpress        http.Handler
 	CORS                         http.Handler
 }
 
@@ -90,6 +91,7 @@ func New(
 			{"CheckPasswordRecoveryToken", "GET", "/recovery/{token}"},
 			{"FinalizePasswordRecoveryFlow", "POST", "/recovery/{token}"},
 			{"CreateOrder", "POST", "/orders"},
+			{"RegisterStripeExpress", "POST", "/coaches/{id}/stripe"},
 			{"CORS", "OPTIONS", "/coaches"},
 			{"CORS", "OPTIONS", "/coaches/{id}"},
 			{"CORS", "OPTIONS", "/coaches/{tag}/length"},
@@ -104,6 +106,7 @@ func New(
 			{"CORS", "OPTIONS", "/recovery"},
 			{"CORS", "OPTIONS", "/recovery/{token}"},
 			{"CORS", "OPTIONS", "/orders"},
+			{"CORS", "OPTIONS", "/coaches/{id}/stripe"},
 		},
 		GetCoaches:                   NewGetCoachesHandler(e.GetCoaches, mux, decoder, encoder, errhandler, formatter),
 		GetCoach:                     NewGetCoachHandler(e.GetCoach, mux, decoder, encoder, errhandler, formatter),
@@ -122,6 +125,7 @@ func New(
 		CheckPasswordRecoveryToken:   NewCheckPasswordRecoveryTokenHandler(e.CheckPasswordRecoveryToken, mux, decoder, encoder, errhandler, formatter),
 		FinalizePasswordRecoveryFlow: NewFinalizePasswordRecoveryFlowHandler(e.FinalizePasswordRecoveryFlow, mux, decoder, encoder, errhandler, formatter),
 		CreateOrder:                  NewCreateOrderHandler(e.CreateOrder, mux, decoder, encoder, errhandler, formatter),
+		RegisterStripeExpress:        NewRegisterStripeExpressHandler(e.RegisterStripeExpress, mux, decoder, encoder, errhandler, formatter),
 		CORS:                         NewCORSHandler(),
 	}
 }
@@ -148,6 +152,7 @@ func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.CheckPasswordRecoveryToken = m(s.CheckPasswordRecoveryToken)
 	s.FinalizePasswordRecoveryFlow = m(s.FinalizePasswordRecoveryFlow)
 	s.CreateOrder = m(s.CreateOrder)
+	s.RegisterStripeExpress = m(s.RegisterStripeExpress)
 	s.CORS = m(s.CORS)
 }
 
@@ -170,6 +175,7 @@ func Mount(mux goahttp.Muxer, h *Server) {
 	MountCheckPasswordRecoveryTokenHandler(mux, h.CheckPasswordRecoveryToken)
 	MountFinalizePasswordRecoveryFlowHandler(mux, h.FinalizePasswordRecoveryFlow)
 	MountCreateOrderHandler(mux, h.CreateOrder)
+	MountRegisterStripeExpressHandler(mux, h.RegisterStripeExpress)
 	MountCORSHandler(mux, h.CORS)
 }
 
@@ -1077,6 +1083,59 @@ func NewCreateOrderHandler(
 	})
 }
 
+// MountRegisterStripeExpressHandler configures the mux to serve the "coachee"
+// service "RegisterStripeExpress" endpoint.
+func MountRegisterStripeExpressHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := handleCoacheeOrigin(h).(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("POST", "/coaches/{id}/stripe", f)
+}
+
+// NewRegisterStripeExpressHandler creates a HTTP handler which loads the HTTP
+// request and calls the "coachee" service "RegisterStripeExpress" endpoint.
+func NewRegisterStripeExpressHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeRegisterStripeExpressRequest(mux, decoder)
+		encodeResponse = EncodeRegisterStripeExpressResponse(encoder)
+		encodeError    = EncodeRegisterStripeExpressError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "RegisterStripeExpress")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "coachee")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+
+		res, err := endpoint(ctx, payload)
+
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
 // MountCORSHandler configures the mux to serve the CORS endpoints for the
 // service coachee.
 func MountCORSHandler(mux goahttp.Muxer, h http.Handler) {
@@ -1101,6 +1160,7 @@ func MountCORSHandler(mux goahttp.Muxer, h http.Handler) {
 	mux.Handle("OPTIONS", "/recovery", f)
 	mux.Handle("OPTIONS", "/recovery/{token}", f)
 	mux.Handle("OPTIONS", "/orders", f)
+	mux.Handle("OPTIONS", "/coaches/{id}/stripe", f)
 }
 
 // NewCORSHandler creates a HTTP handler which returns a simple 200 response.

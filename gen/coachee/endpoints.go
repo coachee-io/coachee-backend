@@ -33,6 +33,7 @@ type Endpoints struct {
 	CheckPasswordRecoveryToken   goa.Endpoint
 	FinalizePasswordRecoveryFlow goa.Endpoint
 	CreateOrder                  goa.Endpoint
+	RegisterStripeExpress        goa.Endpoint
 }
 
 // NewEndpoints wraps the methods of the "coachee" service with endpoints.
@@ -57,6 +58,7 @@ func NewEndpoints(s Service) *Endpoints {
 		CheckPasswordRecoveryToken:   NewCheckPasswordRecoveryTokenEndpoint(s),
 		FinalizePasswordRecoveryFlow: NewFinalizePasswordRecoveryFlowEndpoint(s),
 		CreateOrder:                  NewCreateOrderEndpoint(s, a.JWTAuth),
+		RegisterStripeExpress:        NewRegisterStripeExpressEndpoint(s),
 	}
 }
 
@@ -79,6 +81,7 @@ func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.CheckPasswordRecoveryToken = m(e.CheckPasswordRecoveryToken)
 	e.FinalizePasswordRecoveryFlow = m(e.FinalizePasswordRecoveryFlow)
 	e.CreateOrder = m(e.CreateOrder)
+	e.RegisterStripeExpress = m(e.RegisterStripeExpress)
 }
 
 // NewGetCoachesEndpoint returns an endpoint function that calls the method
@@ -241,5 +244,14 @@ func NewCreateOrderEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpo
 			return nil, err
 		}
 		return s.CreateOrder(ctx, p)
+	}
+}
+
+// NewRegisterStripeExpressEndpoint returns an endpoint function that calls the
+// method "RegisterStripeExpress" of service "coachee".
+func NewRegisterStripeExpressEndpoint(s Service) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*RegisterStripeExpressPayload)
+		return nil, s.RegisterStripeExpress(ctx, p)
 	}
 }

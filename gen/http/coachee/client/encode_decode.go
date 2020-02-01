@@ -2556,6 +2556,159 @@ func DecodeCreateOrderResponse(decoder func(*http.Response) goahttp.Decoder, res
 	}
 }
 
+// BuildRegisterStripeExpressRequest instantiates a HTTP request object with
+// method and path set to call the "coachee" service "RegisterStripeExpress"
+// endpoint
+func (c *Client) BuildRegisterStripeExpressRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	var (
+		id uint
+	)
+	{
+		p, ok := v.(*coachee.RegisterStripeExpressPayload)
+		if !ok {
+			return nil, goahttp.ErrInvalidType("coachee", "RegisterStripeExpress", "*coachee.RegisterStripeExpressPayload", v)
+		}
+		id = p.ID
+	}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: RegisterStripeExpressCoacheePath(id)}
+	req, err := http.NewRequest("POST", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("coachee", "RegisterStripeExpress", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeRegisterStripeExpressRequest returns an encoder for requests sent to
+// the coachee RegisterStripeExpress server.
+func EncodeRegisterStripeExpressRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*coachee.RegisterStripeExpressPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("coachee", "RegisterStripeExpress", "*coachee.RegisterStripeExpressPayload", v)
+		}
+		body := NewRegisterStripeExpressRequestBody(p)
+		if err := encoder(req).Encode(&body); err != nil {
+			return goahttp.ErrEncodingError("coachee", "RegisterStripeExpress", err)
+		}
+		return nil
+	}
+}
+
+// DecodeRegisterStripeExpressResponse returns a decoder for responses returned
+// by the coachee RegisterStripeExpress endpoint. restoreBody controls whether
+// the response body should be restored after having been read.
+// DecodeRegisterStripeExpressResponse may return the following errors:
+//	- "internal" (type *goa.ServiceError): http.StatusInternalServerError
+//	- "transient" (type *goa.ServiceError): http.StatusInternalServerError
+//	- "notFound" (type *goa.ServiceError): http.StatusNotFound
+//	- "validation" (type *goa.ServiceError): http.StatusBadRequest
+//	- "unauthorized" (type *goa.ServiceError): http.StatusUnauthorized
+//	- error: internal error
+func DecodeRegisterStripeExpressResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusCreated:
+			return nil, nil
+		case http.StatusInternalServerError:
+			en := resp.Header.Get("goa-error")
+			switch en {
+			case "internal":
+				var (
+					body RegisterStripeExpressInternalResponseBody
+					err  error
+				)
+				err = decoder(resp).Decode(&body)
+				if err != nil {
+					return nil, goahttp.ErrDecodingError("coachee", "RegisterStripeExpress", err)
+				}
+				err = ValidateRegisterStripeExpressInternalResponseBody(&body)
+				if err != nil {
+					return nil, goahttp.ErrValidationError("coachee", "RegisterStripeExpress", err)
+				}
+				return nil, NewRegisterStripeExpressInternal(&body)
+			case "transient":
+				var (
+					body RegisterStripeExpressTransientResponseBody
+					err  error
+				)
+				err = decoder(resp).Decode(&body)
+				if err != nil {
+					return nil, goahttp.ErrDecodingError("coachee", "RegisterStripeExpress", err)
+				}
+				err = ValidateRegisterStripeExpressTransientResponseBody(&body)
+				if err != nil {
+					return nil, goahttp.ErrValidationError("coachee", "RegisterStripeExpress", err)
+				}
+				return nil, NewRegisterStripeExpressTransient(&body)
+			default:
+				body, _ := ioutil.ReadAll(resp.Body)
+				return nil, goahttp.ErrInvalidResponse("coachee", "RegisterStripeExpress", resp.StatusCode, string(body))
+			}
+		case http.StatusNotFound:
+			var (
+				body RegisterStripeExpressNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("coachee", "RegisterStripeExpress", err)
+			}
+			err = ValidateRegisterStripeExpressNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("coachee", "RegisterStripeExpress", err)
+			}
+			return nil, NewRegisterStripeExpressNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body RegisterStripeExpressValidationResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("coachee", "RegisterStripeExpress", err)
+			}
+			err = ValidateRegisterStripeExpressValidationResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("coachee", "RegisterStripeExpress", err)
+			}
+			return nil, NewRegisterStripeExpressValidation(&body)
+		case http.StatusUnauthorized:
+			var (
+				body RegisterStripeExpressUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("coachee", "RegisterStripeExpress", err)
+			}
+			err = ValidateRegisterStripeExpressUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("coachee", "RegisterStripeExpress", err)
+			}
+			return nil, NewRegisterStripeExpressUnauthorized(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("coachee", "RegisterStripeExpress", resp.StatusCode, string(body))
+		}
+	}
+}
+
 // unmarshalCertificationResponseToCoacheeCertification builds a value of type
 // *coachee.Certification from a value of type *CertificationResponse.
 func unmarshalCertificationResponseToCoacheeCertification(v *CertificationResponse) *coachee.Certification {

@@ -103,6 +103,12 @@ type CreateOrderRequestBody struct {
 	IntroCall int64  `form:"introCall" json:"introCall" xml:"introCall"`
 }
 
+// RegisterStripeExpressRequestBody is the type of the "coachee" service
+// "RegisterStripeExpress" endpoint HTTP request body.
+type RegisterStripeExpressRequestBody struct {
+	ExpressID string `form:"expressId" json:"expressId" xml:"expressId"`
+}
+
 // GetCoachesResponseBody is the type of the "coachee" service "GetCoaches"
 // endpoint HTTP response body.
 type GetCoachesResponseBody []*CoachResponse
@@ -1701,6 +1707,101 @@ type CreateOrderUnauthorizedResponseBody struct {
 	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
 }
 
+// RegisterStripeExpressInternalResponseBody is the type of the "coachee"
+// service "RegisterStripeExpress" endpoint HTTP response body for the
+// "internal" error.
+type RegisterStripeExpressInternalResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// RegisterStripeExpressTransientResponseBody is the type of the "coachee"
+// service "RegisterStripeExpress" endpoint HTTP response body for the
+// "transient" error.
+type RegisterStripeExpressTransientResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// RegisterStripeExpressNotFoundResponseBody is the type of the "coachee"
+// service "RegisterStripeExpress" endpoint HTTP response body for the
+// "notFound" error.
+type RegisterStripeExpressNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// RegisterStripeExpressValidationResponseBody is the type of the "coachee"
+// service "RegisterStripeExpress" endpoint HTTP response body for the
+// "validation" error.
+type RegisterStripeExpressValidationResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// RegisterStripeExpressUnauthorizedResponseBody is the type of the "coachee"
+// service "RegisterStripeExpress" endpoint HTTP response body for the
+// "unauthorized" error.
+type RegisterStripeExpressUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
 // CoachResponse is used to define fields on response body types.
 type CoachResponse struct {
 	ID             *uint                    `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
@@ -1931,6 +2032,15 @@ func NewCreateOrderRequestBody(p *coachee.CreateOrderPayload) *CreateOrderReques
 		CoachID:   p.CoachID,
 		ProgramID: p.ProgramID,
 		IntroCall: p.IntroCall,
+	}
+	return body
+}
+
+// NewRegisterStripeExpressRequestBody builds the HTTP request body from the
+// payload of the "RegisterStripeExpress" endpoint of the "coachee" service.
+func NewRegisterStripeExpressRequestBody(p *coachee.RegisterStripeExpressPayload) *RegisterStripeExpressRequestBody {
+	body := &RegisterStripeExpressRequestBody{
+		ExpressID: p.ExpressID,
 	}
 	return body
 }
@@ -3217,6 +3327,76 @@ func NewCreateOrderValidation(body *CreateOrderValidationResponseBody) *goa.Serv
 // NewCreateOrderUnauthorized builds a coachee service CreateOrder endpoint
 // unauthorized error.
 func NewCreateOrderUnauthorized(body *CreateOrderUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewRegisterStripeExpressInternal builds a coachee service
+// RegisterStripeExpress endpoint internal error.
+func NewRegisterStripeExpressInternal(body *RegisterStripeExpressInternalResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewRegisterStripeExpressTransient builds a coachee service
+// RegisterStripeExpress endpoint transient error.
+func NewRegisterStripeExpressTransient(body *RegisterStripeExpressTransientResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewRegisterStripeExpressNotFound builds a coachee service
+// RegisterStripeExpress endpoint notFound error.
+func NewRegisterStripeExpressNotFound(body *RegisterStripeExpressNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewRegisterStripeExpressValidation builds a coachee service
+// RegisterStripeExpress endpoint validation error.
+func NewRegisterStripeExpressValidation(body *RegisterStripeExpressValidationResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewRegisterStripeExpressUnauthorized builds a coachee service
+// RegisterStripeExpress endpoint unauthorized error.
+func NewRegisterStripeExpressUnauthorized(body *RegisterStripeExpressUnauthorizedResponseBody) *goa.ServiceError {
 	v := &goa.ServiceError{
 		Name:      *body.Name,
 		ID:        *body.ID,
@@ -5351,6 +5531,126 @@ func ValidateCreateOrderValidationResponseBody(body *CreateOrderValidationRespon
 // ValidateCreateOrderUnauthorizedResponseBody runs the validations defined on
 // CreateOrder_unauthorized_Response_Body
 func ValidateCreateOrderUnauthorizedResponseBody(body *CreateOrderUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateRegisterStripeExpressInternalResponseBody runs the validations
+// defined on RegisterStripeExpress_internal_Response_Body
+func ValidateRegisterStripeExpressInternalResponseBody(body *RegisterStripeExpressInternalResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateRegisterStripeExpressTransientResponseBody runs the validations
+// defined on RegisterStripeExpress_transient_Response_Body
+func ValidateRegisterStripeExpressTransientResponseBody(body *RegisterStripeExpressTransientResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateRegisterStripeExpressNotFoundResponseBody runs the validations
+// defined on RegisterStripeExpress_notFound_Response_Body
+func ValidateRegisterStripeExpressNotFoundResponseBody(body *RegisterStripeExpressNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateRegisterStripeExpressValidationResponseBody runs the validations
+// defined on RegisterStripeExpress_validation_Response_Body
+func ValidateRegisterStripeExpressValidationResponseBody(body *RegisterStripeExpressValidationResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateRegisterStripeExpressUnauthorizedResponseBody runs the validations
+// defined on RegisterStripeExpress_unauthorized_Response_Body
+func ValidateRegisterStripeExpressUnauthorizedResponseBody(body *RegisterStripeExpressUnauthorizedResponseBody) (err error) {
 	if body.Name == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
 	}

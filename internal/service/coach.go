@@ -148,3 +148,25 @@ func (s *Service) UpdateCoach(ctx context.Context, p *coachee.UpdateCoachPayload
 
 	return nil
 }
+
+// RegisterStripeExpress registers a stripe express account and associates it to a coach
+func (s *Service) RegisterStripeExpress(ctx context.Context, p *coachee.RegisterStripeExpressPayload) error {
+	l := s.logger.With().Str("service", "RegisterStripeExpress").Logger()
+
+	stripeID, err := s.stripe.RegisterStripeExpress(p.ExpressID)
+	if err != nil {
+		l.Error().Err(err).Msg("failed to register stripe express")
+		return err
+	}
+
+	coachUpdate := &model.Coach{
+		ID:       p.ID,
+		StripeID: stripeID,
+	}
+	if err := s.coachRepository.Update(repository.DefaultNoTransaction, coachUpdate); err != nil {
+		l.Error().Err(err).Str("stripeID", stripeID).Msg("failed to persist coach stripe id")
+		return coachee.MakeInternal(err)
+	}
+
+	return nil
+}

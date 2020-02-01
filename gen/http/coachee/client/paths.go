@@ -95,3 +95,8 @@ func FinalizePasswordRecoveryFlowCoacheePath(token string) string {
 func CreateOrderCoacheePath() string {
 	return "/orders"
 }
+
+// RegisterStripeExpressCoacheePath returns the URL path to the coachee service RegisterStripeExpress HTTP endpoint.
+func RegisterStripeExpressCoacheePath(id uint) string {
+	return fmt.Sprintf("/coaches/%v/stripe", id)
+}

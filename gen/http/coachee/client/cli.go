@@ -455,3 +455,30 @@ func BuildCreateOrderPayload(coacheeCreateOrderBody string, coacheeCreateOrderTo
 	v.Token = token
 	return v, nil
 }
+
+// BuildRegisterStripeExpressPayload builds the payload for the coachee
+// RegisterStripeExpress endpoint from CLI flags.
+func BuildRegisterStripeExpressPayload(coacheeRegisterStripeExpressBody string, coacheeRegisterStripeExpressID string) (*coachee.RegisterStripeExpressPayload, error) {
+	var err error
+	var body RegisterStripeExpressRequestBody
+	{
+		err = json.Unmarshal([]byte(coacheeRegisterStripeExpressBody), &body)
+		if err != nil {
+			return nil, fmt.Errorf("invalid JSON for body, example of valid JSON:\n%s", "'{\n      \"expressId\": \"Adipisci error.\"\n   }'")
+		}
+	}
+	var id uint
+	{
+		var v uint64
+		v, err = strconv.ParseUint(coacheeRegisterStripeExpressID, 10, 64)
+		id = uint(v)
+		if err != nil {
+			return nil, fmt.Errorf("invalid value for id, must be UINT")
+		}
+	}
+	v := &coachee.RegisterStripeExpressPayload{
+		ExpressID: body.ExpressID,
+	}
+	v.ID = id
+	return v, nil
+}

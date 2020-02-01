@@ -32,10 +32,11 @@ type Client struct {
 	CheckPasswordRecoveryTokenEndpoint   goa.Endpoint
 	FinalizePasswordRecoveryFlowEndpoint goa.Endpoint
 	CreateOrderEndpoint                  goa.Endpoint
+	RegisterStripeExpressEndpoint        goa.Endpoint
 }
 
 // NewClient initializes a "coachee" service client given the endpoints.
-func NewClient(getCoaches, getCoach, lenCoaches, createCoach, updateCoach, createCertification, deleteCertification, createProgram, deleteProgram, createAvailability, deleteAvailability, createCustomer, customerLogin, startPasswordRecoveryFlow, checkPasswordRecoveryToken, finalizePasswordRecoveryFlow, createOrder goa.Endpoint) *Client {
+func NewClient(getCoaches, getCoach, lenCoaches, createCoach, updateCoach, createCertification, deleteCertification, createProgram, deleteProgram, createAvailability, deleteAvailability, createCustomer, customerLogin, startPasswordRecoveryFlow, checkPasswordRecoveryToken, finalizePasswordRecoveryFlow, createOrder, registerStripeExpress goa.Endpoint) *Client {
 	return &Client{
 		GetCoachesEndpoint:                   getCoaches,
 		GetCoachEndpoint:                     getCoach,
@@ -54,6 +55,7 @@ func NewClient(getCoaches, getCoach, lenCoaches, createCoach, updateCoach, creat
 		CheckPasswordRecoveryTokenEndpoint:   checkPasswordRecoveryToken,
 		FinalizePasswordRecoveryFlowEndpoint: finalizePasswordRecoveryFlow,
 		CreateOrderEndpoint:                  createOrder,
+		RegisterStripeExpressEndpoint:        registerStripeExpress,
 	}
 }
 
@@ -192,4 +194,11 @@ func (c *Client) CreateOrder(ctx context.Context, p *CreateOrderPayload) (res *C
 		return
 	}
 	return ires.(*CreateOrderResult), nil
+}
+
+// RegisterStripeExpress calls the "RegisterStripeExpress" endpoint of the
+// "coachee" service.
+func (c *Client) RegisterStripeExpress(ctx context.Context, p *RegisterStripeExpressPayload) (err error) {
+	_, err = c.RegisterStripeExpressEndpoint(ctx, p)
+	return
 }
