@@ -46,6 +46,18 @@ func (r CoachRepository) GetByID(transaction repository.Transaction, id uint) (*
 	return &coach, nil
 }
 
+// GetByEmail returns a coach by id
+func (r CoachRepository) GetByEmail(transaction repository.Transaction, email string) (*model.Coach, error) {
+	tx := r.checkTransaction(transaction)
+
+	var coach model.Coach
+	if err := tx.Where("email = ?", email).First(&coach).Error; err != nil {
+		return nil, parseError(err)
+	}
+
+	return &coach, nil
+}
+
 // GetByPage returns a page of coaches by a tag with pagination
 func (r CoachRepository) GetByPage(transaction repository.Transaction, tag string, limit, page uint) ([]*model.Coach, error) {
 	tx := r.checkTransaction(transaction)

@@ -21,3 +21,19 @@ func (c *Client) RegisterStripeExpress(authCode string) (string, error) {
 
 	return token.StripeUserID, nil
 }
+
+func (c *Client) LoginStripeExpress(stripeID string) (string, error) {
+	l := c.logger.With().Str("service", "LoginStripeExpress").Logger()
+	l.Debug().Msg("stripe RegisterStripeExpress called")
+
+	params := &stripe.LoginLinkParams{
+		Account: stripe.String(stripeID),
+	}
+	link, err := c.stripe.LoginLinks.New(params)
+	if err != nil {
+		l.Error().Err(err).Msg("failed to generate login link for stripe express")
+		return "", err
+	}
+
+	return link.URL, nil
+}

@@ -33,6 +33,22 @@ type Client struct {
 	// endpoint.
 	CreateCoachDoer goahttp.Doer
 
+	// LoginCoach Doer is the HTTP client used to make requests to the LoginCoach
+	// endpoint.
+	LoginCoachDoer goahttp.Doer
+
+	// StartCoachPasswordRecoveryFlow Doer is the HTTP client used to make requests
+	// to the StartCoachPasswordRecoveryFlow endpoint.
+	StartCoachPasswordRecoveryFlowDoer goahttp.Doer
+
+	// CheckCoachPasswordRecoveryToken Doer is the HTTP client used to make
+	// requests to the CheckCoachPasswordRecoveryToken endpoint.
+	CheckCoachPasswordRecoveryTokenDoer goahttp.Doer
+
+	// FinalizeCoachPasswordRecoveryFlow Doer is the HTTP client used to make
+	// requests to the FinalizeCoachPasswordRecoveryFlow endpoint.
+	FinalizeCoachPasswordRecoveryFlowDoer goahttp.Doer
+
 	// UpdateCoach Doer is the HTTP client used to make requests to the UpdateCoach
 	// endpoint.
 	UpdateCoachDoer goahttp.Doer
@@ -112,30 +128,34 @@ func NewClient(
 	restoreBody bool,
 ) *Client {
 	return &Client{
-		GetCoachesDoer:                   doer,
-		GetCoachDoer:                     doer,
-		LenCoachesDoer:                   doer,
-		CreateCoachDoer:                  doer,
-		UpdateCoachDoer:                  doer,
-		CreateCertificationDoer:          doer,
-		DeleteCertificationDoer:          doer,
-		CreateProgramDoer:                doer,
-		DeleteProgramDoer:                doer,
-		CreateAvailabilityDoer:           doer,
-		DeleteAvailabilityDoer:           doer,
-		CreateCustomerDoer:               doer,
-		CustomerLoginDoer:                doer,
-		StartPasswordRecoveryFlowDoer:    doer,
-		CheckPasswordRecoveryTokenDoer:   doer,
-		FinalizePasswordRecoveryFlowDoer: doer,
-		CreateOrderDoer:                  doer,
-		RegisterStripeExpressDoer:        doer,
-		CORSDoer:                         doer,
-		RestoreResponseBody:              restoreBody,
-		scheme:                           scheme,
-		host:                             host,
-		decoder:                          dec,
-		encoder:                          enc,
+		GetCoachesDoer:                        doer,
+		GetCoachDoer:                          doer,
+		LenCoachesDoer:                        doer,
+		CreateCoachDoer:                       doer,
+		LoginCoachDoer:                        doer,
+		StartCoachPasswordRecoveryFlowDoer:    doer,
+		CheckCoachPasswordRecoveryTokenDoer:   doer,
+		FinalizeCoachPasswordRecoveryFlowDoer: doer,
+		UpdateCoachDoer:                       doer,
+		CreateCertificationDoer:               doer,
+		DeleteCertificationDoer:               doer,
+		CreateProgramDoer:                     doer,
+		DeleteProgramDoer:                     doer,
+		CreateAvailabilityDoer:                doer,
+		DeleteAvailabilityDoer:                doer,
+		CreateCustomerDoer:                    doer,
+		CustomerLoginDoer:                     doer,
+		StartPasswordRecoveryFlowDoer:         doer,
+		CheckPasswordRecoveryTokenDoer:        doer,
+		FinalizePasswordRecoveryFlowDoer:      doer,
+		CreateOrderDoer:                       doer,
+		RegisterStripeExpressDoer:             doer,
+		CORSDoer:                              doer,
+		RestoreResponseBody:                   restoreBody,
+		scheme:                                scheme,
+		host:                                  host,
+		decoder:                               dec,
+		encoder:                               enc,
 	}
 }
 
@@ -224,6 +244,101 @@ func (c *Client) CreateCoach() goa.Endpoint {
 
 		if err != nil {
 			return nil, goahttp.ErrRequestError("coachee", "CreateCoach", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// LoginCoach returns an endpoint that makes HTTP requests to the coachee
+// service LoginCoach server.
+func (c *Client) LoginCoach() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeLoginCoachRequest(c.encoder)
+		decodeResponse = DecodeLoginCoachResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildLoginCoachRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.LoginCoachDoer.Do(req)
+
+		if err != nil {
+			return nil, goahttp.ErrRequestError("coachee", "LoginCoach", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// StartCoachPasswordRecoveryFlow returns an endpoint that makes HTTP requests
+// to the coachee service StartCoachPasswordRecoveryFlow server.
+func (c *Client) StartCoachPasswordRecoveryFlow() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeStartCoachPasswordRecoveryFlowRequest(c.encoder)
+		decodeResponse = DecodeStartCoachPasswordRecoveryFlowResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildStartCoachPasswordRecoveryFlowRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.StartCoachPasswordRecoveryFlowDoer.Do(req)
+
+		if err != nil {
+			return nil, goahttp.ErrRequestError("coachee", "StartCoachPasswordRecoveryFlow", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// CheckCoachPasswordRecoveryToken returns an endpoint that makes HTTP requests
+// to the coachee service CheckCoachPasswordRecoveryToken server.
+func (c *Client) CheckCoachPasswordRecoveryToken() goa.Endpoint {
+	var (
+		decodeResponse = DecodeCheckCoachPasswordRecoveryTokenResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildCheckCoachPasswordRecoveryTokenRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.CheckCoachPasswordRecoveryTokenDoer.Do(req)
+
+		if err != nil {
+			return nil, goahttp.ErrRequestError("coachee", "CheckCoachPasswordRecoveryToken", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// FinalizeCoachPasswordRecoveryFlow returns an endpoint that makes HTTP
+// requests to the coachee service FinalizeCoachPasswordRecoveryFlow server.
+func (c *Client) FinalizeCoachPasswordRecoveryFlow() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeFinalizeCoachPasswordRecoveryFlowRequest(c.encoder)
+		decodeResponse = DecodeFinalizeCoachPasswordRecoveryFlowResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildFinalizeCoachPasswordRecoveryFlowRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.FinalizeCoachPasswordRecoveryFlowDoer.Do(req)
+
+		if err != nil {
+			return nil, goahttp.ErrRequestError("coachee", "FinalizeCoachPasswordRecoveryFlow", err)
 		}
 		return decodeResponse(resp)
 	}

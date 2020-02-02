@@ -226,7 +226,60 @@ var _ = Service("coachee", func() {
 	Method("LoginCoach", func() {
 		Description("Logs in a coach to stripe express")
 		Payload(func() {
+			Attribute("email", String)
+			Attribute("password", String)
 
+			Required("email", "password")
+		})
+
+		Result(String)
+
+		HTTP(func() {
+			POST("/coaches/login")
+			Response(StatusOK)
+		})
+	})
+
+	Method("StartCoachPasswordRecoveryFlow", func() {
+		Description("starts the process of recovering a password")
+		Payload(func() {
+			Attribute("email", String)
+
+			Required("email")
+		})
+
+		HTTP(func() {
+			POST("/coaches/recovery")
+			Response(StatusOK)
+		})
+	})
+
+	Method("CheckCoachPasswordRecoveryToken", func() {
+		Description("verifies if a recovery token is still valid")
+		Payload(func() {
+			Attribute("token", String)
+
+			Required("token")
+		})
+
+		HTTP(func() {
+			GET("/coaches/recovery/{token}")
+			Response(StatusOK)
+		})
+	})
+
+	Method("FinalizeCoachPasswordRecoveryFlow", func() {
+		Description("finalizes the password recovery flow by resetting a new password ")
+		Payload(func() {
+			Attribute("token", String)
+			Attribute("password", String)
+
+			Required("token", "password")
+		})
+
+		HTTP(func() {
+			POST("/coaches/recovery/{token}")
+			Response(StatusOK)
 		})
 	})
 

@@ -24,6 +24,14 @@ type Service interface {
 	LenCoaches(context.Context, *LenCoachesPayload) (res uint, err error)
 	// CreateCoaches creates a base coach
 	CreateCoach(context.Context, *CreateCoachPayload) (res uint, err error)
+	// Logs in a coach to stripe express
+	LoginCoach(context.Context, *LoginCoachPayload) (res string, err error)
+	// starts the process of recovering a password
+	StartCoachPasswordRecoveryFlow(context.Context, *StartCoachPasswordRecoveryFlowPayload) (err error)
+	// verifies if a recovery token is still valid
+	CheckCoachPasswordRecoveryToken(context.Context, *CheckCoachPasswordRecoveryTokenPayload) (err error)
+	// finalizes the password recovery flow by resetting a new password
+	FinalizeCoachPasswordRecoveryFlow(context.Context, *FinalizeCoachPasswordRecoveryFlowPayload) (err error)
 	// UpdateCoaches updates a coach
 	UpdateCoach(context.Context, *UpdateCoachPayload) (err error)
 	// creates a certification for a coach
@@ -68,7 +76,7 @@ const ServiceName = "coachee"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [18]string{"GetCoaches", "GetCoach", "LenCoaches", "CreateCoach", "UpdateCoach", "CreateCertification", "DeleteCertification", "CreateProgram", "DeleteProgram", "CreateAvailability", "DeleteAvailability", "CreateCustomer", "CustomerLogin", "StartPasswordRecoveryFlow", "CheckPasswordRecoveryToken", "FinalizePasswordRecoveryFlow", "CreateOrder", "RegisterStripeExpress"}
+var MethodNames = [22]string{"GetCoaches", "GetCoach", "LenCoaches", "CreateCoach", "LoginCoach", "StartCoachPasswordRecoveryFlow", "CheckCoachPasswordRecoveryToken", "FinalizeCoachPasswordRecoveryFlow", "UpdateCoach", "CreateCertification", "DeleteCertification", "CreateProgram", "DeleteProgram", "CreateAvailability", "DeleteAvailability", "CreateCustomer", "CustomerLogin", "StartPasswordRecoveryFlow", "CheckPasswordRecoveryToken", "FinalizePasswordRecoveryFlow", "CreateOrder", "RegisterStripeExpress"}
 
 // GetCoachesPayload is the payload type of the coachee service GetCoaches
 // method.
@@ -121,6 +129,32 @@ type CreateCoachPayload struct {
 	TextPrograms       string
 	TextAvailability   *string
 	Vat                *string
+}
+
+// LoginCoachPayload is the payload type of the coachee service LoginCoach
+// method.
+type LoginCoachPayload struct {
+	Email    string
+	Password string
+}
+
+// StartCoachPasswordRecoveryFlowPayload is the payload type of the coachee
+// service StartCoachPasswordRecoveryFlow method.
+type StartCoachPasswordRecoveryFlowPayload struct {
+	Email string
+}
+
+// CheckCoachPasswordRecoveryTokenPayload is the payload type of the coachee
+// service CheckCoachPasswordRecoveryToken method.
+type CheckCoachPasswordRecoveryTokenPayload struct {
+	Token string
+}
+
+// FinalizeCoachPasswordRecoveryFlowPayload is the payload type of the coachee
+// service FinalizeCoachPasswordRecoveryFlow method.
+type FinalizeCoachPasswordRecoveryFlowPayload struct {
+	Token    string
+	Password string
 }
 
 // UpdateCoachPayload is the payload type of the coachee service UpdateCoach

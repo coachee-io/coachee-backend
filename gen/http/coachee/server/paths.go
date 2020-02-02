@@ -31,6 +31,26 @@ func CreateCoachCoacheePath() string {
 	return "/coaches"
 }
 
+// LoginCoachCoacheePath returns the URL path to the coachee service LoginCoach HTTP endpoint.
+func LoginCoachCoacheePath() string {
+	return "/coaches/login"
+}
+
+// StartCoachPasswordRecoveryFlowCoacheePath returns the URL path to the coachee service StartCoachPasswordRecoveryFlow HTTP endpoint.
+func StartCoachPasswordRecoveryFlowCoacheePath() string {
+	return "/coaches/recovery"
+}
+
+// CheckCoachPasswordRecoveryTokenCoacheePath returns the URL path to the coachee service CheckCoachPasswordRecoveryToken HTTP endpoint.
+func CheckCoachPasswordRecoveryTokenCoacheePath(token string) string {
+	return fmt.Sprintf("/coaches/recovery/%v", token)
+}
+
+// FinalizeCoachPasswordRecoveryFlowCoacheePath returns the URL path to the coachee service FinalizeCoachPasswordRecoveryFlow HTTP endpoint.
+func FinalizeCoachPasswordRecoveryFlowCoacheePath(token string) string {
+	return fmt.Sprintf("/coaches/recovery/%v", token)
+}
+
 // UpdateCoachCoacheePath returns the URL path to the coachee service UpdateCoach HTTP endpoint.
 func UpdateCoachCoacheePath(id uint) string {
 	return fmt.Sprintf("/coaches/%v", id)

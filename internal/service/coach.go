@@ -187,3 +187,33 @@ func (s *Service) RegisterStripeExpress(ctx context.Context, p *coachee.Register
 
 	return nil
 }
+
+// LoginCoach returns a stripe express login link
+func (s *Service) LoginCoach(ctx context.Context, p *coachee.LoginCoachPayload) (string, error) {
+	l := s.logger.With().Str("service", "LoginCoach").Str("email", p.Email).Logger()
+
+	coach, err := s.coachRepository.GetByEmail(repository.DefaultNoTransaction, p.Email)
+	if err != nil {
+		l.Error().Err(err).Msg("failed to retrieve coach")
+		return "", err
+	}
+
+	err = auth.VerifyPassword(coach.Password, p.Password)
+	if err != nil {
+		l.Debug().Err(err).Msg("failed to authenticate")
+		return "", coachee.MakeValidation(errors.New("wrong password"))
+	}
+
+	if coach.StripeID == "" {
+		l.Info().Msg("empty stripe expressID")
+		return "", coachee.MakeUnauthorized(errors.New("stripe express account has not been set up yet"))
+	}
+
+	url, err := s.stripe.LoginStripeExpress(coach.StripeID)
+	if err != nil {
+		l.Error().Err(err).Msg("failed to retrieve stripe express account login url")
+		return "", coachee.MakeInternal(err)
+	}
+
+	return url, nil
+}

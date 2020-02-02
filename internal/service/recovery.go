@@ -101,3 +101,92 @@ func recoveryIsValid(r *model.Recovery) bool {
 	}
 	return r.CreatedAt.Add(24 * time.Hour).After(time.Now())
 }
+
+func (s *Service) StartCoachPasswordRecoveryFlow(ctx context.Context, p *coachee.StartCoachPasswordRecoveryFlowPayload) error {
+	l := s.logger.With().Str("service", "StartCoachPasswordRecoveryFlow").Str("email", p.Email).Logger()
+
+	coach, err := s.coachRepository.GetByEmail(repository.DefaultNoTransaction, p.Email)
+	if err != nil {
+		l.Info().Err(err).Msg("failed to retrieve customer")
+		return err
+	}
+
+	recovery := &model.CoachRecovery{
+		CoachID: coach.ID,
+	}
+
+	if err := s.coachRecoveryRepository.Create(repository.DefaultNoTransaction, recovery); err != nil {
+		l.Error().Err(err).Msg("failed to persist coach recovery")
+		return err
+	}
+
+	// TODO: send email, check db for now
+	return nil
+}
+
+func (s *Service) CheckCoachPasswordRecoveryToken(ctx context.Context, p *coachee.CheckCoachPasswordRecoveryTokenPayload) error {
+	l := s.logger.With().Str("service", "CheckCoachPasswordRecoveryToken").Str("token", p.Token).Logger()
+
+	recovery, err := s.coachRecoveryRepository.GetByID(repository.DefaultNoTransaction, p.Token)
+	if err != nil {
+		l.Error().Err(err).Msg("failed to retrieve coach recovery")
+		return err
+	}
+
+	if !coachRecoveryIsValid(recovery) {
+		msg := "coach recovery token is expired"
+		l.Info().Msg(msg)
+		return coachee.MakeUnauthorized(errors.New(msg))
+	}
+
+	return nil
+}
+
+func (s *Service) FinalizeCoachPasswordRecoveryFlow(ctx context.Context, p *coachee.FinalizeCoachPasswordRecoveryFlowPayload) error {
+	l := s.logger.With().Str("service", "FinalizeCoachPasswordRecoveryFlow").Str("token", p.Token).Logger()
+
+	recovery, err := s.coachRecoveryRepository.GetByID(repository.DefaultNoTransaction, p.Token)
+	if err != nil {
+		l.Error().Err(err).Msg("failed to retrieve coach recovery")
+		return err
+	}
+
+	if !coachRecoveryIsValid(recovery) {
+		msg := "coach recovery token is expired"
+		l.Info().Msg(msg)
+		return coachee.MakeUnauthorized(errors.New(msg))
+	}
+
+	if len(p.Password) < 8 {
+		msg := "password needs to be longer than 8 characters"
+		l.Debug().Msg(msg)
+		return coachee.MakeValidation(errors.New(msg))
+	}
+
+	hashedPass, err := auth.Hash(p.Password)
+	if err != nil {
+		l.Info().Err(err).Msg("failed to hash password")
+		return coachee.MakeInternal(err)
+	}
+
+	coach, err := s.coachRepository.GetByID(repository.DefaultNoTransaction, recovery.CoachID)
+	if err != nil {
+		l.Error().Err(err).Uint("CoachID", recovery.CoachID).Msg("failed to retrieve coach")
+		return err
+	}
+
+	coach.Password = string(hashedPass)
+	if err := s.coachRepository.Update(repository.DefaultNoTransaction, coach); err != nil {
+		l.Error().Err(err).Uint("CoachID", recovery.CoachID).Msg("failed to update coach")
+		return err
+	}
+
+	return nil
+}
+
+func coachRecoveryIsValid(r *model.CoachRecovery) bool {
+	if r == nil {
+		return false
+	}
+	return r.CreatedAt.Add(24 * time.Hour).After(time.Now())
+}

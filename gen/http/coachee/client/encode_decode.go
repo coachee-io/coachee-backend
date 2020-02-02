@@ -631,6 +631,593 @@ func DecodeCreateCoachResponse(decoder func(*http.Response) goahttp.Decoder, res
 	}
 }
 
+// BuildLoginCoachRequest instantiates a HTTP request object with method and
+// path set to call the "coachee" service "LoginCoach" endpoint
+func (c *Client) BuildLoginCoachRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: LoginCoachCoacheePath()}
+	req, err := http.NewRequest("POST", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("coachee", "LoginCoach", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeLoginCoachRequest returns an encoder for requests sent to the coachee
+// LoginCoach server.
+func EncodeLoginCoachRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*coachee.LoginCoachPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("coachee", "LoginCoach", "*coachee.LoginCoachPayload", v)
+		}
+		body := NewLoginCoachRequestBody(p)
+		if err := encoder(req).Encode(&body); err != nil {
+			return goahttp.ErrEncodingError("coachee", "LoginCoach", err)
+		}
+		return nil
+	}
+}
+
+// DecodeLoginCoachResponse returns a decoder for responses returned by the
+// coachee LoginCoach endpoint. restoreBody controls whether the response body
+// should be restored after having been read.
+// DecodeLoginCoachResponse may return the following errors:
+//	- "internal" (type *goa.ServiceError): http.StatusInternalServerError
+//	- "transient" (type *goa.ServiceError): http.StatusInternalServerError
+//	- "notFound" (type *goa.ServiceError): http.StatusNotFound
+//	- "validation" (type *goa.ServiceError): http.StatusBadRequest
+//	- "unauthorized" (type *goa.ServiceError): http.StatusUnauthorized
+//	- error: internal error
+func DecodeLoginCoachResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body string
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("coachee", "LoginCoach", err)
+			}
+			return body, nil
+		case http.StatusInternalServerError:
+			en := resp.Header.Get("goa-error")
+			switch en {
+			case "internal":
+				var (
+					body LoginCoachInternalResponseBody
+					err  error
+				)
+				err = decoder(resp).Decode(&body)
+				if err != nil {
+					return nil, goahttp.ErrDecodingError("coachee", "LoginCoach", err)
+				}
+				err = ValidateLoginCoachInternalResponseBody(&body)
+				if err != nil {
+					return nil, goahttp.ErrValidationError("coachee", "LoginCoach", err)
+				}
+				return nil, NewLoginCoachInternal(&body)
+			case "transient":
+				var (
+					body LoginCoachTransientResponseBody
+					err  error
+				)
+				err = decoder(resp).Decode(&body)
+				if err != nil {
+					return nil, goahttp.ErrDecodingError("coachee", "LoginCoach", err)
+				}
+				err = ValidateLoginCoachTransientResponseBody(&body)
+				if err != nil {
+					return nil, goahttp.ErrValidationError("coachee", "LoginCoach", err)
+				}
+				return nil, NewLoginCoachTransient(&body)
+			default:
+				body, _ := ioutil.ReadAll(resp.Body)
+				return nil, goahttp.ErrInvalidResponse("coachee", "LoginCoach", resp.StatusCode, string(body))
+			}
+		case http.StatusNotFound:
+			var (
+				body LoginCoachNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("coachee", "LoginCoach", err)
+			}
+			err = ValidateLoginCoachNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("coachee", "LoginCoach", err)
+			}
+			return nil, NewLoginCoachNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body LoginCoachValidationResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("coachee", "LoginCoach", err)
+			}
+			err = ValidateLoginCoachValidationResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("coachee", "LoginCoach", err)
+			}
+			return nil, NewLoginCoachValidation(&body)
+		case http.StatusUnauthorized:
+			var (
+				body LoginCoachUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("coachee", "LoginCoach", err)
+			}
+			err = ValidateLoginCoachUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("coachee", "LoginCoach", err)
+			}
+			return nil, NewLoginCoachUnauthorized(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("coachee", "LoginCoach", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// BuildStartCoachPasswordRecoveryFlowRequest instantiates a HTTP request
+// object with method and path set to call the "coachee" service
+// "StartCoachPasswordRecoveryFlow" endpoint
+func (c *Client) BuildStartCoachPasswordRecoveryFlowRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: StartCoachPasswordRecoveryFlowCoacheePath()}
+	req, err := http.NewRequest("POST", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("coachee", "StartCoachPasswordRecoveryFlow", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeStartCoachPasswordRecoveryFlowRequest returns an encoder for requests
+// sent to the coachee StartCoachPasswordRecoveryFlow server.
+func EncodeStartCoachPasswordRecoveryFlowRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*coachee.StartCoachPasswordRecoveryFlowPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("coachee", "StartCoachPasswordRecoveryFlow", "*coachee.StartCoachPasswordRecoveryFlowPayload", v)
+		}
+		body := NewStartCoachPasswordRecoveryFlowRequestBody(p)
+		if err := encoder(req).Encode(&body); err != nil {
+			return goahttp.ErrEncodingError("coachee", "StartCoachPasswordRecoveryFlow", err)
+		}
+		return nil
+	}
+}
+
+// DecodeStartCoachPasswordRecoveryFlowResponse returns a decoder for responses
+// returned by the coachee StartCoachPasswordRecoveryFlow endpoint. restoreBody
+// controls whether the response body should be restored after having been read.
+// DecodeStartCoachPasswordRecoveryFlowResponse may return the following errors:
+//	- "internal" (type *goa.ServiceError): http.StatusInternalServerError
+//	- "transient" (type *goa.ServiceError): http.StatusInternalServerError
+//	- "notFound" (type *goa.ServiceError): http.StatusNotFound
+//	- "validation" (type *goa.ServiceError): http.StatusBadRequest
+//	- "unauthorized" (type *goa.ServiceError): http.StatusUnauthorized
+//	- error: internal error
+func DecodeStartCoachPasswordRecoveryFlowResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			return nil, nil
+		case http.StatusInternalServerError:
+			en := resp.Header.Get("goa-error")
+			switch en {
+			case "internal":
+				var (
+					body StartCoachPasswordRecoveryFlowInternalResponseBody
+					err  error
+				)
+				err = decoder(resp).Decode(&body)
+				if err != nil {
+					return nil, goahttp.ErrDecodingError("coachee", "StartCoachPasswordRecoveryFlow", err)
+				}
+				err = ValidateStartCoachPasswordRecoveryFlowInternalResponseBody(&body)
+				if err != nil {
+					return nil, goahttp.ErrValidationError("coachee", "StartCoachPasswordRecoveryFlow", err)
+				}
+				return nil, NewStartCoachPasswordRecoveryFlowInternal(&body)
+			case "transient":
+				var (
+					body StartCoachPasswordRecoveryFlowTransientResponseBody
+					err  error
+				)
+				err = decoder(resp).Decode(&body)
+				if err != nil {
+					return nil, goahttp.ErrDecodingError("coachee", "StartCoachPasswordRecoveryFlow", err)
+				}
+				err = ValidateStartCoachPasswordRecoveryFlowTransientResponseBody(&body)
+				if err != nil {
+					return nil, goahttp.ErrValidationError("coachee", "StartCoachPasswordRecoveryFlow", err)
+				}
+				return nil, NewStartCoachPasswordRecoveryFlowTransient(&body)
+			default:
+				body, _ := ioutil.ReadAll(resp.Body)
+				return nil, goahttp.ErrInvalidResponse("coachee", "StartCoachPasswordRecoveryFlow", resp.StatusCode, string(body))
+			}
+		case http.StatusNotFound:
+			var (
+				body StartCoachPasswordRecoveryFlowNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("coachee", "StartCoachPasswordRecoveryFlow", err)
+			}
+			err = ValidateStartCoachPasswordRecoveryFlowNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("coachee", "StartCoachPasswordRecoveryFlow", err)
+			}
+			return nil, NewStartCoachPasswordRecoveryFlowNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body StartCoachPasswordRecoveryFlowValidationResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("coachee", "StartCoachPasswordRecoveryFlow", err)
+			}
+			err = ValidateStartCoachPasswordRecoveryFlowValidationResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("coachee", "StartCoachPasswordRecoveryFlow", err)
+			}
+			return nil, NewStartCoachPasswordRecoveryFlowValidation(&body)
+		case http.StatusUnauthorized:
+			var (
+				body StartCoachPasswordRecoveryFlowUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("coachee", "StartCoachPasswordRecoveryFlow", err)
+			}
+			err = ValidateStartCoachPasswordRecoveryFlowUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("coachee", "StartCoachPasswordRecoveryFlow", err)
+			}
+			return nil, NewStartCoachPasswordRecoveryFlowUnauthorized(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("coachee", "StartCoachPasswordRecoveryFlow", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// BuildCheckCoachPasswordRecoveryTokenRequest instantiates a HTTP request
+// object with method and path set to call the "coachee" service
+// "CheckCoachPasswordRecoveryToken" endpoint
+func (c *Client) BuildCheckCoachPasswordRecoveryTokenRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	var (
+		token string
+	)
+	{
+		p, ok := v.(*coachee.CheckCoachPasswordRecoveryTokenPayload)
+		if !ok {
+			return nil, goahttp.ErrInvalidType("coachee", "CheckCoachPasswordRecoveryToken", "*coachee.CheckCoachPasswordRecoveryTokenPayload", v)
+		}
+		token = p.Token
+	}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: CheckCoachPasswordRecoveryTokenCoacheePath(token)}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("coachee", "CheckCoachPasswordRecoveryToken", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// DecodeCheckCoachPasswordRecoveryTokenResponse returns a decoder for
+// responses returned by the coachee CheckCoachPasswordRecoveryToken endpoint.
+// restoreBody controls whether the response body should be restored after
+// having been read.
+// DecodeCheckCoachPasswordRecoveryTokenResponse may return the following
+// errors:
+//	- "internal" (type *goa.ServiceError): http.StatusInternalServerError
+//	- "transient" (type *goa.ServiceError): http.StatusInternalServerError
+//	- "notFound" (type *goa.ServiceError): http.StatusNotFound
+//	- "validation" (type *goa.ServiceError): http.StatusBadRequest
+//	- "unauthorized" (type *goa.ServiceError): http.StatusUnauthorized
+//	- error: internal error
+func DecodeCheckCoachPasswordRecoveryTokenResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			return nil, nil
+		case http.StatusInternalServerError:
+			en := resp.Header.Get("goa-error")
+			switch en {
+			case "internal":
+				var (
+					body CheckCoachPasswordRecoveryTokenInternalResponseBody
+					err  error
+				)
+				err = decoder(resp).Decode(&body)
+				if err != nil {
+					return nil, goahttp.ErrDecodingError("coachee", "CheckCoachPasswordRecoveryToken", err)
+				}
+				err = ValidateCheckCoachPasswordRecoveryTokenInternalResponseBody(&body)
+				if err != nil {
+					return nil, goahttp.ErrValidationError("coachee", "CheckCoachPasswordRecoveryToken", err)
+				}
+				return nil, NewCheckCoachPasswordRecoveryTokenInternal(&body)
+			case "transient":
+				var (
+					body CheckCoachPasswordRecoveryTokenTransientResponseBody
+					err  error
+				)
+				err = decoder(resp).Decode(&body)
+				if err != nil {
+					return nil, goahttp.ErrDecodingError("coachee", "CheckCoachPasswordRecoveryToken", err)
+				}
+				err = ValidateCheckCoachPasswordRecoveryTokenTransientResponseBody(&body)
+				if err != nil {
+					return nil, goahttp.ErrValidationError("coachee", "CheckCoachPasswordRecoveryToken", err)
+				}
+				return nil, NewCheckCoachPasswordRecoveryTokenTransient(&body)
+			default:
+				body, _ := ioutil.ReadAll(resp.Body)
+				return nil, goahttp.ErrInvalidResponse("coachee", "CheckCoachPasswordRecoveryToken", resp.StatusCode, string(body))
+			}
+		case http.StatusNotFound:
+			var (
+				body CheckCoachPasswordRecoveryTokenNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("coachee", "CheckCoachPasswordRecoveryToken", err)
+			}
+			err = ValidateCheckCoachPasswordRecoveryTokenNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("coachee", "CheckCoachPasswordRecoveryToken", err)
+			}
+			return nil, NewCheckCoachPasswordRecoveryTokenNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body CheckCoachPasswordRecoveryTokenValidationResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("coachee", "CheckCoachPasswordRecoveryToken", err)
+			}
+			err = ValidateCheckCoachPasswordRecoveryTokenValidationResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("coachee", "CheckCoachPasswordRecoveryToken", err)
+			}
+			return nil, NewCheckCoachPasswordRecoveryTokenValidation(&body)
+		case http.StatusUnauthorized:
+			var (
+				body CheckCoachPasswordRecoveryTokenUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("coachee", "CheckCoachPasswordRecoveryToken", err)
+			}
+			err = ValidateCheckCoachPasswordRecoveryTokenUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("coachee", "CheckCoachPasswordRecoveryToken", err)
+			}
+			return nil, NewCheckCoachPasswordRecoveryTokenUnauthorized(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("coachee", "CheckCoachPasswordRecoveryToken", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// BuildFinalizeCoachPasswordRecoveryFlowRequest instantiates a HTTP request
+// object with method and path set to call the "coachee" service
+// "FinalizeCoachPasswordRecoveryFlow" endpoint
+func (c *Client) BuildFinalizeCoachPasswordRecoveryFlowRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	var (
+		token string
+	)
+	{
+		p, ok := v.(*coachee.FinalizeCoachPasswordRecoveryFlowPayload)
+		if !ok {
+			return nil, goahttp.ErrInvalidType("coachee", "FinalizeCoachPasswordRecoveryFlow", "*coachee.FinalizeCoachPasswordRecoveryFlowPayload", v)
+		}
+		token = p.Token
+	}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: FinalizeCoachPasswordRecoveryFlowCoacheePath(token)}
+	req, err := http.NewRequest("POST", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("coachee", "FinalizeCoachPasswordRecoveryFlow", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeFinalizeCoachPasswordRecoveryFlowRequest returns an encoder for
+// requests sent to the coachee FinalizeCoachPasswordRecoveryFlow server.
+func EncodeFinalizeCoachPasswordRecoveryFlowRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*coachee.FinalizeCoachPasswordRecoveryFlowPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("coachee", "FinalizeCoachPasswordRecoveryFlow", "*coachee.FinalizeCoachPasswordRecoveryFlowPayload", v)
+		}
+		body := NewFinalizeCoachPasswordRecoveryFlowRequestBody(p)
+		if err := encoder(req).Encode(&body); err != nil {
+			return goahttp.ErrEncodingError("coachee", "FinalizeCoachPasswordRecoveryFlow", err)
+		}
+		return nil
+	}
+}
+
+// DecodeFinalizeCoachPasswordRecoveryFlowResponse returns a decoder for
+// responses returned by the coachee FinalizeCoachPasswordRecoveryFlow
+// endpoint. restoreBody controls whether the response body should be restored
+// after having been read.
+// DecodeFinalizeCoachPasswordRecoveryFlowResponse may return the following
+// errors:
+//	- "internal" (type *goa.ServiceError): http.StatusInternalServerError
+//	- "transient" (type *goa.ServiceError): http.StatusInternalServerError
+//	- "notFound" (type *goa.ServiceError): http.StatusNotFound
+//	- "validation" (type *goa.ServiceError): http.StatusBadRequest
+//	- "unauthorized" (type *goa.ServiceError): http.StatusUnauthorized
+//	- error: internal error
+func DecodeFinalizeCoachPasswordRecoveryFlowResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			return nil, nil
+		case http.StatusInternalServerError:
+			en := resp.Header.Get("goa-error")
+			switch en {
+			case "internal":
+				var (
+					body FinalizeCoachPasswordRecoveryFlowInternalResponseBody
+					err  error
+				)
+				err = decoder(resp).Decode(&body)
+				if err != nil {
+					return nil, goahttp.ErrDecodingError("coachee", "FinalizeCoachPasswordRecoveryFlow", err)
+				}
+				err = ValidateFinalizeCoachPasswordRecoveryFlowInternalResponseBody(&body)
+				if err != nil {
+					return nil, goahttp.ErrValidationError("coachee", "FinalizeCoachPasswordRecoveryFlow", err)
+				}
+				return nil, NewFinalizeCoachPasswordRecoveryFlowInternal(&body)
+			case "transient":
+				var (
+					body FinalizeCoachPasswordRecoveryFlowTransientResponseBody
+					err  error
+				)
+				err = decoder(resp).Decode(&body)
+				if err != nil {
+					return nil, goahttp.ErrDecodingError("coachee", "FinalizeCoachPasswordRecoveryFlow", err)
+				}
+				err = ValidateFinalizeCoachPasswordRecoveryFlowTransientResponseBody(&body)
+				if err != nil {
+					return nil, goahttp.ErrValidationError("coachee", "FinalizeCoachPasswordRecoveryFlow", err)
+				}
+				return nil, NewFinalizeCoachPasswordRecoveryFlowTransient(&body)
+			default:
+				body, _ := ioutil.ReadAll(resp.Body)
+				return nil, goahttp.ErrInvalidResponse("coachee", "FinalizeCoachPasswordRecoveryFlow", resp.StatusCode, string(body))
+			}
+		case http.StatusNotFound:
+			var (
+				body FinalizeCoachPasswordRecoveryFlowNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("coachee", "FinalizeCoachPasswordRecoveryFlow", err)
+			}
+			err = ValidateFinalizeCoachPasswordRecoveryFlowNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("coachee", "FinalizeCoachPasswordRecoveryFlow", err)
+			}
+			return nil, NewFinalizeCoachPasswordRecoveryFlowNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body FinalizeCoachPasswordRecoveryFlowValidationResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("coachee", "FinalizeCoachPasswordRecoveryFlow", err)
+			}
+			err = ValidateFinalizeCoachPasswordRecoveryFlowValidationResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("coachee", "FinalizeCoachPasswordRecoveryFlow", err)
+			}
+			return nil, NewFinalizeCoachPasswordRecoveryFlowValidation(&body)
+		case http.StatusUnauthorized:
+			var (
+				body FinalizeCoachPasswordRecoveryFlowUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("coachee", "FinalizeCoachPasswordRecoveryFlow", err)
+			}
+			err = ValidateFinalizeCoachPasswordRecoveryFlowUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("coachee", "FinalizeCoachPasswordRecoveryFlow", err)
+			}
+			return nil, NewFinalizeCoachPasswordRecoveryFlowUnauthorized(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("coachee", "FinalizeCoachPasswordRecoveryFlow", resp.StatusCode, string(body))
+		}
+	}
+}
+
 // BuildUpdateCoachRequest instantiates a HTTP request object with method and
 // path set to call the "coachee" service "UpdateCoach" endpoint
 func (c *Client) BuildUpdateCoachRequest(ctx context.Context, v interface{}) (*http.Request, error) {
