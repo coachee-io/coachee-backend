@@ -1,0 +1,65 @@
+{{template "header"}}
+  <table width="100%" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+      <td>
+        <table style="width: 100%; max-width: 600px" align="center" border="0" cellpadding="0" cellspacing="0">
+          <tr>
+            <td>
+              {{template "logo"}}
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div style="padding: 0 15px">
+                <h2 class="heading--primary">You are all set!</h2>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div style="padding: 0 15px">
+                <p>
+                  We received your booking request for {{.CoachingProgramme}} with {{.CoachName}}. Your coach will be in touch soon to confirm the details of your intro call
+                </p>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div style="padding: 0 15px">
+                <div class="image">
+                  <img src="../../static/images/booking.svg" alt="Booking" />
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div style="padding: 0 15px">
+                <p>
+                  If you’re not satisfied after your intro call, let us know within 12 hours and you won’t be charged!
+                </p>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div style="padding: 0 15px">
+                <p style="text-align: center">
+                  <a href="{{.LearnMore}}" class="link link--accent">
+                    Learn more
+                  </a>
+                </p>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              {{template "copyright"}}
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+{{template "footer"}}
