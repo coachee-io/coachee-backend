@@ -484,6 +484,447 @@ func EncodeCreateCoachError(encoder func(context.Context, http.ResponseWriter) g
 	}
 }
 
+// EncodeLoginCoachResponse returns an encoder for responses returned by the
+// coachee LoginCoach endpoint.
+func EncodeLoginCoachResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		res := v.(string)
+		enc := encoder(ctx, w)
+		body := res
+		w.WriteHeader(http.StatusOK)
+		return enc.Encode(body)
+	}
+}
+
+// DecodeLoginCoachRequest returns a decoder for requests sent to the coachee
+// LoginCoach endpoint.
+func DecodeLoginCoachRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			body LoginCoachRequestBody
+			err  error
+		)
+		err = decoder(r).Decode(&body)
+		if err != nil {
+			if err == io.EOF {
+				return nil, goa.MissingPayloadError()
+			}
+			return nil, goa.DecodePayloadError(err.Error())
+		}
+		err = ValidateLoginCoachRequestBody(&body)
+		if err != nil {
+			return nil, err
+		}
+		payload := NewLoginCoachPayload(&body)
+
+		return payload, nil
+	}
+}
+
+// EncodeLoginCoachError returns an encoder for errors returned by the
+// LoginCoach coachee endpoint.
+func EncodeLoginCoachError(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder, formatter func(err error) goahttp.Statuser) func(context.Context, http.ResponseWriter, error) error {
+	encodeError := goahttp.ErrorEncoder(encoder, formatter)
+	return func(ctx context.Context, w http.ResponseWriter, v error) error {
+		en, ok := v.(ErrorNamer)
+		if !ok {
+			return encodeError(ctx, w, v)
+		}
+		switch en.ErrorName() {
+		case "internal":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewLoginCoachInternalResponseBody(res)
+			}
+			w.Header().Set("goa-error", "internal")
+			w.WriteHeader(http.StatusInternalServerError)
+			return enc.Encode(body)
+		case "transient":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewLoginCoachTransientResponseBody(res)
+			}
+			w.Header().Set("goa-error", "transient")
+			w.WriteHeader(http.StatusInternalServerError)
+			return enc.Encode(body)
+		case "notFound":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewLoginCoachNotFoundResponseBody(res)
+			}
+			w.Header().Set("goa-error", "notFound")
+			w.WriteHeader(http.StatusNotFound)
+			return enc.Encode(body)
+		case "validation":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewLoginCoachValidationResponseBody(res)
+			}
+			w.Header().Set("goa-error", "validation")
+			w.WriteHeader(http.StatusBadRequest)
+			return enc.Encode(body)
+		case "unauthorized":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewLoginCoachUnauthorizedResponseBody(res)
+			}
+			w.Header().Set("goa-error", "unauthorized")
+			w.WriteHeader(http.StatusUnauthorized)
+			return enc.Encode(body)
+		default:
+			return encodeError(ctx, w, v)
+		}
+	}
+}
+
+// EncodeStartCoachPasswordRecoveryFlowResponse returns an encoder for
+// responses returned by the coachee StartCoachPasswordRecoveryFlow endpoint.
+func EncodeStartCoachPasswordRecoveryFlowResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		w.WriteHeader(http.StatusOK)
+		return nil
+	}
+}
+
+// DecodeStartCoachPasswordRecoveryFlowRequest returns a decoder for requests
+// sent to the coachee StartCoachPasswordRecoveryFlow endpoint.
+func DecodeStartCoachPasswordRecoveryFlowRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			body StartCoachPasswordRecoveryFlowRequestBody
+			err  error
+		)
+		err = decoder(r).Decode(&body)
+		if err != nil {
+			if err == io.EOF {
+				return nil, goa.MissingPayloadError()
+			}
+			return nil, goa.DecodePayloadError(err.Error())
+		}
+		err = ValidateStartCoachPasswordRecoveryFlowRequestBody(&body)
+		if err != nil {
+			return nil, err
+		}
+		payload := NewStartCoachPasswordRecoveryFlowPayload(&body)
+
+		return payload, nil
+	}
+}
+
+// EncodeStartCoachPasswordRecoveryFlowError returns an encoder for errors
+// returned by the StartCoachPasswordRecoveryFlow coachee endpoint.
+func EncodeStartCoachPasswordRecoveryFlowError(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder, formatter func(err error) goahttp.Statuser) func(context.Context, http.ResponseWriter, error) error {
+	encodeError := goahttp.ErrorEncoder(encoder, formatter)
+	return func(ctx context.Context, w http.ResponseWriter, v error) error {
+		en, ok := v.(ErrorNamer)
+		if !ok {
+			return encodeError(ctx, w, v)
+		}
+		switch en.ErrorName() {
+		case "internal":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewStartCoachPasswordRecoveryFlowInternalResponseBody(res)
+			}
+			w.Header().Set("goa-error", "internal")
+			w.WriteHeader(http.StatusInternalServerError)
+			return enc.Encode(body)
+		case "transient":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewStartCoachPasswordRecoveryFlowTransientResponseBody(res)
+			}
+			w.Header().Set("goa-error", "transient")
+			w.WriteHeader(http.StatusInternalServerError)
+			return enc.Encode(body)
+		case "notFound":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewStartCoachPasswordRecoveryFlowNotFoundResponseBody(res)
+			}
+			w.Header().Set("goa-error", "notFound")
+			w.WriteHeader(http.StatusNotFound)
+			return enc.Encode(body)
+		case "validation":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewStartCoachPasswordRecoveryFlowValidationResponseBody(res)
+			}
+			w.Header().Set("goa-error", "validation")
+			w.WriteHeader(http.StatusBadRequest)
+			return enc.Encode(body)
+		case "unauthorized":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewStartCoachPasswordRecoveryFlowUnauthorizedResponseBody(res)
+			}
+			w.Header().Set("goa-error", "unauthorized")
+			w.WriteHeader(http.StatusUnauthorized)
+			return enc.Encode(body)
+		default:
+			return encodeError(ctx, w, v)
+		}
+	}
+}
+
+// EncodeCheckCoachPasswordRecoveryTokenResponse returns an encoder for
+// responses returned by the coachee CheckCoachPasswordRecoveryToken endpoint.
+func EncodeCheckCoachPasswordRecoveryTokenResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		w.WriteHeader(http.StatusOK)
+		return nil
+	}
+}
+
+// DecodeCheckCoachPasswordRecoveryTokenRequest returns a decoder for requests
+// sent to the coachee CheckCoachPasswordRecoveryToken endpoint.
+func DecodeCheckCoachPasswordRecoveryTokenRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			token string
+
+			params = mux.Vars(r)
+		)
+		token = params["token"]
+		payload := NewCheckCoachPasswordRecoveryTokenPayload(token)
+
+		return payload, nil
+	}
+}
+
+// EncodeCheckCoachPasswordRecoveryTokenError returns an encoder for errors
+// returned by the CheckCoachPasswordRecoveryToken coachee endpoint.
+func EncodeCheckCoachPasswordRecoveryTokenError(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder, formatter func(err error) goahttp.Statuser) func(context.Context, http.ResponseWriter, error) error {
+	encodeError := goahttp.ErrorEncoder(encoder, formatter)
+	return func(ctx context.Context, w http.ResponseWriter, v error) error {
+		en, ok := v.(ErrorNamer)
+		if !ok {
+			return encodeError(ctx, w, v)
+		}
+		switch en.ErrorName() {
+		case "internal":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewCheckCoachPasswordRecoveryTokenInternalResponseBody(res)
+			}
+			w.Header().Set("goa-error", "internal")
+			w.WriteHeader(http.StatusInternalServerError)
+			return enc.Encode(body)
+		case "transient":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewCheckCoachPasswordRecoveryTokenTransientResponseBody(res)
+			}
+			w.Header().Set("goa-error", "transient")
+			w.WriteHeader(http.StatusInternalServerError)
+			return enc.Encode(body)
+		case "notFound":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewCheckCoachPasswordRecoveryTokenNotFoundResponseBody(res)
+			}
+			w.Header().Set("goa-error", "notFound")
+			w.WriteHeader(http.StatusNotFound)
+			return enc.Encode(body)
+		case "validation":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewCheckCoachPasswordRecoveryTokenValidationResponseBody(res)
+			}
+			w.Header().Set("goa-error", "validation")
+			w.WriteHeader(http.StatusBadRequest)
+			return enc.Encode(body)
+		case "unauthorized":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewCheckCoachPasswordRecoveryTokenUnauthorizedResponseBody(res)
+			}
+			w.Header().Set("goa-error", "unauthorized")
+			w.WriteHeader(http.StatusUnauthorized)
+			return enc.Encode(body)
+		default:
+			return encodeError(ctx, w, v)
+		}
+	}
+}
+
+// EncodeFinalizeCoachPasswordRecoveryFlowResponse returns an encoder for
+// responses returned by the coachee FinalizeCoachPasswordRecoveryFlow endpoint.
+func EncodeFinalizeCoachPasswordRecoveryFlowResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		w.WriteHeader(http.StatusOK)
+		return nil
+	}
+}
+
+// DecodeFinalizeCoachPasswordRecoveryFlowRequest returns a decoder for
+// requests sent to the coachee FinalizeCoachPasswordRecoveryFlow endpoint.
+func DecodeFinalizeCoachPasswordRecoveryFlowRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			body FinalizeCoachPasswordRecoveryFlowRequestBody
+			err  error
+		)
+		err = decoder(r).Decode(&body)
+		if err != nil {
+			if err == io.EOF {
+				return nil, goa.MissingPayloadError()
+			}
+			return nil, goa.DecodePayloadError(err.Error())
+		}
+		err = ValidateFinalizeCoachPasswordRecoveryFlowRequestBody(&body)
+		if err != nil {
+			return nil, err
+		}
+
+		var (
+			token string
+
+			params = mux.Vars(r)
+		)
+		token = params["token"]
+		payload := NewFinalizeCoachPasswordRecoveryFlowPayload(&body, token)
+
+		return payload, nil
+	}
+}
+
+// EncodeFinalizeCoachPasswordRecoveryFlowError returns an encoder for errors
+// returned by the FinalizeCoachPasswordRecoveryFlow coachee endpoint.
+func EncodeFinalizeCoachPasswordRecoveryFlowError(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder, formatter func(err error) goahttp.Statuser) func(context.Context, http.ResponseWriter, error) error {
+	encodeError := goahttp.ErrorEncoder(encoder, formatter)
+	return func(ctx context.Context, w http.ResponseWriter, v error) error {
+		en, ok := v.(ErrorNamer)
+		if !ok {
+			return encodeError(ctx, w, v)
+		}
+		switch en.ErrorName() {
+		case "internal":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewFinalizeCoachPasswordRecoveryFlowInternalResponseBody(res)
+			}
+			w.Header().Set("goa-error", "internal")
+			w.WriteHeader(http.StatusInternalServerError)
+			return enc.Encode(body)
+		case "transient":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewFinalizeCoachPasswordRecoveryFlowTransientResponseBody(res)
+			}
+			w.Header().Set("goa-error", "transient")
+			w.WriteHeader(http.StatusInternalServerError)
+			return enc.Encode(body)
+		case "notFound":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewFinalizeCoachPasswordRecoveryFlowNotFoundResponseBody(res)
+			}
+			w.Header().Set("goa-error", "notFound")
+			w.WriteHeader(http.StatusNotFound)
+			return enc.Encode(body)
+		case "validation":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewFinalizeCoachPasswordRecoveryFlowValidationResponseBody(res)
+			}
+			w.Header().Set("goa-error", "validation")
+			w.WriteHeader(http.StatusBadRequest)
+			return enc.Encode(body)
+		case "unauthorized":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewFinalizeCoachPasswordRecoveryFlowUnauthorizedResponseBody(res)
+			}
+			w.Header().Set("goa-error", "unauthorized")
+			w.WriteHeader(http.StatusUnauthorized)
+			return enc.Encode(body)
+		default:
+			return encodeError(ctx, w, v)
+		}
+	}
+}
+
 // EncodeUpdateCoachResponse returns an encoder for responses returned by the
 // coachee UpdateCoach endpoint.
 func EncodeUpdateCoachResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
@@ -2003,6 +2444,133 @@ func EncodeCreateOrderError(encoder func(context.Context, http.ResponseWriter) g
 				body = formatter(res)
 			} else {
 				body = NewCreateOrderUnauthorizedResponseBody(res)
+			}
+			w.Header().Set("goa-error", "unauthorized")
+			w.WriteHeader(http.StatusUnauthorized)
+			return enc.Encode(body)
+		default:
+			return encodeError(ctx, w, v)
+		}
+	}
+}
+
+// EncodeRegisterStripeExpressResponse returns an encoder for responses
+// returned by the coachee RegisterStripeExpress endpoint.
+func EncodeRegisterStripeExpressResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		w.WriteHeader(http.StatusCreated)
+		return nil
+	}
+}
+
+// DecodeRegisterStripeExpressRequest returns a decoder for requests sent to
+// the coachee RegisterStripeExpress endpoint.
+func DecodeRegisterStripeExpressRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			body RegisterStripeExpressRequestBody
+			err  error
+		)
+		err = decoder(r).Decode(&body)
+		if err != nil {
+			if err == io.EOF {
+				return nil, goa.MissingPayloadError()
+			}
+			return nil, goa.DecodePayloadError(err.Error())
+		}
+		err = ValidateRegisterStripeExpressRequestBody(&body)
+		if err != nil {
+			return nil, err
+		}
+
+		var (
+			id uint
+
+			params = mux.Vars(r)
+		)
+		{
+			idRaw := params["id"]
+			v, err2 := strconv.ParseUint(idRaw, 10, strconv.IntSize)
+			if err2 != nil {
+				err = goa.MergeErrors(err, goa.InvalidFieldTypeError("id", idRaw, "unsigned integer"))
+			}
+			id = uint(v)
+		}
+		if err != nil {
+			return nil, err
+		}
+		payload := NewRegisterStripeExpressPayload(&body, id)
+
+		return payload, nil
+	}
+}
+
+// EncodeRegisterStripeExpressError returns an encoder for errors returned by
+// the RegisterStripeExpress coachee endpoint.
+func EncodeRegisterStripeExpressError(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder, formatter func(err error) goahttp.Statuser) func(context.Context, http.ResponseWriter, error) error {
+	encodeError := goahttp.ErrorEncoder(encoder, formatter)
+	return func(ctx context.Context, w http.ResponseWriter, v error) error {
+		en, ok := v.(ErrorNamer)
+		if !ok {
+			return encodeError(ctx, w, v)
+		}
+		switch en.ErrorName() {
+		case "internal":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewRegisterStripeExpressInternalResponseBody(res)
+			}
+			w.Header().Set("goa-error", "internal")
+			w.WriteHeader(http.StatusInternalServerError)
+			return enc.Encode(body)
+		case "transient":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewRegisterStripeExpressTransientResponseBody(res)
+			}
+			w.Header().Set("goa-error", "transient")
+			w.WriteHeader(http.StatusInternalServerError)
+			return enc.Encode(body)
+		case "notFound":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewRegisterStripeExpressNotFoundResponseBody(res)
+			}
+			w.Header().Set("goa-error", "notFound")
+			w.WriteHeader(http.StatusNotFound)
+			return enc.Encode(body)
+		case "validation":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewRegisterStripeExpressValidationResponseBody(res)
+			}
+			w.Header().Set("goa-error", "validation")
+			w.WriteHeader(http.StatusBadRequest)
+			return enc.Encode(body)
+		case "unauthorized":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewRegisterStripeExpressUnauthorizedResponseBody(res)
 			}
 			w.Header().Set("goa-error", "unauthorized")
 			w.WriteHeader(http.StatusUnauthorized)

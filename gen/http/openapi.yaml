@@ -159,6 +159,7 @@ paths:
           - firstName
           - lastName
           - email
+          - password
           - phone
           - tags
           - description
@@ -501,6 +502,47 @@ paths:
             $ref: '#/definitions/CoacheeDeleteProgramTransientResponseBody'
       schemes:
       - http
+  /coaches/{id}/stripe:
+    post:
+      tags:
+      - coachee
+      summary: RegisterStripeExpress coachee
+      description: registers a stripe express account in stripe and associates it
+        to a coach
+      operationId: coachee#RegisterStripeExpress
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - name: RegisterStripeExpressRequestBody
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/CoacheeRegisterStripeExpressRequestBody'
+          required:
+          - expressId
+      responses:
+        "201":
+          description: Created response.
+        "400":
+          description: Bad Request response.
+          schema:
+            $ref: '#/definitions/CoacheeRegisterStripeExpressValidationResponseBody'
+        "401":
+          description: Unauthorized response.
+          schema:
+            $ref: '#/definitions/CoacheeRegisterStripeExpressUnauthorizedResponseBody'
+        "404":
+          description: Not Found response.
+          schema:
+            $ref: '#/definitions/CoacheeRegisterStripeExpressNotFoundResponseBody'
+        "500":
+          description: Internal Server Error response.
+          schema:
+            $ref: '#/definitions/CoacheeRegisterStripeExpressTransientResponseBody'
+      schemes:
+      - http
   /coaches/{tag}/length:
     get:
       tags:
@@ -535,6 +577,153 @@ paths:
           description: Internal Server Error response.
           schema:
             $ref: '#/definitions/CoacheeLenCoachesTransientResponseBody'
+      schemes:
+      - http
+  /coaches/login:
+    post:
+      tags:
+      - coachee
+      summary: LoginCoach coachee
+      description: Logs in a coach to stripe express
+      operationId: coachee#LoginCoach
+      parameters:
+      - name: LoginCoachRequestBody
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/CoacheeLoginCoachRequestBody'
+          required:
+          - email
+          - password
+      responses:
+        "200":
+          description: OK response.
+          schema:
+            type: string
+        "400":
+          description: Bad Request response.
+          schema:
+            $ref: '#/definitions/CoacheeLoginCoachValidationResponseBody'
+        "401":
+          description: Unauthorized response.
+          schema:
+            $ref: '#/definitions/CoacheeLoginCoachUnauthorizedResponseBody'
+        "404":
+          description: Not Found response.
+          schema:
+            $ref: '#/definitions/CoacheeLoginCoachNotFoundResponseBody'
+        "500":
+          description: Internal Server Error response.
+          schema:
+            $ref: '#/definitions/CoacheeLoginCoachTransientResponseBody'
+      schemes:
+      - http
+  /coaches/recovery:
+    post:
+      tags:
+      - coachee
+      summary: StartCoachPasswordRecoveryFlow coachee
+      description: starts the process of recovering a password
+      operationId: coachee#StartCoachPasswordRecoveryFlow
+      parameters:
+      - name: StartCoachPasswordRecoveryFlowRequestBody
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/CoacheeStartCoachPasswordRecoveryFlowRequestBody'
+          required:
+          - email
+      responses:
+        "200":
+          description: OK response.
+        "400":
+          description: Bad Request response.
+          schema:
+            $ref: '#/definitions/CoacheeStartCoachPasswordRecoveryFlowValidationResponseBody'
+        "401":
+          description: Unauthorized response.
+          schema:
+            $ref: '#/definitions/CoacheeStartCoachPasswordRecoveryFlowUnauthorizedResponseBody'
+        "404":
+          description: Not Found response.
+          schema:
+            $ref: '#/definitions/CoacheeStartCoachPasswordRecoveryFlowNotFoundResponseBody'
+        "500":
+          description: Internal Server Error response.
+          schema:
+            $ref: '#/definitions/CoacheeStartCoachPasswordRecoveryFlowTransientResponseBody'
+      schemes:
+      - http
+  /coaches/recovery/{token}:
+    get:
+      tags:
+      - coachee
+      summary: CheckCoachPasswordRecoveryToken coachee
+      description: verifies if a recovery token is still valid
+      operationId: coachee#CheckCoachPasswordRecoveryToken
+      parameters:
+      - name: token
+        in: path
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK response.
+        "400":
+          description: Bad Request response.
+          schema:
+            $ref: '#/definitions/CoacheeCheckCoachPasswordRecoveryTokenValidationResponseBody'
+        "401":
+          description: Unauthorized response.
+          schema:
+            $ref: '#/definitions/CoacheeCheckCoachPasswordRecoveryTokenUnauthorizedResponseBody'
+        "404":
+          description: Not Found response.
+          schema:
+            $ref: '#/definitions/CoacheeCheckCoachPasswordRecoveryTokenNotFoundResponseBody'
+        "500":
+          description: Internal Server Error response.
+          schema:
+            $ref: '#/definitions/CoacheeCheckCoachPasswordRecoveryTokenTransientResponseBody'
+      schemes:
+      - http
+    post:
+      tags:
+      - coachee
+      summary: FinalizeCoachPasswordRecoveryFlow coachee
+      description: 'finalizes the password recovery flow by resetting a new password '
+      operationId: coachee#FinalizeCoachPasswordRecoveryFlow
+      parameters:
+      - name: token
+        in: path
+        required: true
+        type: string
+      - name: FinalizeCoachPasswordRecoveryFlowRequestBody
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/CoacheeFinalizeCoachPasswordRecoveryFlowRequestBody'
+          required:
+          - password
+      responses:
+        "200":
+          description: OK response.
+        "400":
+          description: Bad Request response.
+          schema:
+            $ref: '#/definitions/CoacheeFinalizeCoachPasswordRecoveryFlowValidationResponseBody'
+        "401":
+          description: Unauthorized response.
+          schema:
+            $ref: '#/definitions/CoacheeFinalizeCoachPasswordRecoveryFlowUnauthorizedResponseBody'
+        "404":
+          description: Not Found response.
+          schema:
+            $ref: '#/definitions/CoacheeFinalizeCoachPasswordRecoveryFlowNotFoundResponseBody'
+        "500":
+          description: Internal Server Error response.
+          schema:
+            $ref: '#/definitions/CoacheeFinalizeCoachPasswordRecoveryFlowTransientResponseBody'
       schemes:
       - http
   /orders:
@@ -700,6 +889,236 @@ paths:
       schemes:
       - http
 definitions:
+  CoacheeCheckCoachPasswordRecoveryTokenInternalResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: false
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: false
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: false
+    description: CheckCoachPasswordRecoveryToken_internal_Response_Body result type
+      (default view)
+    example:
+      fault: true
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: true
+      timeout: false
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  CoacheeCheckCoachPasswordRecoveryTokenNotFoundResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: false
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: true
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: true
+    description: CheckCoachPasswordRecoveryToken_notFound_Response_Body result type
+      (default view)
+    example:
+      fault: true
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: false
+      timeout: false
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  CoacheeCheckCoachPasswordRecoveryTokenTransientResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: true
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: false
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: true
+    description: CheckCoachPasswordRecoveryToken_transient_Response_Body result type
+      (default view)
+    example:
+      fault: false
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: true
+      timeout: false
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  CoacheeCheckCoachPasswordRecoveryTokenUnauthorizedResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: false
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: true
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: false
+    description: CheckCoachPasswordRecoveryToken_unauthorized_Response_Body result
+      type (default view)
+    example:
+      fault: true
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: true
+      timeout: false
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  CoacheeCheckCoachPasswordRecoveryTokenValidationResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: false
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: false
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: false
+    description: CheckCoachPasswordRecoveryToken_validation_Response_Body result type
+      (default view)
+    example:
+      fault: false
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: true
+      timeout: false
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
   CoacheeCheckPasswordRecoveryTokenInternalResponseBody:
     title: 'Mediatype identifier: application/vnd.goa.error; view=default'
     type: object
@@ -729,7 +1148,7 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: CheckPasswordRecoveryToken_internal_Response_Body result type (default
       view)
     example:
@@ -737,7 +1156,7 @@ definitions:
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
+      temporary: true
       timeout: true
     required:
     - name
@@ -753,7 +1172,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: true
+        example: false
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -775,16 +1194,16 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: CheckPasswordRecoveryToken_notFound_Response_Body result type (default
       view)
     example:
-      fault: true
+      fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
-      timeout: true
+      temporary: false
+      timeout: false
     required:
     - name
     - id
@@ -799,7 +1218,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: true
+        example: false
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -830,7 +1249,7 @@ definitions:
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: false
-      timeout: true
+      timeout: false
     required:
     - name
     - id
@@ -845,7 +1264,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -867,15 +1286,15 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: CheckPasswordRecoveryToken_unauthorized_Response_Body result type
       (default view)
     example:
-      fault: true
+      fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
+      temporary: true
       timeout: true
     required:
     - name
@@ -891,7 +1310,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: true
+        example: false
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -909,7 +1328,7 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
@@ -917,12 +1336,12 @@ definitions:
     description: CheckPasswordRecoveryToken_validation_Response_Body result type (default
       view)
     example:
-      fault: true
+      fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
-      timeout: true
+      temporary: true
+      timeout: false
     required:
     - name
     - id
@@ -937,7 +1356,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -955,18 +1374,18 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: CreateAvailability_internal_Response_Body result type (default view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
+      temporary: false
       timeout: false
     required:
     - name
@@ -1004,7 +1423,7 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: CreateAvailability_notFound_Response_Body result type (default view)
     example:
       fault: false
@@ -1028,10 +1447,10 @@ definitions:
         $ref: '#/definitions/availabilityRequestBody'
     example:
       availability:
-        end: 1137
-        id: Odio minima repudiandae.
-        start: 39
-        weekDay: 0
+        end: 1074
+        id: Accusamus est.
+        start: 79
+        weekDay: 3
     required:
     - availability
   CoacheeCreateAvailabilityTransientResponseBody:
@@ -1071,7 +1490,7 @@ definitions:
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: false
-      timeout: false
+      timeout: true
     required:
     - name
     - id
@@ -1104,11 +1523,11 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: CreateAvailability_unauthorized_Response_Body result type (default
       view)
     example:
@@ -1132,7 +1551,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -1154,11 +1573,11 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: CreateAvailability_validation_Response_Body result type (default
       view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
@@ -1178,7 +1597,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -1241,18 +1660,18 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: CreateCertification_notFound_Response_Body result type (default view)
     example:
       fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
+      temporary: true
       timeout: false
     required:
     - name
@@ -1269,12 +1688,12 @@ definitions:
         $ref: '#/definitions/certificationRequestBody'
     example:
       certification:
-        description: Ut qui laboriosam id.
-        id: Sit sit accusantium neque ad enim.
-        institution: Recusandae ab sint.
-        month: 2
-        title: Iste assumenda.
-        year: 2026
+        description: Esse placeat consequatur cum dolorem quo.
+        id: Odit quia voluptas labore.
+        institution: Dolorum reprehenderit exercitationem est dolores.
+        month: 1
+        title: Nulla assumenda distinctio facere neque quis.
+        year: 2056
     required:
     - certification
   CoacheeCreateCertificationTransientResponseBody:
@@ -1284,7 +1703,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: true
+        example: false
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -1310,12 +1729,12 @@ definitions:
     description: CreateCertification_transient_Response_Body result type (default
       view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: true
-      timeout: true
+      timeout: false
     required:
     - name
     - id
@@ -1330,7 +1749,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -1348,7 +1767,7 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
@@ -1361,7 +1780,7 @@ definitions:
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: false
-      timeout: false
+      timeout: true
     required:
     - name
     - id
@@ -1376,7 +1795,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: true
+        example: false
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -1398,7 +1817,7 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: CreateCertification_validation_Response_Body result type (default
       view)
     example:
@@ -1407,7 +1826,7 @@ definitions:
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: true
-      timeout: false
+      timeout: true
     required:
     - name
     - id
@@ -1422,7 +1841,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: true
+        example: false
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -1467,7 +1886,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: true
+        example: false
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -1485,19 +1904,19 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: CreateCoach_notFound_Response_Body result type (default view)
     example:
       fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
-      timeout: false
+      temporary: false
+      timeout: true
     required:
     - name
     - id
@@ -1511,62 +1930,67 @@ definitions:
     properties:
       city:
         type: string
-        example: Ut repudiandae saepe recusandae iusto.
+        example: Eos odio.
       country:
         type: string
-        example: Voluptas ad.
+        example: Sint repudiandae.
       description:
         type: string
-        example: Dolorem veritatis praesentium ab.
+        example: Ipsam rem ipsa id dicta ipsam consectetur.
       email:
         type: string
-        example: Itaque qui sit.
+        example: Minima dignissimos odit quia.
       firstName:
         type: string
-        example: Quo voluptatum architecto.
+        example: Tempora tenetur et voluptatibus dolore maxime.
       introCall:
         type: integer
-        example: 3373620117472294040
+        example: 6943057920350532263
         format: int64
       lastName:
         type: string
-        example: Consequatur quia.
+        example: Amet qui.
+      password:
+        type: string
+        example: Commodi occaecati.
       phone:
         type: string
-        example: Blanditiis et blanditiis.
+        example: Sit maxime rerum.
       tags:
         type: string
-        example: Suscipit officia dolor nihil consequatur maiores ea.
+        example: Iure quasi in aut aperiam doloribus.
       textAvailability:
         type: string
-        example: Incidunt cum et perspiciatis.
+        example: Dolores velit.
       textCertifications:
         type: string
-        example: Saepe accusantium.
+        example: Dolores eligendi voluptatum aut sit atque.
       textPrograms:
         type: string
-        example: Tempora doloremque cum et esse facere.
+        example: In hic tenetur sed et corporis.
       vat:
         type: string
-        example: Voluptas sint nemo vitae dolores.
+        example: Quasi vel commodi excepturi dolorem.
     example:
-      city: Voluptatum doloribus repellat qui recusandae.
-      country: Et hic minus.
-      description: Veritatis illo.
-      email: Eum ipsam.
-      firstName: Laboriosam recusandae reprehenderit qui.
-      introCall: 5353754954049494944
-      lastName: Perferendis labore dolore aliquid.
-      phone: Illo saepe et nihil.
-      tags: Voluptatem sed eius eos.
-      textAvailability: Veniam incidunt sit tenetur animi aut.
-      textCertifications: Nostrum eius voluptatem voluptates.
-      textPrograms: Non dolorem.
-      vat: Natus sit ipsam tenetur rerum.
+      city: Mollitia voluptates.
+      country: Itaque pariatur rem non fugiat sit cumque.
+      description: Dolores eveniet quia et fuga.
+      email: Excepturi in eius vitae ut ut.
+      firstName: Nihil eius reprehenderit consequatur animi.
+      introCall: 15192498644582597838
+      lastName: Inventore praesentium.
+      password: Facere odit reiciendis autem aliquam incidunt.
+      phone: Aut officiis sequi.
+      tags: Similique qui sit.
+      textAvailability: Et ea.
+      textCertifications: Placeat laborum tempore dolores nulla repellat.
+      textPrograms: Nobis voluptatem qui aut harum et accusamus.
+      vat: Deleniti temporibus sapiente aut est.
     required:
     - firstName
     - lastName
     - email
+    - password
     - phone
     - tags
     - description
@@ -1580,7 +2004,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -1602,7 +2026,7 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: CreateCoach_transient_Response_Body result type (default view)
     example:
       fault: true
@@ -1610,7 +2034,7 @@ definitions:
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: false
-      timeout: true
+      timeout: false
     required:
     - name
     - id
@@ -1643,7 +2067,7 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
@@ -1692,15 +2116,15 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: CreateCoach_validation_Response_Body result type (default view)
     example:
-      fault: true
+      fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: true
-      timeout: true
+      timeout: false
     required:
     - name
     - id
@@ -1733,11 +2157,11 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: CreateCustomer_internal_Response_Body result type (default view)
     example:
       fault: true
@@ -1760,7 +2184,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -1785,12 +2209,12 @@ definitions:
         example: false
     description: CreateCustomer_notFound_Response_Body result type (default view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
-      timeout: true
+      temporary: false
+      timeout: false
     required:
     - name
     - id
@@ -1804,26 +2228,26 @@ definitions:
     properties:
       birthDate:
         type: integer
-        example: 9015455657094881491
+        example: 5092195361791748759
         format: int64
       email:
         type: string
-        example: Sed blanditiis modi illum vero.
+        example: Corporis dicta.
       firstName:
         type: string
-        example: Eos in culpa pariatur.
+        example: Sit voluptatibus totam neque qui necessitatibus.
       lastName:
         type: string
-        example: Rerum ea.
+        example: Culpa est inventore suscipit maiores repudiandae expedita.
       password:
         type: string
-        example: Ratione iste beatae explicabo dignissimos.
+        example: Sapiente sit repellat ut.
     example:
-      birthDate: 4084512893158928912
-      email: Ipsam nostrum sed culpa excepturi qui error.
-      firstName: Laboriosam porro.
-      lastName: Voluptate ab quidem.
-      password: Architecto qui.
+      birthDate: 4594330543773017692
+      email: Incidunt eveniet aut aspernatur aperiam.
+      firstName: Magni est qui eum et.
+      lastName: Ea aperiam eveniet.
+      password: Aut ut illum iste qui nemo.
     required:
     - email
     - firstName
@@ -1836,20 +2260,20 @@ definitions:
     properties:
       expiry:
         type: integer
-        example: 8327722589767160379
+        example: 8609077681233118039
         format: int64
       token:
         type: string
-        example: Sunt nihil soluta animi itaque nihil est.
+        example: Hic magni soluta ducimus id modi qui.
       user:
         $ref: '#/definitions/baseClientResponseBody'
     example:
-      expiry: 3356731428903940558
-      token: Est omnis et repellat.
+      expiry: 6255355615100481674
+      token: Assumenda deserunt.
       user:
-        firstName: Sapiente deserunt molestiae.
-        id: 2951058717071938166
-        lastName: Qui laboriosam eveniet animi est et suscipit.
+        firstName: Labore deleniti.
+        id: 7594981838729758271
+        lastName: Laudantium in id sunt et asperiores.
     required:
     - token
     - expiry
@@ -1861,7 +2285,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: true
+        example: false
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -1883,7 +2307,7 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: CreateCustomer_transient_Response_Body result type (default view)
     example:
       fault: false
@@ -1891,7 +2315,7 @@ definitions:
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: true
-      timeout: true
+      timeout: false
     required:
     - name
     - id
@@ -1906,7 +2330,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: true
+        example: false
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -1935,8 +2359,8 @@ definitions:
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
-      timeout: true
+      temporary: false
+      timeout: false
     required:
     - name
     - id
@@ -1969,19 +2393,19 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: CreateCustomer_validation_Response_Body result type (default view)
     example:
-      fault: true
+      fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: false
-      timeout: true
+      timeout: false
     required:
     - name
     - id
@@ -1996,7 +2420,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -2018,15 +2442,15 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: CreateOrder_internal_Response_Body result type (default view)
     example:
-      fault: true
+      fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
-      timeout: false
+      temporary: false
+      timeout: true
     required:
     - name
     - id
@@ -2059,7 +2483,7 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: false
+        example: true
       timeout:
         type: boolean
         description: Is the error a timeout?
@@ -2070,7 +2494,7 @@ definitions:
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
+      temporary: true
       timeout: true
     required:
     - name
@@ -2085,19 +2509,19 @@ definitions:
     properties:
       coachId:
         type: integer
-        example: 14632752589926669838
+        example: 16128759803218563638
         format: int64
       introCall:
         type: integer
-        example: 6736888977187287828
+        example: 8910832581372594642
         format: int64
       programId:
         type: string
-        example: Aut voluptate aut eos eaque occaecati suscipit.
+        example: Aut veritatis tempora qui fuga explicabo.
     example:
-      coachId: 12541481636596165281
-      introCall: 5062625388016880084
-      programId: Nisi consequatur.
+      coachId: 8342638357716811090
+      introCall: 108371445702001094
+      programId: Vel temporibus eveniet dolores.
     required:
     - coachId
     - programId
@@ -2108,13 +2532,13 @@ definitions:
     properties:
       clientSecret:
         type: string
-        example: Inventore quasi.
+        example: Iure voluptatum.
       publishingKey:
         type: string
-        example: Itaque et quaerat autem blanditiis.
+        example: Alias deleniti aut error esse officia accusantium.
     example:
-      clientSecret: Consequatur dolore voluptatem iste nihil.
-      publishingKey: Architecto nostrum sit.
+      clientSecret: Ad ea sed est et.
+      publishingKey: Laudantium qui deleniti aut aut facilis.
     required:
     - clientSecret
     - publishingKey
@@ -2125,7 +2549,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: true
+        example: false
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -2143,7 +2567,7 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
@@ -2188,19 +2612,19 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: false
+        example: true
       timeout:
         type: boolean
         description: Is the error a timeout?
         example: true
     description: CreateOrder_unauthorized_Response_Body result type (default view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: false
-      timeout: false
+      timeout: true
     required:
     - name
     - id
@@ -2233,19 +2657,19 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: CreateOrder_validation_Response_Body result type (default view)
     example:
-      fault: true
+      fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
-      timeout: true
+      temporary: true
+      timeout: false
     required:
     - name
     - id
@@ -2260,7 +2684,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -2278,7 +2702,7 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
@@ -2323,14 +2747,14 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: CreateProgram_notFound_Response_Body result type (default view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
@@ -2351,13 +2775,13 @@ definitions:
         $ref: '#/definitions/programRequestBody'
     example:
       program:
-        description: Repellendus alias velit eveniet soluta.
-        duration: 6103343100881137032
-        id: Consectetur in consequatur labore esse aut soluta.
-        name: Labore tempora fugit et.
-        sessions: 17501346860314557738
-        taxPercent: 8905936226137563789
-        totalPrice: 6575205625408737613
+        description: Quod veritatis ad deleniti ut quisquam.
+        duration: 10743805826872925376
+        id: Facere quos eum rerum architecto et.
+        name: Quidem aut libero rerum mollitia accusantium.
+        sessions: 6582573386058109301
+        taxPercent: 6298650967954407519
+        totalPrice: 6657815490139943817
     required:
     - program
   CoacheeCreateProgramTransientResponseBody:
@@ -2385,11 +2809,11 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: CreateProgram_transient_Response_Body result type (default view)
     example:
       fault: false
@@ -2397,7 +2821,7 @@ definitions:
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: false
-      timeout: false
+      timeout: true
     required:
     - name
     - id
@@ -2430,7 +2854,7 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
@@ -2441,8 +2865,8 @@ definitions:
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
-      timeout: false
+      temporary: false
+      timeout: true
     required:
     - name
     - id
@@ -2457,7 +2881,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: true
+        example: false
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -2487,7 +2911,7 @@ definitions:
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: false
-      timeout: false
+      timeout: true
     required:
     - name
     - id
@@ -2524,7 +2948,7 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: CustomerLogin_internal_Response_Body result type (default view)
     example:
       fault: true
@@ -2532,7 +2956,7 @@ definitions:
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: true
-      timeout: false
+      timeout: true
     required:
     - name
     - id
@@ -2576,7 +3000,7 @@ definitions:
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
+      temporary: false
       timeout: true
     required:
     - name
@@ -2591,13 +3015,13 @@ definitions:
     properties:
       email:
         type: string
-        example: Hic accusantium architecto.
+        example: Porro et numquam dolores.
       password:
         type: string
-        example: Necessitatibus dignissimos et.
+        example: Aspernatur reprehenderit dolorum.
     example:
-      email: Consequatur ipsum nihil et vero porro.
-      password: Commodi ipsa laudantium architecto magnam.
+      email: Magnam velit.
+      password: Ut ipsum fugit sit quam.
     required:
     - email
     - password
@@ -2607,20 +3031,20 @@ definitions:
     properties:
       expiry:
         type: integer
-        example: 7986946363660836659
+        example: 7270830978855175401
         format: int64
       token:
         type: string
-        example: Dolorem eum rerum sit.
+        example: Aliquid omnis dolore nihil vel aut labore.
       user:
         $ref: '#/definitions/baseClientResponseBody'
     example:
-      expiry: 8935922482268131443
-      token: Et pariatur.
+      expiry: 3415285955264283119
+      token: Perspiciatis qui aliquam debitis necessitatibus.
       user:
-        firstName: Sapiente deserunt molestiae.
-        id: 2951058717071938166
-        lastName: Qui laboriosam eveniet animi est et suscipit.
+        firstName: Labore deleniti.
+        id: 7594981838729758271
+        lastName: Laudantium in id sunt et asperiores.
     required:
     - token
     - expiry
@@ -2650,7 +3074,7 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
@@ -2677,7 +3101,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -2695,19 +3119,19 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: false
+        example: true
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: CustomerLogin_unauthorized_Response_Body result type (default view)
     example:
-      fault: true
+      fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
-      timeout: true
+      temporary: false
+      timeout: false
     required:
     - name
     - id
@@ -2722,7 +3146,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: true
+        example: false
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -2744,15 +3168,15 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: CustomerLogin_validation_Response_Body result type (default view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
-      timeout: true
+      temporary: true
+      timeout: false
     required:
     - name
     - id
@@ -2797,7 +3221,7 @@ definitions:
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: false
-      timeout: true
+      timeout: false
     required:
     - name
     - id
@@ -2812,7 +3236,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -2834,7 +3258,7 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: DeleteAvailability_notFound_Response_Body result type (default view)
     example:
       fault: false
@@ -2882,11 +3306,11 @@ definitions:
         example: true
     description: DeleteAvailability_transient_Response_Body result type (default view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
+      temporary: false
       timeout: true
     required:
     - name
@@ -2902,7 +3326,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -2928,11 +3352,11 @@ definitions:
     description: DeleteAvailability_unauthorized_Response_Body result type (default
       view)
     example:
-      fault: true
+      fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
+      temporary: true
       timeout: true
     required:
     - name
@@ -2948,7 +3372,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -2966,7 +3390,7 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: false
+        example: true
       timeout:
         type: boolean
         description: Is the error a timeout?
@@ -2974,12 +3398,12 @@ definitions:
     description: DeleteAvailability_validation_Response_Body result type (default
       view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
-      timeout: true
+      temporary: false
+      timeout: false
     required:
     - name
     - id
@@ -2994,7 +3418,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: true
+        example: false
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -3016,15 +3440,15 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: DeleteCertification_internal_Response_Body result type (default view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: false
-      timeout: true
+      timeout: false
     required:
     - name
     - id
@@ -3039,7 +3463,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -3064,12 +3488,12 @@ definitions:
         example: true
     description: DeleteCertification_notFound_Response_Body result type (default view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
-      timeout: true
+      temporary: false
+      timeout: false
     required:
     - name
     - id
@@ -3106,16 +3530,16 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: DeleteCertification_transient_Response_Body result type (default
       view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
-      timeout: false
+      temporary: true
+      timeout: true
     required:
     - name
     - id
@@ -3161,7 +3585,7 @@ definitions:
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: false
-      timeout: false
+      timeout: true
     required:
     - name
     - id
@@ -3176,7 +3600,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: true
+        example: false
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -3194,20 +3618,20 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: false
+        example: true
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: DeleteCertification_validation_Response_Body result type (default
       view)
     example:
-      fault: true
+      fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: true
-      timeout: false
+      timeout: true
     required:
     - name
     - id
@@ -3244,14 +3668,14 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: DeleteProgram_internal_Response_Body result type (default view)
     example:
       fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
+      temporary: false
       timeout: true
     required:
     - name
@@ -3285,18 +3709,18 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
         example: true
     description: DeleteProgram_notFound_Response_Body result type (default view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
+      temporary: false
       timeout: true
     required:
     - name
@@ -3312,7 +3736,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -3341,8 +3765,8 @@ definitions:
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
-      timeout: true
+      temporary: false
+      timeout: false
     required:
     - name
     - id
@@ -3357,7 +3781,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -3375,11 +3799,11 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: DeleteProgram_unauthorized_Response_Body result type (default view)
     example:
       fault: false
@@ -3420,14 +3844,60 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
+        example: true
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: true
+    description: DeleteProgram_validation_Response_Body result type (default view)
+    example:
+      fault: false
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: true
+      timeout: true
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  CoacheeFinalizeCoachPasswordRecoveryFlowInternalResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: true
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
         example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
-    description: DeleteProgram_validation_Response_Body result type (default view)
+        example: true
+    description: FinalizeCoachPasswordRecoveryFlow_internal_Response_Body result type
+      (default view)
     example:
-      fault: true
+      fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
@@ -3440,7 +3910,7 @@ definitions:
     - temporary
     - timeout
     - fault
-  CoacheeFinalizePasswordRecoveryFlowInternalResponseBody:
+  CoacheeFinalizeCoachPasswordRecoveryFlowNotFoundResponseBody:
     title: 'Mediatype identifier: application/vnd.goa.error; view=default'
     type: object
     properties:
@@ -3470,6 +3940,201 @@ definitions:
         type: boolean
         description: Is the error a timeout?
         example: true
+    description: FinalizeCoachPasswordRecoveryFlow_notFound_Response_Body result type
+      (default view)
+    example:
+      fault: false
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: false
+      timeout: false
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  CoacheeFinalizeCoachPasswordRecoveryFlowRequestBody:
+    title: CoacheeFinalizeCoachPasswordRecoveryFlowRequestBody
+    type: object
+    properties:
+      password:
+        type: string
+        example: Non aut unde ea.
+    example:
+      password: Quam quod eos earum odio soluta et.
+    required:
+    - password
+  CoacheeFinalizeCoachPasswordRecoveryFlowTransientResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: true
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: false
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: true
+    description: FinalizeCoachPasswordRecoveryFlow_transient_Response_Body result
+      type (default view)
+    example:
+      fault: true
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: true
+      timeout: true
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  CoacheeFinalizeCoachPasswordRecoveryFlowUnauthorizedResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: false
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: false
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: true
+    description: FinalizeCoachPasswordRecoveryFlow_unauthorized_Response_Body result
+      type (default view)
+    example:
+      fault: false
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: false
+      timeout: true
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  CoacheeFinalizeCoachPasswordRecoveryFlowValidationResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: true
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: true
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: false
+    description: FinalizeCoachPasswordRecoveryFlow_validation_Response_Body result
+      type (default view)
+    example:
+      fault: false
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: true
+      timeout: true
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  CoacheeFinalizePasswordRecoveryFlowInternalResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: false
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: true
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: true
     description: FinalizePasswordRecoveryFlow_internal_Response_Body result type (default
       view)
     example:
@@ -3477,7 +4142,7 @@ definitions:
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
+      temporary: false
       timeout: true
     required:
     - name
@@ -3519,12 +4184,12 @@ definitions:
     description: FinalizePasswordRecoveryFlow_notFound_Response_Body result type (default
       view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: true
-      timeout: false
+      timeout: true
     required:
     - name
     - id
@@ -3538,9 +4203,9 @@ definitions:
     properties:
       password:
         type: string
-        example: Veniam eius ipsa ut nisi id vero.
+        example: Sint voluptas doloribus alias repellendus aut labore.
     example:
-      password: Libero non ea.
+      password: Sunt est atque eos dicta.
     required:
     - password
   CoacheeFinalizePasswordRecoveryFlowTransientResponseBody:
@@ -3572,16 +4237,16 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: FinalizePasswordRecoveryFlow_transient_Response_Body result type
       (default view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: true
-      timeout: true
+      timeout: false
     required:
     - name
     - id
@@ -3614,11 +4279,11 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: FinalizePasswordRecoveryFlow_unauthorized_Response_Body result type
       (default view)
     example:
@@ -3626,8 +4291,8 @@ definitions:
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
-      timeout: false
+      temporary: false
+      timeout: true
     required:
     - name
     - id
@@ -3664,16 +4329,16 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: FinalizePasswordRecoveryFlow_validation_Response_Body result type
       (default view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
-      timeout: true
+      temporary: true
+      timeout: false
     required:
     - name
     - id
@@ -3706,19 +4371,19 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: false
+        example: true
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: GetCoach_internal_Response_Body result type (default view)
     example:
-      fault: true
+      fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: false
-      timeout: false
+      timeout: true
     required:
     - name
     - id
@@ -3733,7 +4398,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -3762,7 +4427,7 @@ definitions:
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
+      temporary: true
       timeout: false
     required:
     - name
@@ -3780,172 +4445,172 @@ definitions:
         items:
           $ref: '#/definitions/availabilityResponseBody'
         example:
-        - end: 572
-          id: Nihil quam eius ullam libero officiis.
-          start: 1264
-          weekDay: 3
-        - end: 572
-          id: Nihil quam eius ullam libero officiis.
-          start: 1264
-          weekDay: 3
-        - end: 572
-          id: Nihil quam eius ullam libero officiis.
-          start: 1264
-          weekDay: 3
+        - end: 1352
+          id: Ipsa quas et fuga quod suscipit.
+          start: 302
+          weekDay: 4
+        - end: 1352
+          id: Ipsa quas et fuga quod suscipit.
+          start: 302
+          weekDay: 4
+        - end: 1352
+          id: Ipsa quas et fuga quod suscipit.
+          start: 302
+          weekDay: 4
       certifications:
         type: array
         items:
           $ref: '#/definitions/certificationResponseBody'
         example:
-        - description: Tempore eaque natus et.
-          id: Ab est voluptates dicta incidunt.
-          institution: Doloribus veritatis ipsum.
-          month: 4
-          title: Non dolor dolorum.
-          year: 1998
-        - description: Tempore eaque natus et.
-          id: Ab est voluptates dicta incidunt.
-          institution: Doloribus veritatis ipsum.
-          month: 4
-          title: Non dolor dolorum.
-          year: 1998
-        - description: Tempore eaque natus et.
-          id: Ab est voluptates dicta incidunt.
-          institution: Doloribus veritatis ipsum.
-          month: 4
-          title: Non dolor dolorum.
-          year: 1998
-        - description: Tempore eaque natus et.
-          id: Ab est voluptates dicta incidunt.
-          institution: Doloribus veritatis ipsum.
-          month: 4
-          title: Non dolor dolorum.
-          year: 1998
+        - description: Corporis hic tempora dolorem.
+          id: Nihil quam eius ullam libero officiis.
+          institution: Repellat maxime est eveniet sapiente.
+          month: 11
+          title: Quidem natus deserunt eligendi ut quaerat ea.
+          year: 2020
+        - description: Corporis hic tempora dolorem.
+          id: Nihil quam eius ullam libero officiis.
+          institution: Repellat maxime est eveniet sapiente.
+          month: 11
+          title: Quidem natus deserunt eligendi ut quaerat ea.
+          year: 2020
+        - description: Corporis hic tempora dolorem.
+          id: Nihil quam eius ullam libero officiis.
+          institution: Repellat maxime est eveniet sapiente.
+          month: 11
+          title: Quidem natus deserunt eligendi ut quaerat ea.
+          year: 2020
+        - description: Corporis hic tempora dolorem.
+          id: Nihil quam eius ullam libero officiis.
+          institution: Repellat maxime est eveniet sapiente.
+          month: 11
+          title: Quidem natus deserunt eligendi ut quaerat ea.
+          year: 2020
       city:
         type: string
-        example: Aut voluptatem veritatis qui optio repellat.
+        example: Quidem placeat excepturi sit explicabo exercitationem voluptates.
       country:
         type: string
-        example: Molestiae veritatis eum facere alias in.
+        example: Molestias accusantium.
       description:
         type: string
-        example: Facere ea omnis omnis ex.
+        example: Unde sit.
       firstName:
         type: string
-        example: Numquam nihil non consequuntur ipsa placeat.
+        example: Blanditiis quod nulla et at.
       id:
         type: integer
-        example: 14322751072619190213
+        example: 5864017685035285494
         format: int64
       lastName:
         type: string
-        example: Enim similique et.
+        example: Eveniet officia enim voluptatem atque expedita.
       pictureURL:
         type: string
-        example: Rem et iure dignissimos.
+        example: Doloribus iure expedita dolore qui tempore.
       programs:
         type: array
         items:
           $ref: '#/definitions/programResponseBody'
         example:
-        - description: Quas iusto facere mollitia ut.
-          duration: 10776455242797307351
-          id: Ipsa soluta.
-          name: Magni mollitia consequatur provident.
-          sessions: 766325960723198456
-          taxPercent: 2486718610872615963
-          totalPrice: 10358138860684585985
-        - description: Quas iusto facere mollitia ut.
-          duration: 10776455242797307351
-          id: Ipsa soluta.
-          name: Magni mollitia consequatur provident.
-          sessions: 766325960723198456
-          taxPercent: 2486718610872615963
-          totalPrice: 10358138860684585985
-        - description: Quas iusto facere mollitia ut.
-          duration: 10776455242797307351
-          id: Ipsa soluta.
-          name: Magni mollitia consequatur provident.
-          sessions: 766325960723198456
-          taxPercent: 2486718610872615963
-          totalPrice: 10358138860684585985
+        - description: Quia cum officia soluta quo.
+          duration: 16258710658712685814
+          id: Inventore aliquid sit dicta eligendi.
+          name: Vero velit ea iusto illum rem expedita.
+          sessions: 5533606029577546225
+          taxPercent: 5491848133097122719
+          totalPrice: 15666934358447005149
+        - description: Quia cum officia soluta quo.
+          duration: 16258710658712685814
+          id: Inventore aliquid sit dicta eligendi.
+          name: Vero velit ea iusto illum rem expedita.
+          sessions: 5533606029577546225
+          taxPercent: 5491848133097122719
+          totalPrice: 15666934358447005149
+        - description: Quia cum officia soluta quo.
+          duration: 16258710658712685814
+          id: Inventore aliquid sit dicta eligendi.
+          name: Vero velit ea iusto illum rem expedita.
+          sessions: 5533606029577546225
+          taxPercent: 5491848133097122719
+          totalPrice: 15666934358447005149
       tags:
         type: string
-        example: Voluptatem sint sunt.
+        example: Adipisci molestiae qui.
     example:
       availability:
-      - end: 572
-        id: Nihil quam eius ullam libero officiis.
-        start: 1264
-        weekDay: 3
-      - end: 572
-        id: Nihil quam eius ullam libero officiis.
-        start: 1264
-        weekDay: 3
-      - end: 572
-        id: Nihil quam eius ullam libero officiis.
-        start: 1264
-        weekDay: 3
-      - end: 572
-        id: Nihil quam eius ullam libero officiis.
-        start: 1264
-        weekDay: 3
+      - end: 1352
+        id: Ipsa quas et fuga quod suscipit.
+        start: 302
+        weekDay: 4
+      - end: 1352
+        id: Ipsa quas et fuga quod suscipit.
+        start: 302
+        weekDay: 4
+      - end: 1352
+        id: Ipsa quas et fuga quod suscipit.
+        start: 302
+        weekDay: 4
+      - end: 1352
+        id: Ipsa quas et fuga quod suscipit.
+        start: 302
+        weekDay: 4
       certifications:
-      - description: Tempore eaque natus et.
-        id: Ab est voluptates dicta incidunt.
-        institution: Doloribus veritatis ipsum.
-        month: 4
-        title: Non dolor dolorum.
-        year: 1998
-      - description: Tempore eaque natus et.
-        id: Ab est voluptates dicta incidunt.
-        institution: Doloribus veritatis ipsum.
-        month: 4
-        title: Non dolor dolorum.
-        year: 1998
-      - description: Tempore eaque natus et.
-        id: Ab est voluptates dicta incidunt.
-        institution: Doloribus veritatis ipsum.
-        month: 4
-        title: Non dolor dolorum.
-        year: 1998
-      city: Debitis quaerat cum dicta non quod consequuntur.
-      country: Quis voluptatem voluptatibus nam.
-      description: In doloribus.
-      firstName: Et eum qui.
-      id: 12332187260267685693
-      lastName: Qui et tempore nisi.
-      pictureURL: In aut quia recusandae minima eius.
+      - description: Corporis hic tempora dolorem.
+        id: Nihil quam eius ullam libero officiis.
+        institution: Repellat maxime est eveniet sapiente.
+        month: 11
+        title: Quidem natus deserunt eligendi ut quaerat ea.
+        year: 2020
+      - description: Corporis hic tempora dolorem.
+        id: Nihil quam eius ullam libero officiis.
+        institution: Repellat maxime est eveniet sapiente.
+        month: 11
+        title: Quidem natus deserunt eligendi ut quaerat ea.
+        year: 2020
+      - description: Corporis hic tempora dolorem.
+        id: Nihil quam eius ullam libero officiis.
+        institution: Repellat maxime est eveniet sapiente.
+        month: 11
+        title: Quidem natus deserunt eligendi ut quaerat ea.
+        year: 2020
+      city: Veritatis illo.
+      country: Voluptatum doloribus repellat qui recusandae.
+      description: Voluptatem sed eius eos.
+      firstName: Dolorem perferendis.
+      id: 16992313535521643883
+      lastName: Dolore aliquid cumque eum.
+      pictureURL: Et hic minus.
       programs:
-      - description: Quas iusto facere mollitia ut.
-        duration: 10776455242797307351
-        id: Ipsa soluta.
-        name: Magni mollitia consequatur provident.
-        sessions: 766325960723198456
-        taxPercent: 2486718610872615963
-        totalPrice: 10358138860684585985
-      - description: Quas iusto facere mollitia ut.
-        duration: 10776455242797307351
-        id: Ipsa soluta.
-        name: Magni mollitia consequatur provident.
-        sessions: 766325960723198456
-        taxPercent: 2486718610872615963
-        totalPrice: 10358138860684585985
-      - description: Quas iusto facere mollitia ut.
-        duration: 10776455242797307351
-        id: Ipsa soluta.
-        name: Magni mollitia consequatur provident.
-        sessions: 766325960723198456
-        taxPercent: 2486718610872615963
-        totalPrice: 10358138860684585985
-      - description: Quas iusto facere mollitia ut.
-        duration: 10776455242797307351
-        id: Ipsa soluta.
-        name: Magni mollitia consequatur provident.
-        sessions: 766325960723198456
-        taxPercent: 2486718610872615963
-        totalPrice: 10358138860684585985
-      tags: Et est nisi.
+      - description: Quia cum officia soluta quo.
+        duration: 16258710658712685814
+        id: Inventore aliquid sit dicta eligendi.
+        name: Vero velit ea iusto illum rem expedita.
+        sessions: 5533606029577546225
+        taxPercent: 5491848133097122719
+        totalPrice: 15666934358447005149
+      - description: Quia cum officia soluta quo.
+        duration: 16258710658712685814
+        id: Inventore aliquid sit dicta eligendi.
+        name: Vero velit ea iusto illum rem expedita.
+        sessions: 5533606029577546225
+        taxPercent: 5491848133097122719
+        totalPrice: 15666934358447005149
+      - description: Quia cum officia soluta quo.
+        duration: 16258710658712685814
+        id: Inventore aliquid sit dicta eligendi.
+        name: Vero velit ea iusto illum rem expedita.
+        sessions: 5533606029577546225
+        taxPercent: 5491848133097122719
+        totalPrice: 15666934358447005149
+      - description: Quia cum officia soluta quo.
+        duration: 16258710658712685814
+        id: Inventore aliquid sit dicta eligendi.
+        name: Vero velit ea iusto illum rem expedita.
+        sessions: 5533606029577546225
+        taxPercent: 5491848133097122719
+        totalPrice: 15666934358447005149
+      tags: Maiores illo saepe et nihil.
     required:
     - id
     - firstName
@@ -3962,7 +4627,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: true
+        example: false
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -3984,15 +4649,15 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: GetCoach_transient_Response_Body result type (default view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
-      timeout: false
+      temporary: false
+      timeout: true
     required:
     - name
     - id
@@ -4007,7 +4672,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -4025,7 +4690,7 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: false
+        example: true
       timeout:
         type: boolean
         description: Is the error a timeout?
@@ -4036,8 +4701,8 @@ definitions:
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
-      timeout: false
+      temporary: true
+      timeout: true
     required:
     - name
     - id
@@ -4070,7 +4735,7 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
@@ -4081,8 +4746,8 @@ definitions:
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
-      timeout: true
+      temporary: false
+      timeout: false
     required:
     - name
     - id
@@ -4097,7 +4762,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -4119,15 +4784,15 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: GetCoaches_internal_Response_Body result type (default view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: true
-      timeout: false
+      timeout: true
     required:
     - name
     - id
@@ -4167,12 +4832,12 @@ definitions:
         example: true
     description: GetCoaches_notFound_Response_Body result type (default view)
     example:
-      fault: true
+      fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
-      timeout: false
+      temporary: false
+      timeout: true
     required:
     - name
     - id
@@ -4205,19 +4870,19 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: false
+        example: true
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: GetCoaches_transient_Response_Body result type (default view)
     example:
       fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
-      timeout: true
+      temporary: true
+      timeout: false
     required:
     - name
     - id
@@ -4232,7 +4897,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -4250,18 +4915,18 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: false
+        example: true
       timeout:
         type: boolean
         description: Is the error a timeout?
         example: true
     description: GetCoaches_unauthorized_Response_Body result type (default view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
+      temporary: false
       timeout: false
     required:
     - name
@@ -4299,14 +4964,14 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: GetCoaches_validation_Response_Body result type (default view)
     example:
       fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
+      temporary: false
       timeout: true
     required:
     - name
@@ -4322,7 +4987,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: true
+        example: false
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -4344,15 +5009,15 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: LenCoaches_internal_Response_Body result type (default view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
-      timeout: false
+      temporary: false
+      timeout: true
     required:
     - name
     - id
@@ -4367,7 +5032,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -4385,7 +5050,7 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: false
+        example: true
       timeout:
         type: boolean
         description: Is the error a timeout?
@@ -4397,7 +5062,7 @@ definitions:
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: true
-      timeout: true
+      timeout: false
     required:
     - name
     - id
@@ -4430,19 +5095,19 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
         example: false
     description: LenCoaches_transient_Response_Body result type (default view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
-      timeout: false
+      temporary: false
+      timeout: true
     required:
     - name
     - id
@@ -4457,7 +5122,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -4475,11 +5140,11 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: LenCoaches_unauthorized_Response_Body result type (default view)
     example:
       fault: true
@@ -4502,7 +5167,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -4526,6 +5191,729 @@ definitions:
         description: Is the error a timeout?
         example: true
     description: LenCoaches_validation_Response_Body result type (default view)
+    example:
+      fault: false
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: false
+      timeout: true
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  CoacheeLoginCoachInternalResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: true
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: false
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: false
+    description: LoginCoach_internal_Response_Body result type (default view)
+    example:
+      fault: false
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: false
+      timeout: false
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  CoacheeLoginCoachNotFoundResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: false
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: false
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: true
+    description: LoginCoach_notFound_Response_Body result type (default view)
+    example:
+      fault: true
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: true
+      timeout: true
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  CoacheeLoginCoachRequestBody:
+    title: CoacheeLoginCoachRequestBody
+    type: object
+    properties:
+      email:
+        type: string
+        example: Autem minus magni occaecati non.
+      password:
+        type: string
+        example: Est perferendis.
+    example:
+      email: Libero repellendus accusamus quibusdam dolores.
+      password: Esse autem dicta.
+    required:
+    - email
+    - password
+  CoacheeLoginCoachTransientResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: true
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: false
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: true
+    description: LoginCoach_transient_Response_Body result type (default view)
+    example:
+      fault: true
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: true
+      timeout: true
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  CoacheeLoginCoachUnauthorizedResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: false
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: true
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: true
+    description: LoginCoach_unauthorized_Response_Body result type (default view)
+    example:
+      fault: true
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: false
+      timeout: false
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  CoacheeLoginCoachValidationResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: false
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: false
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: false
+    description: LoginCoach_validation_Response_Body result type (default view)
+    example:
+      fault: false
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: true
+      timeout: true
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  CoacheeRegisterStripeExpressInternalResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: true
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: false
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: false
+    description: RegisterStripeExpress_internal_Response_Body result type (default
+      view)
+    example:
+      fault: true
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: true
+      timeout: false
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  CoacheeRegisterStripeExpressNotFoundResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: false
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: false
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: true
+    description: RegisterStripeExpress_notFound_Response_Body result type (default
+      view)
+    example:
+      fault: false
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: true
+      timeout: true
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  CoacheeRegisterStripeExpressRequestBody:
+    title: CoacheeRegisterStripeExpressRequestBody
+    type: object
+    properties:
+      expressId:
+        type: string
+        example: Error accusamus.
+    example:
+      expressId: Nisi beatae nobis inventore eaque.
+    required:
+    - expressId
+  CoacheeRegisterStripeExpressTransientResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: true
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: false
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: false
+    description: RegisterStripeExpress_transient_Response_Body result type (default
+      view)
+    example:
+      fault: true
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: false
+      timeout: true
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  CoacheeRegisterStripeExpressUnauthorizedResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: false
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: true
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: true
+    description: RegisterStripeExpress_unauthorized_Response_Body result type (default
+      view)
+    example:
+      fault: false
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: false
+      timeout: true
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  CoacheeRegisterStripeExpressValidationResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: true
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: true
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: false
+    description: RegisterStripeExpress_validation_Response_Body result type (default
+      view)
+    example:
+      fault: true
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: false
+      timeout: true
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  CoacheeStartCoachPasswordRecoveryFlowInternalResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: true
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: false
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: false
+    description: StartCoachPasswordRecoveryFlow_internal_Response_Body result type
+      (default view)
+    example:
+      fault: true
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: false
+      timeout: true
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  CoacheeStartCoachPasswordRecoveryFlowNotFoundResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: true
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: false
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: true
+    description: StartCoachPasswordRecoveryFlow_notFound_Response_Body result type
+      (default view)
+    example:
+      fault: true
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: false
+      timeout: true
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  CoacheeStartCoachPasswordRecoveryFlowRequestBody:
+    title: CoacheeStartCoachPasswordRecoveryFlowRequestBody
+    type: object
+    properties:
+      email:
+        type: string
+        example: Possimus quia quae maiores.
+    example:
+      email: Dignissimos et rem animi possimus adipisci.
+    required:
+    - email
+  CoacheeStartCoachPasswordRecoveryFlowTransientResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: true
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: true
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: false
+    description: StartCoachPasswordRecoveryFlow_transient_Response_Body result type
+      (default view)
+    example:
+      fault: false
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: false
+      timeout: true
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  CoacheeStartCoachPasswordRecoveryFlowUnauthorizedResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: true
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: true
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: false
+    description: StartCoachPasswordRecoveryFlow_unauthorized_Response_Body result
+      type (default view)
+    example:
+      fault: true
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: false
+      timeout: true
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  CoacheeStartCoachPasswordRecoveryFlowValidationResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: true
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: false
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: false
+    description: StartCoachPasswordRecoveryFlow_validation_Response_Body result type
+      (default view)
     example:
       fault: true
       id: 123abc
@@ -4565,11 +5953,11 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: StartPasswordRecoveryFlow_internal_Response_Body result type (default
       view)
     example:
@@ -4577,8 +5965,8 @@ definitions:
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
-      timeout: true
+      temporary: false
+      timeout: false
     required:
     - name
     - id
@@ -4593,7 +5981,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -4615,11 +6003,11 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: StartPasswordRecoveryFlow_notFound_Response_Body result type (default
       view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
@@ -4638,9 +6026,9 @@ definitions:
     properties:
       email:
         type: string
-        example: Adipisci vero possimus facilis fuga suscipit.
+        example: Necessitatibus sunt laboriosam architecto ut laboriosam quae.
     example:
-      email: Consequatur adipisci velit aut velit.
+      email: Quibusdam officiis ipsam.
     required:
     - email
   CoacheeStartPasswordRecoveryFlowTransientResponseBody:
@@ -4650,7 +6038,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: true
+        example: false
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -4672,16 +6060,16 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: StartPasswordRecoveryFlow_transient_Response_Body result type (default
       view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
-      timeout: true
+      temporary: false
+      timeout: false
     required:
     - name
     - id
@@ -4696,7 +6084,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -4714,11 +6102,11 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: false
+        example: true
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: StartPasswordRecoveryFlow_unauthorized_Response_Body result type
       (default view)
     example:
@@ -4727,7 +6115,7 @@ definitions:
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: false
-      timeout: true
+      timeout: false
     required:
     - name
     - id
@@ -4760,15 +6148,15 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: false
+        example: true
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: StartPasswordRecoveryFlow_validation_Response_Body result type (default
       view)
     example:
-      fault: true
+      fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
@@ -4806,19 +6194,19 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: UpdateCoach_internal_Response_Body result type (default view)
     example:
-      fault: true
+      fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
-      timeout: false
+      temporary: true
+      timeout: true
     required:
     - name
     - id
@@ -4851,14 +6239,14 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: UpdateCoach_notFound_Response_Body result type (default view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
@@ -4877,54 +6265,54 @@ definitions:
     properties:
       city:
         type: string
-        example: Inventore itaque.
+        example: Animi itaque nihil est illum nulla.
       country:
         type: string
-        example: Optio eos nulla quis voluptatem tempora.
+        example: Sequi quia voluptatibus quae voluptates labore nobis.
       description:
         type: string
-        example: Sit suscipit nemo modi.
+        example: Nam debitis sunt nihil.
       email:
         type: string
-        example: Ut esse sed.
+        example: Eaque dicta.
       firstName:
         type: string
-        example: Reiciendis reprehenderit.
+        example: Aut aut dolores id voluptatem sit.
       introCall:
         type: integer
-        example: 10709459298197904624
+        example: 11461430963933915784
         format: int64
       lastName:
         type: string
-        example: Omnis omnis quisquam eos.
+        example: Dolorem veniam earum voluptatem eos et.
       phone:
         type: string
-        example: Dolore debitis pariatur sit veritatis rerum quo.
+        example: Provident repudiandae qui corporis et fuga provident.
       pictureURL:
         type: string
-        example: Saepe amet qui maiores minima dignissimos odit.
+        example: Placeat odio.
       stripeID:
         type: string
-        example: Voluptatibus dolore.
+        example: Repudiandae nisi blanditiis.
       tags:
         type: string
-        example: Et aspernatur deleniti praesentium ea quis enim.
+        example: Dolorum aut labore voluptatum velit corporis nam.
       vat:
         type: string
-        example: Aut commodi occaecati quia.
+        example: Cum quas aperiam dolor.
     example:
-      city: Sit atque soluta in hic tenetur sed.
-      country: Corporis consequatur dolores velit.
-      description: Sunt dolores eligendi voluptatum.
-      email: Aperiam doloribus suscipit ipsam rem ipsa id.
-      firstName: Maxime rerum sed.
-      introCall: 8893805912860204442
-      lastName: Quasi in.
-      phone: Ipsam consectetur sit eos odio.
-      pictureURL: Nihil eius reprehenderit consequatur animi.
-      stripeID: Vel commodi excepturi dolorem.
-      tags: Sint repudiandae.
-      vat: Inventore praesentium.
+      city: Pariatur qui dolorem aut.
+      country: Itaque eum dicta accusantium.
+      description: Recusandae autem ea.
+      email: Minus et temporibus.
+      firstName: Porro deleniti.
+      introCall: 8218658171820022834
+      lastName: Est omnis et repellat.
+      phone: Voluptatibus necessitatibus vitae fugit voluptas quis.
+      pictureURL: Eos in culpa pariatur.
+      stripeID: Id sed blanditiis modi illum vero.
+      tags: Ut sapiente eos.
+      vat: Rerum ea.
   CoacheeUpdateCoachTransientResponseBody:
     title: 'Mediatype identifier: application/vnd.goa.error; view=default'
     type: object
@@ -4932,7 +6320,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: true
+        example: false
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -4995,19 +6383,19 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
         example: true
     description: UpdateCoach_unauthorized_Response_Body result type (default view)
     example:
-      fault: true
+      fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
-      timeout: true
+      temporary: true
+      timeout: false
     required:
     - name
     - id
@@ -5044,15 +6432,15 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: UpdateCoach_validation_Response_Body result type (default view)
     example:
-      fault: true
+      fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: true
-      timeout: true
+      timeout: false
     required:
     - name
     - id
@@ -5066,15 +6454,15 @@ definitions:
     properties:
       end:
         type: integer
-        example: 1259
+        example: 492
         minimum: 0
         maximum: 1440
       id:
         type: string
-        example: Qui illum sit explicabo a quibusdam.
+        example: Quam quia tempora numquam facere.
       start:
         type: integer
-        example: 285
+        example: 888
         minimum: 0
         maximum: 1440
       weekDay:
@@ -5084,9 +6472,9 @@ definitions:
         maximum: 6
     description: represents a coach availability
     example:
-      end: 774
-      id: Sequi iure odit dolorum voluptatibus aut.
-      start: 1216
+      end: 1198
+      id: A eveniet quo.
+      start: 529
       weekDay: 1
     required:
     - weekDay
@@ -5098,28 +6486,28 @@ definitions:
     properties:
       end:
         type: integer
-        example: 1078
+        example: 539
         minimum: 0
         maximum: 1440
       id:
         type: string
-        example: Dolorum eaque.
+        example: Eos explicabo ab inventore.
       start:
         type: integer
-        example: 937
+        example: 1289
         minimum: 0
         maximum: 1440
       weekDay:
         type: integer
-        example: 4
+        example: 2
         minimum: 0
         maximum: 6
     description: represents a coach availability
     example:
-      end: 68
-      id: Et id vel totam ipsam est magni.
-      start: 332
-      weekDay: 2
+      end: 234
+      id: Ut iure totam veniam repellat assumenda.
+      start: 687
+      weekDay: 4
     required:
     - weekDay
     - start
@@ -5130,28 +6518,28 @@ definitions:
     properties:
       end:
         type: integer
-        example: 555
+        example: 794
         minimum: 0
         maximum: 1440
       id:
         type: string
-        example: Debitis quas aut eum nisi natus.
+        example: Tempora doloremque cum et esse facere.
       start:
         type: integer
-        example: 804
+        example: 242
         minimum: 0
         maximum: 1440
       weekDay:
         type: integer
-        example: 1
+        example: 0
         minimum: 0
         maximum: 6
     description: represents a coach availability
     example:
-      end: 789
-      id: Quo reiciendis nemo fugit.
-      start: 163
-      weekDay: 3
+      end: 1024
+      id: Perspiciatis qui voluptas sint nemo vitae.
+      start: 1339
+      weekDay: 0
     required:
     - weekDay
     - start
@@ -5162,19 +6550,19 @@ definitions:
     properties:
       firstName:
         type: string
-        example: Sequi quia voluptatibus quae voluptates labore nobis.
+        example: Et quia repudiandae deleniti ut vitae.
       id:
         type: integer
-        example: 3834253426334216662
+        example: 15483604341354302384
         format: int64
       lastName:
         type: string
-        example: Nemo repudiandae nisi blanditiis adipisci placeat.
+        example: Commodi ut quia.
     description: represents a client
     example:
-      firstName: Cum quas aperiam dolor.
-      id: 12527732292783236344
-      lastName: Porro deleniti.
+      firstName: Ut mollitia et.
+      id: 12805986115376165431
+      lastName: Atque fugit magnam aut quia.
     required:
     - id
     - firstName
@@ -5185,34 +6573,34 @@ definitions:
     properties:
       description:
         type: string
-        example: Cumque qui qui placeat laborum tempore.
+        example: Neque inventore facilis delectus est autem.
       id:
         type: string
-        example: Aut itaque pariatur.
+        example: Quidem velit et pariatur non.
       institution:
         type: string
-        example: Nulla repellat quasi nobis voluptatem.
+        example: Non ipsam soluta commodi hic sequi.
       month:
         type: integer
-        example: 9
+        example: 8
         minimum: 1
         maximum: 12
       title:
         type: string
-        example: Non fugiat.
+        example: Pariatur optio possimus est eos.
       year:
         type: integer
-        example: 2080
+        example: 2083
         minimum: 1900
         maximum: 2100
     description: represents a coach certification
     example:
-      description: Temporibus sapiente aut est.
-      id: Et accusamus ipsum.
-      institution: Maxime ut eius nobis asperiores adipisci.
-      month: 11
-      title: Ea sit.
-      year: 2072
+      description: Esse hic accusantium architecto et.
+      id: Quasi ut sint.
+      institution: Dignissimos et dolorem consequatur.
+      month: 2
+      title: Aperiam dicta.
+      year: 2083
     required:
     - title
     - description
@@ -5225,34 +6613,34 @@ definitions:
     properties:
       description:
         type: string
-        example: Quaerat quia voluptates.
+        example: Rem et iure dignissimos.
       id:
         type: string
-        example: Iste natus doloribus sunt magni.
+        example: Mollitia aut voluptatem veritatis qui optio.
       institution:
         type: string
-        example: Aut ex explicabo aut provident qui et.
+        example: Ut error.
       month:
         type: integer
-        example: 11
+        example: 4
         minimum: 1
         maximum: 12
       title:
         type: string
-        example: Et omnis incidunt facere et consequatur fuga.
+        example: Et molestiae veritatis eum facere alias in.
       year:
         type: integer
-        example: 2043
+        example: 2060
         minimum: 1900
         maximum: 2100
     description: represents a coach certification
     example:
-      description: Id ut et dolores.
-      id: Optio commodi.
-      institution: Expedita debitis non explicabo.
-      month: 10
-      title: Ea ut alias dicta dolorem omnis rerum.
-      year: 1932
+      description: Veniam rerum fugiat.
+      id: Omnis nesciunt eveniet iste qui.
+      institution: Inventore sint ea.
+      month: 11
+      title: Et deleniti repudiandae autem qui modi.
+      year: 2049
     required:
     - title
     - description
@@ -5265,34 +6653,34 @@ definitions:
     properties:
       description:
         type: string
-        example: Qui enim et deleniti repudiandae.
+        example: Mollitia voluptas nulla.
       id:
         type: string
-        example: Ut error.
+        example: Blanditiis in reiciendis.
       institution:
         type: string
-        example: Qui modi odio veniam.
+        example: Mollitia voluptates id qui quo nihil est.
       month:
         type: integer
-        example: 3
+        example: 2
         minimum: 1
         maximum: 12
       title:
         type: string
-        example: Ut iusto omnis nesciunt eveniet.
+        example: Aliquid voluptas ut.
       year:
         type: integer
-        example: 2012
+        example: 1970
         minimum: 1900
         maximum: 2100
     description: represents a coach certification
     example:
-      description: Rerum ut.
-      id: Inventore sint ea.
-      institution: Est totam et beatae.
+      description: Eligendi alias ab.
+      id: Occaecati molestiae.
+      institution: Ratione aut.
       month: 8
-      title: Neque aperiam nihil aut tenetur.
-      year: 2035
+      title: Illum et.
+      year: 2025
     required:
     - title
     - description
@@ -5308,159 +6696,132 @@ definitions:
         items:
           $ref: '#/definitions/availabilityResponse'
         example:
-        - end: 1149
-          id: Quis cum ratione aut.
-          start: 630
-          weekDay: 0
-        - end: 1149
-          id: Quis cum ratione aut.
-          start: 630
-          weekDay: 0
-        - end: 1149
-          id: Quis cum ratione aut.
-          start: 630
-          weekDay: 0
+        - end: 658
+          id: Quas tempore eaque.
+          start: 998
+          weekDay: 2
+        - end: 658
+          id: Quas tempore eaque.
+          start: 998
+          weekDay: 2
+        - end: 658
+          id: Quas tempore eaque.
+          start: 998
+          weekDay: 2
       certifications:
         type: array
         items:
           $ref: '#/definitions/certificationResponse'
         example:
-        - description: Possimus omnis sequi.
-          id: Quasi et ab.
-          institution: Et qui sequi omnis et praesentium voluptatum.
-          month: 5
-          title: Veniam fuga et rem possimus.
-          year: 2062
-        - description: Possimus omnis sequi.
-          id: Quasi et ab.
-          institution: Et qui sequi omnis et praesentium voluptatum.
-          month: 5
-          title: Veniam fuga et rem possimus.
-          year: 2062
-        - description: Possimus omnis sequi.
-          id: Quasi et ab.
-          institution: Et qui sequi omnis et praesentium voluptatum.
-          month: 5
-          title: Veniam fuga et rem possimus.
-          year: 2062
+        - description: Iste ut.
+          id: Reiciendis nemo voluptatum sunt est.
+          institution: Provident ut corrupti delectus et et.
+          month: 4
+          title: Cum ratione aut ad.
+          year: 2002
+        - description: Iste ut.
+          id: Reiciendis nemo voluptatum sunt est.
+          institution: Provident ut corrupti delectus et et.
+          month: 4
+          title: Cum ratione aut ad.
+          year: 2002
+        - description: Iste ut.
+          id: Reiciendis nemo voluptatum sunt est.
+          institution: Provident ut corrupti delectus et et.
+          month: 4
+          title: Cum ratione aut ad.
+          year: 2002
       city:
         type: string
-        example: Harum voluptatem vel rerum eum praesentium eum.
+        example: Placeat velit enim similique et eveniet.
       country:
         type: string
-        example: Nemo sit voluptatem dolorem libero assumenda molestias.
+        example: Sint sunt dolores.
       description:
         type: string
-        example: Et asperiores amet reiciendis voluptates et.
+        example: Non consequuntur.
       firstName:
         type: string
-        example: Adipisci error.
+        example: Architecto officiis et ad consequuntur.
       id:
         type: integer
-        example: 4980551248590332556
+        example: 2989783478666363530
         format: int64
       lastName:
         type: string
-        example: Sit accusamus labore.
+        example: Quod quis aut nostrum odio quia ea.
       pictureURL:
         type: string
-        example: Nobis voluptatem delectus ut et.
+        example: Ea omnis omnis.
       programs:
         type: array
         items:
           $ref: '#/definitions/programResponse'
         example:
-        - description: Culpa recusandae reiciendis laudantium deserunt reiciendis.
-          duration: 17310686705191564156
-          id: Illo magnam.
-          name: Reprehenderit ducimus officiis illum.
-          sessions: 2441335488459010132
-          taxPercent: 3549655043771117271
-          totalPrice: 12048739738535841943
-        - description: Culpa recusandae reiciendis laudantium deserunt reiciendis.
-          duration: 17310686705191564156
-          id: Illo magnam.
-          name: Reprehenderit ducimus officiis illum.
-          sessions: 2441335488459010132
-          taxPercent: 3549655043771117271
-          totalPrice: 12048739738535841943
+        - description: Ab est voluptates dicta incidunt.
+          duration: 11687188891161822163
+          id: Quod rerum ducimus modi recusandae nisi.
+          name: Recusandae voluptatem.
+          sessions: 1442320008924594391
+          taxPercent: 12420862992505810596
+          totalPrice: 10236066423016742950
+        - description: Ab est voluptates dicta incidunt.
+          duration: 11687188891161822163
+          id: Quod rerum ducimus modi recusandae nisi.
+          name: Recusandae voluptatem.
+          sessions: 1442320008924594391
+          taxPercent: 12420862992505810596
+          totalPrice: 10236066423016742950
       tags:
         type: string
-        example: Asperiores laudantium in id.
+        example: Aut qui est voluptatibus numquam.
     description: represents a coach and all his relevant info
     example:
       availability:
-      - end: 1149
-        id: Quis cum ratione aut.
-        start: 630
-        weekDay: 0
-      - end: 1149
-        id: Quis cum ratione aut.
-        start: 630
-        weekDay: 0
-      - end: 1149
-        id: Quis cum ratione aut.
-        start: 630
-        weekDay: 0
-      - end: 1149
-        id: Quis cum ratione aut.
-        start: 630
-        weekDay: 0
+      - end: 658
+        id: Quas tempore eaque.
+        start: 998
+        weekDay: 2
+      - end: 658
+        id: Quas tempore eaque.
+        start: 998
+        weekDay: 2
       certifications:
-      - description: Possimus omnis sequi.
-        id: Quasi et ab.
-        institution: Et qui sequi omnis et praesentium voluptatum.
-        month: 5
-        title: Veniam fuga et rem possimus.
-        year: 2062
-      - description: Possimus omnis sequi.
-        id: Quasi et ab.
-        institution: Et qui sequi omnis et praesentium voluptatum.
-        month: 5
-        title: Veniam fuga et rem possimus.
-        year: 2062
-      - description: Possimus omnis sequi.
-        id: Quasi et ab.
-        institution: Et qui sequi omnis et praesentium voluptatum.
-        month: 5
-        title: Veniam fuga et rem possimus.
-        year: 2062
-      - description: Possimus omnis sequi.
-        id: Quasi et ab.
-        institution: Et qui sequi omnis et praesentium voluptatum.
-        month: 5
-        title: Veniam fuga et rem possimus.
-        year: 2062
-      city: Et ea consequatur officiis dolorem.
-      country: Inventore omnis et dignissimos quae voluptatem voluptate.
-      description: Et natus ut sed et nihil exercitationem.
-      firstName: Praesentium sint.
-      id: 4361438354368673299
-      lastName: Sint dolor eum non quae itaque.
-      pictureURL: Dolor ad.
+      - description: Iste ut.
+        id: Reiciendis nemo voluptatum sunt est.
+        institution: Provident ut corrupti delectus et et.
+        month: 4
+        title: Cum ratione aut ad.
+        year: 2002
+      - description: Iste ut.
+        id: Reiciendis nemo voluptatum sunt est.
+        institution: Provident ut corrupti delectus et et.
+        month: 4
+        title: Cum ratione aut ad.
+        year: 2002
+      city: Qui maiores qui et.
+      country: Nisi corrupti et est.
+      description: Maxime unde nisi et.
+      firstName: Aut eum nisi natus.
+      id: 8988768073390760373
+      lastName: Dignissimos officiis labore quo reiciendis.
+      pictureURL: Non in doloribus maiores debitis quaerat.
       programs:
-      - description: Culpa recusandae reiciendis laudantium deserunt reiciendis.
-        duration: 17310686705191564156
-        id: Illo magnam.
-        name: Reprehenderit ducimus officiis illum.
-        sessions: 2441335488459010132
-        taxPercent: 3549655043771117271
-        totalPrice: 12048739738535841943
-      - description: Culpa recusandae reiciendis laudantium deserunt reiciendis.
-        duration: 17310686705191564156
-        id: Illo magnam.
-        name: Reprehenderit ducimus officiis illum.
-        sessions: 2441335488459010132
-        taxPercent: 3549655043771117271
-        totalPrice: 12048739738535841943
-      - description: Culpa recusandae reiciendis laudantium deserunt reiciendis.
-        duration: 17310686705191564156
-        id: Illo magnam.
-        name: Reprehenderit ducimus officiis illum.
-        sessions: 2441335488459010132
-        taxPercent: 3549655043771117271
-        totalPrice: 12048739738535841943
-      tags: Placeat ducimus autem dolor officia ipsam et.
+      - description: Ab est voluptates dicta incidunt.
+        duration: 11687188891161822163
+        id: Quod rerum ducimus modi recusandae nisi.
+        name: Recusandae voluptatem.
+        sessions: 1442320008924594391
+        taxPercent: 12420862992505810596
+        totalPrice: 10236066423016742950
+      - description: Ab est voluptates dicta incidunt.
+        duration: 11687188891161822163
+        id: Quod rerum ducimus modi recusandae nisi.
+        name: Recusandae voluptatem.
+        sessions: 1442320008924594391
+        taxPercent: 12420862992505810596
+        totalPrice: 10236066423016742950
+      tags: Fugit possimus est.
     required:
     - id
     - firstName
@@ -5476,38 +6837,38 @@ definitions:
     properties:
       description:
         type: string
-        example: Dignissimos et rem animi possimus adipisci.
+        example: Et et.
       duration:
         type: integer
-        example: 15524440607735382418
+        example: 18327843539910115890
         format: int64
       id:
         type: string
-        example: Suscipit fuga quos et qui tempora quo.
+        example: Recusandae soluta nam adipisci et rerum cumque.
       name:
         type: string
-        example: Impedit voluptatem possimus quia.
+        example: Et aut.
       sessions:
         type: integer
-        example: 16483778352259245257
+        example: 6997754424596170555
         format: int64
       taxPercent:
         type: integer
-        example: 17702701238188486543
+        example: 4773032587240755264
         format: int64
       totalPrice:
         type: integer
-        example: 2797069947581105303
+        example: 5951554970708841869
         format: int64
     description: represents a coach's programs
     example:
-      description: Magni id numquam et consectetur provident sint.
-      duration: 16434928212795015218
-      id: Ad et dolores ut a sed.
-      name: Alias et quod et ab quas.
-      sessions: 14716059216237904887
-      taxPercent: 18441376455382456204
-      totalPrice: 2356666260016975701
+      description: Commodi impedit est.
+      duration: 18334552496218815116
+      id: Repellendus voluptatem et.
+      name: At aperiam odit non ullam corporis et.
+      sessions: 6581090404952010834
+      taxPercent: 15689942732729118378
+      totalPrice: 13876900931453229104
     required:
     - name
     - sessions
@@ -5521,38 +6882,38 @@ definitions:
     properties:
       description:
         type: string
-        example: Amet qui tempora consequuntur excepturi delectus.
+        example: Et beatae ea vel qui eum cumque.
       duration:
         type: integer
-        example: 3608868663970273864
+        example: 2657069256609879638
         format: int64
       id:
         type: string
-        example: At vero.
+        example: Aut tenetur.
       name:
         type: string
-        example: Ea autem dolorum.
+        example: Rerum ut.
       sessions:
         type: integer
-        example: 2255361249948358097
+        example: 3823268966891158164
         format: int64
       taxPercent:
         type: integer
-        example: 6133904573987423409
+        example: 2246464242034520509
         format: int64
       totalPrice:
         type: integer
-        example: 12998919356582573171
+        example: 9856647898573049957
         format: int64
     description: represents a coach's programs
     example:
-      description: Cumque facilis ut nisi quia iste.
-      duration: 14597775541508772891
-      id: Distinctio officia repellat quisquam.
-      name: Quam doloribus nisi id ullam cum id.
-      sessions: 1082861878406400981
-      taxPercent: 14720915476868902826
-      totalPrice: 5640880601229668784
+      description: Hic placeat voluptas.
+      duration: 13530375567736333704
+      id: Soluta sunt.
+      name: Corporis animi id nihil.
+      sessions: 15698153935714109937
+      taxPercent: 1413315992215711159
+      totalPrice: 8729671352245283757
     required:
     - name
     - sessions
@@ -5566,38 +6927,38 @@ definitions:
     properties:
       description:
         type: string
-        example: Hic placeat voluptas.
+        example: Sit est blanditiis et blanditiis necessitatibus.
       duration:
         type: integer
-        example: 13530375567736333704
+        example: 16553305115199317085
         format: int64
       id:
         type: string
-        example: Cumque porro sed reiciendis.
+        example: Quo voluptatum architecto.
       name:
         type: string
-        example: Sunt labore corporis animi id nihil.
+        example: Consequatur quia.
       sessions:
         type: integer
-        example: 15698153935714109937
+        example: 5088761098472886409
         format: int64
       taxPercent:
         type: integer
-        example: 1413315992215711159
+        example: 6305303155398437553
         format: int64
       totalPrice:
         type: integer
-        example: 8729671352245283757
+        example: 11572064846195763778
         format: int64
     description: represents a coach's programs
     example:
-      description: Ut iure totam veniam repellat assumenda.
-      duration: 9939856216090432859
-      id: Maiores eos explicabo.
-      name: Inventore non.
-      sessions: 16502691350706337289
-      taxPercent: 4858760256132049167
-      totalPrice: 11452772360417584498
+      description: Saepe recusandae iusto est voluptas ad omnis.
+      duration: 3816922106193987664
+      id: Nihil consequatur maiores ea.
+      name: Dolorem veritatis praesentium ab.
+      sessions: 8679421481036609205
+      taxPercent: 6456229169759937611
+      totalPrice: 9116448295308085121
     required:
     - name
     - sessions

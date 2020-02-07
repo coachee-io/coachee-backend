@@ -19,6 +19,7 @@ type CreateCoachRequestBody struct {
 	FirstName          *string `form:"firstName,omitempty" json:"firstName,omitempty" xml:"firstName,omitempty"`
 	LastName           *string `form:"lastName,omitempty" json:"lastName,omitempty" xml:"lastName,omitempty"`
 	Email              *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
+	Password           *string `form:"password,omitempty" json:"password,omitempty" xml:"password,omitempty"`
 	Phone              *string `form:"phone,omitempty" json:"phone,omitempty" xml:"phone,omitempty"`
 	Tags               *string `form:"tags,omitempty" json:"tags,omitempty" xml:"tags,omitempty"`
 	Description        *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
@@ -29,6 +30,25 @@ type CreateCoachRequestBody struct {
 	TextPrograms       *string `form:"textPrograms,omitempty" json:"textPrograms,omitempty" xml:"textPrograms,omitempty"`
 	TextAvailability   *string `form:"textAvailability,omitempty" json:"textAvailability,omitempty" xml:"textAvailability,omitempty"`
 	Vat                *string `form:"vat,omitempty" json:"vat,omitempty" xml:"vat,omitempty"`
+}
+
+// LoginCoachRequestBody is the type of the "coachee" service "LoginCoach"
+// endpoint HTTP request body.
+type LoginCoachRequestBody struct {
+	Email    *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
+	Password *string `form:"password,omitempty" json:"password,omitempty" xml:"password,omitempty"`
+}
+
+// StartCoachPasswordRecoveryFlowRequestBody is the type of the "coachee"
+// service "StartCoachPasswordRecoveryFlow" endpoint HTTP request body.
+type StartCoachPasswordRecoveryFlowRequestBody struct {
+	Email *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
+}
+
+// FinalizeCoachPasswordRecoveryFlowRequestBody is the type of the "coachee"
+// service "FinalizeCoachPasswordRecoveryFlow" endpoint HTTP request body.
+type FinalizeCoachPasswordRecoveryFlowRequestBody struct {
+	Password *string `form:"password,omitempty" json:"password,omitempty" xml:"password,omitempty"`
 }
 
 // UpdateCoachRequestBody is the type of the "coachee" service "UpdateCoach"
@@ -101,6 +121,12 @@ type CreateOrderRequestBody struct {
 	CoachID   *uint   `form:"coachId,omitempty" json:"coachId,omitempty" xml:"coachId,omitempty"`
 	ProgramID *string `form:"programId,omitempty" json:"programId,omitempty" xml:"programId,omitempty"`
 	IntroCall *int64  `form:"introCall,omitempty" json:"introCall,omitempty" xml:"introCall,omitempty"`
+}
+
+// RegisterStripeExpressRequestBody is the type of the "coachee" service
+// "RegisterStripeExpress" endpoint HTTP request body.
+type RegisterStripeExpressRequestBody struct {
+	ExpressID *string `form:"expressId,omitempty" json:"expressId,omitempty" xml:"expressId,omitempty"`
 }
 
 // GetCoachesResponseBody is the type of the "coachee" service "GetCoaches"
@@ -491,6 +517,381 @@ type CreateCoachValidationResponseBody struct {
 // CreateCoachUnauthorizedResponseBody is the type of the "coachee" service
 // "CreateCoach" endpoint HTTP response body for the "unauthorized" error.
 type CreateCoachUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// LoginCoachInternalResponseBody is the type of the "coachee" service
+// "LoginCoach" endpoint HTTP response body for the "internal" error.
+type LoginCoachInternalResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// LoginCoachTransientResponseBody is the type of the "coachee" service
+// "LoginCoach" endpoint HTTP response body for the "transient" error.
+type LoginCoachTransientResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// LoginCoachNotFoundResponseBody is the type of the "coachee" service
+// "LoginCoach" endpoint HTTP response body for the "notFound" error.
+type LoginCoachNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// LoginCoachValidationResponseBody is the type of the "coachee" service
+// "LoginCoach" endpoint HTTP response body for the "validation" error.
+type LoginCoachValidationResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// LoginCoachUnauthorizedResponseBody is the type of the "coachee" service
+// "LoginCoach" endpoint HTTP response body for the "unauthorized" error.
+type LoginCoachUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// StartCoachPasswordRecoveryFlowInternalResponseBody is the type of the
+// "coachee" service "StartCoachPasswordRecoveryFlow" endpoint HTTP response
+// body for the "internal" error.
+type StartCoachPasswordRecoveryFlowInternalResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// StartCoachPasswordRecoveryFlowTransientResponseBody is the type of the
+// "coachee" service "StartCoachPasswordRecoveryFlow" endpoint HTTP response
+// body for the "transient" error.
+type StartCoachPasswordRecoveryFlowTransientResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// StartCoachPasswordRecoveryFlowNotFoundResponseBody is the type of the
+// "coachee" service "StartCoachPasswordRecoveryFlow" endpoint HTTP response
+// body for the "notFound" error.
+type StartCoachPasswordRecoveryFlowNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// StartCoachPasswordRecoveryFlowValidationResponseBody is the type of the
+// "coachee" service "StartCoachPasswordRecoveryFlow" endpoint HTTP response
+// body for the "validation" error.
+type StartCoachPasswordRecoveryFlowValidationResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// StartCoachPasswordRecoveryFlowUnauthorizedResponseBody is the type of the
+// "coachee" service "StartCoachPasswordRecoveryFlow" endpoint HTTP response
+// body for the "unauthorized" error.
+type StartCoachPasswordRecoveryFlowUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// CheckCoachPasswordRecoveryTokenInternalResponseBody is the type of the
+// "coachee" service "CheckCoachPasswordRecoveryToken" endpoint HTTP response
+// body for the "internal" error.
+type CheckCoachPasswordRecoveryTokenInternalResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// CheckCoachPasswordRecoveryTokenTransientResponseBody is the type of the
+// "coachee" service "CheckCoachPasswordRecoveryToken" endpoint HTTP response
+// body for the "transient" error.
+type CheckCoachPasswordRecoveryTokenTransientResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// CheckCoachPasswordRecoveryTokenNotFoundResponseBody is the type of the
+// "coachee" service "CheckCoachPasswordRecoveryToken" endpoint HTTP response
+// body for the "notFound" error.
+type CheckCoachPasswordRecoveryTokenNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// CheckCoachPasswordRecoveryTokenValidationResponseBody is the type of the
+// "coachee" service "CheckCoachPasswordRecoveryToken" endpoint HTTP response
+// body for the "validation" error.
+type CheckCoachPasswordRecoveryTokenValidationResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// CheckCoachPasswordRecoveryTokenUnauthorizedResponseBody is the type of the
+// "coachee" service "CheckCoachPasswordRecoveryToken" endpoint HTTP response
+// body for the "unauthorized" error.
+type CheckCoachPasswordRecoveryTokenUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// FinalizeCoachPasswordRecoveryFlowInternalResponseBody is the type of the
+// "coachee" service "FinalizeCoachPasswordRecoveryFlow" endpoint HTTP response
+// body for the "internal" error.
+type FinalizeCoachPasswordRecoveryFlowInternalResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// FinalizeCoachPasswordRecoveryFlowTransientResponseBody is the type of the
+// "coachee" service "FinalizeCoachPasswordRecoveryFlow" endpoint HTTP response
+// body for the "transient" error.
+type FinalizeCoachPasswordRecoveryFlowTransientResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// FinalizeCoachPasswordRecoveryFlowNotFoundResponseBody is the type of the
+// "coachee" service "FinalizeCoachPasswordRecoveryFlow" endpoint HTTP response
+// body for the "notFound" error.
+type FinalizeCoachPasswordRecoveryFlowNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// FinalizeCoachPasswordRecoveryFlowValidationResponseBody is the type of the
+// "coachee" service "FinalizeCoachPasswordRecoveryFlow" endpoint HTTP response
+// body for the "validation" error.
+type FinalizeCoachPasswordRecoveryFlowValidationResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// FinalizeCoachPasswordRecoveryFlowUnauthorizedResponseBody is the type of the
+// "coachee" service "FinalizeCoachPasswordRecoveryFlow" endpoint HTTP response
+// body for the "unauthorized" error.
+type FinalizeCoachPasswordRecoveryFlowUnauthorizedResponseBody struct {
 	// Name is the name of this class of errors.
 	Name string `form:"name" json:"name" xml:"name"`
 	// ID is a unique identifier for this particular occurrence of the problem.
@@ -1701,6 +2102,101 @@ type CreateOrderUnauthorizedResponseBody struct {
 	Fault bool `form:"fault" json:"fault" xml:"fault"`
 }
 
+// RegisterStripeExpressInternalResponseBody is the type of the "coachee"
+// service "RegisterStripeExpress" endpoint HTTP response body for the
+// "internal" error.
+type RegisterStripeExpressInternalResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// RegisterStripeExpressTransientResponseBody is the type of the "coachee"
+// service "RegisterStripeExpress" endpoint HTTP response body for the
+// "transient" error.
+type RegisterStripeExpressTransientResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// RegisterStripeExpressNotFoundResponseBody is the type of the "coachee"
+// service "RegisterStripeExpress" endpoint HTTP response body for the
+// "notFound" error.
+type RegisterStripeExpressNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// RegisterStripeExpressValidationResponseBody is the type of the "coachee"
+// service "RegisterStripeExpress" endpoint HTTP response body for the
+// "validation" error.
+type RegisterStripeExpressValidationResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// RegisterStripeExpressUnauthorizedResponseBody is the type of the "coachee"
+// service "RegisterStripeExpress" endpoint HTTP response body for the
+// "unauthorized" error.
+type RegisterStripeExpressUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
 // CoachResponse is used to define fields on response body types.
 type CoachResponse struct {
 	ID             uint                     `form:"id" json:"id" xml:"id"`
@@ -2187,6 +2683,301 @@ func NewCreateCoachValidationResponseBody(res *goa.ServiceError) *CreateCoachVal
 // the result of the "CreateCoach" endpoint of the "coachee" service.
 func NewCreateCoachUnauthorizedResponseBody(res *goa.ServiceError) *CreateCoachUnauthorizedResponseBody {
 	body := &CreateCoachUnauthorizedResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewLoginCoachInternalResponseBody builds the HTTP response body from the
+// result of the "LoginCoach" endpoint of the "coachee" service.
+func NewLoginCoachInternalResponseBody(res *goa.ServiceError) *LoginCoachInternalResponseBody {
+	body := &LoginCoachInternalResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewLoginCoachTransientResponseBody builds the HTTP response body from the
+// result of the "LoginCoach" endpoint of the "coachee" service.
+func NewLoginCoachTransientResponseBody(res *goa.ServiceError) *LoginCoachTransientResponseBody {
+	body := &LoginCoachTransientResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewLoginCoachNotFoundResponseBody builds the HTTP response body from the
+// result of the "LoginCoach" endpoint of the "coachee" service.
+func NewLoginCoachNotFoundResponseBody(res *goa.ServiceError) *LoginCoachNotFoundResponseBody {
+	body := &LoginCoachNotFoundResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewLoginCoachValidationResponseBody builds the HTTP response body from the
+// result of the "LoginCoach" endpoint of the "coachee" service.
+func NewLoginCoachValidationResponseBody(res *goa.ServiceError) *LoginCoachValidationResponseBody {
+	body := &LoginCoachValidationResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewLoginCoachUnauthorizedResponseBody builds the HTTP response body from the
+// result of the "LoginCoach" endpoint of the "coachee" service.
+func NewLoginCoachUnauthorizedResponseBody(res *goa.ServiceError) *LoginCoachUnauthorizedResponseBody {
+	body := &LoginCoachUnauthorizedResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewStartCoachPasswordRecoveryFlowInternalResponseBody builds the HTTP
+// response body from the result of the "StartCoachPasswordRecoveryFlow"
+// endpoint of the "coachee" service.
+func NewStartCoachPasswordRecoveryFlowInternalResponseBody(res *goa.ServiceError) *StartCoachPasswordRecoveryFlowInternalResponseBody {
+	body := &StartCoachPasswordRecoveryFlowInternalResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewStartCoachPasswordRecoveryFlowTransientResponseBody builds the HTTP
+// response body from the result of the "StartCoachPasswordRecoveryFlow"
+// endpoint of the "coachee" service.
+func NewStartCoachPasswordRecoveryFlowTransientResponseBody(res *goa.ServiceError) *StartCoachPasswordRecoveryFlowTransientResponseBody {
+	body := &StartCoachPasswordRecoveryFlowTransientResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewStartCoachPasswordRecoveryFlowNotFoundResponseBody builds the HTTP
+// response body from the result of the "StartCoachPasswordRecoveryFlow"
+// endpoint of the "coachee" service.
+func NewStartCoachPasswordRecoveryFlowNotFoundResponseBody(res *goa.ServiceError) *StartCoachPasswordRecoveryFlowNotFoundResponseBody {
+	body := &StartCoachPasswordRecoveryFlowNotFoundResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewStartCoachPasswordRecoveryFlowValidationResponseBody builds the HTTP
+// response body from the result of the "StartCoachPasswordRecoveryFlow"
+// endpoint of the "coachee" service.
+func NewStartCoachPasswordRecoveryFlowValidationResponseBody(res *goa.ServiceError) *StartCoachPasswordRecoveryFlowValidationResponseBody {
+	body := &StartCoachPasswordRecoveryFlowValidationResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewStartCoachPasswordRecoveryFlowUnauthorizedResponseBody builds the HTTP
+// response body from the result of the "StartCoachPasswordRecoveryFlow"
+// endpoint of the "coachee" service.
+func NewStartCoachPasswordRecoveryFlowUnauthorizedResponseBody(res *goa.ServiceError) *StartCoachPasswordRecoveryFlowUnauthorizedResponseBody {
+	body := &StartCoachPasswordRecoveryFlowUnauthorizedResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewCheckCoachPasswordRecoveryTokenInternalResponseBody builds the HTTP
+// response body from the result of the "CheckCoachPasswordRecoveryToken"
+// endpoint of the "coachee" service.
+func NewCheckCoachPasswordRecoveryTokenInternalResponseBody(res *goa.ServiceError) *CheckCoachPasswordRecoveryTokenInternalResponseBody {
+	body := &CheckCoachPasswordRecoveryTokenInternalResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewCheckCoachPasswordRecoveryTokenTransientResponseBody builds the HTTP
+// response body from the result of the "CheckCoachPasswordRecoveryToken"
+// endpoint of the "coachee" service.
+func NewCheckCoachPasswordRecoveryTokenTransientResponseBody(res *goa.ServiceError) *CheckCoachPasswordRecoveryTokenTransientResponseBody {
+	body := &CheckCoachPasswordRecoveryTokenTransientResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewCheckCoachPasswordRecoveryTokenNotFoundResponseBody builds the HTTP
+// response body from the result of the "CheckCoachPasswordRecoveryToken"
+// endpoint of the "coachee" service.
+func NewCheckCoachPasswordRecoveryTokenNotFoundResponseBody(res *goa.ServiceError) *CheckCoachPasswordRecoveryTokenNotFoundResponseBody {
+	body := &CheckCoachPasswordRecoveryTokenNotFoundResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewCheckCoachPasswordRecoveryTokenValidationResponseBody builds the HTTP
+// response body from the result of the "CheckCoachPasswordRecoveryToken"
+// endpoint of the "coachee" service.
+func NewCheckCoachPasswordRecoveryTokenValidationResponseBody(res *goa.ServiceError) *CheckCoachPasswordRecoveryTokenValidationResponseBody {
+	body := &CheckCoachPasswordRecoveryTokenValidationResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewCheckCoachPasswordRecoveryTokenUnauthorizedResponseBody builds the HTTP
+// response body from the result of the "CheckCoachPasswordRecoveryToken"
+// endpoint of the "coachee" service.
+func NewCheckCoachPasswordRecoveryTokenUnauthorizedResponseBody(res *goa.ServiceError) *CheckCoachPasswordRecoveryTokenUnauthorizedResponseBody {
+	body := &CheckCoachPasswordRecoveryTokenUnauthorizedResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewFinalizeCoachPasswordRecoveryFlowInternalResponseBody builds the HTTP
+// response body from the result of the "FinalizeCoachPasswordRecoveryFlow"
+// endpoint of the "coachee" service.
+func NewFinalizeCoachPasswordRecoveryFlowInternalResponseBody(res *goa.ServiceError) *FinalizeCoachPasswordRecoveryFlowInternalResponseBody {
+	body := &FinalizeCoachPasswordRecoveryFlowInternalResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewFinalizeCoachPasswordRecoveryFlowTransientResponseBody builds the HTTP
+// response body from the result of the "FinalizeCoachPasswordRecoveryFlow"
+// endpoint of the "coachee" service.
+func NewFinalizeCoachPasswordRecoveryFlowTransientResponseBody(res *goa.ServiceError) *FinalizeCoachPasswordRecoveryFlowTransientResponseBody {
+	body := &FinalizeCoachPasswordRecoveryFlowTransientResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewFinalizeCoachPasswordRecoveryFlowNotFoundResponseBody builds the HTTP
+// response body from the result of the "FinalizeCoachPasswordRecoveryFlow"
+// endpoint of the "coachee" service.
+func NewFinalizeCoachPasswordRecoveryFlowNotFoundResponseBody(res *goa.ServiceError) *FinalizeCoachPasswordRecoveryFlowNotFoundResponseBody {
+	body := &FinalizeCoachPasswordRecoveryFlowNotFoundResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewFinalizeCoachPasswordRecoveryFlowValidationResponseBody builds the HTTP
+// response body from the result of the "FinalizeCoachPasswordRecoveryFlow"
+// endpoint of the "coachee" service.
+func NewFinalizeCoachPasswordRecoveryFlowValidationResponseBody(res *goa.ServiceError) *FinalizeCoachPasswordRecoveryFlowValidationResponseBody {
+	body := &FinalizeCoachPasswordRecoveryFlowValidationResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewFinalizeCoachPasswordRecoveryFlowUnauthorizedResponseBody builds the HTTP
+// response body from the result of the "FinalizeCoachPasswordRecoveryFlow"
+// endpoint of the "coachee" service.
+func NewFinalizeCoachPasswordRecoveryFlowUnauthorizedResponseBody(res *goa.ServiceError) *FinalizeCoachPasswordRecoveryFlowUnauthorizedResponseBody {
+	body := &FinalizeCoachPasswordRecoveryFlowUnauthorizedResponseBody{
 		Name:      res.Name,
 		ID:        res.ID,
 		Message:   res.Message,
@@ -3138,6 +3929,81 @@ func NewCreateOrderUnauthorizedResponseBody(res *goa.ServiceError) *CreateOrderU
 	return body
 }
 
+// NewRegisterStripeExpressInternalResponseBody builds the HTTP response body
+// from the result of the "RegisterStripeExpress" endpoint of the "coachee"
+// service.
+func NewRegisterStripeExpressInternalResponseBody(res *goa.ServiceError) *RegisterStripeExpressInternalResponseBody {
+	body := &RegisterStripeExpressInternalResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewRegisterStripeExpressTransientResponseBody builds the HTTP response body
+// from the result of the "RegisterStripeExpress" endpoint of the "coachee"
+// service.
+func NewRegisterStripeExpressTransientResponseBody(res *goa.ServiceError) *RegisterStripeExpressTransientResponseBody {
+	body := &RegisterStripeExpressTransientResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewRegisterStripeExpressNotFoundResponseBody builds the HTTP response body
+// from the result of the "RegisterStripeExpress" endpoint of the "coachee"
+// service.
+func NewRegisterStripeExpressNotFoundResponseBody(res *goa.ServiceError) *RegisterStripeExpressNotFoundResponseBody {
+	body := &RegisterStripeExpressNotFoundResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewRegisterStripeExpressValidationResponseBody builds the HTTP response body
+// from the result of the "RegisterStripeExpress" endpoint of the "coachee"
+// service.
+func NewRegisterStripeExpressValidationResponseBody(res *goa.ServiceError) *RegisterStripeExpressValidationResponseBody {
+	body := &RegisterStripeExpressValidationResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewRegisterStripeExpressUnauthorizedResponseBody builds the HTTP response
+// body from the result of the "RegisterStripeExpress" endpoint of the
+// "coachee" service.
+func NewRegisterStripeExpressUnauthorizedResponseBody(res *goa.ServiceError) *RegisterStripeExpressUnauthorizedResponseBody {
+	body := &RegisterStripeExpressUnauthorizedResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
 // NewGetCoachesPayload builds a coachee service GetCoaches endpoint payload.
 func NewGetCoachesPayload(tag *string, limit *uint, page *uint) *coachee.GetCoachesPayload {
 	return &coachee.GetCoachesPayload{
@@ -3167,6 +4033,7 @@ func NewCreateCoachPayload(body *CreateCoachRequestBody) *coachee.CreateCoachPay
 		FirstName:          *body.FirstName,
 		LastName:           *body.LastName,
 		Email:              *body.Email,
+		Password:           *body.Password,
 		Phone:              *body.Phone,
 		Tags:               *body.Tags,
 		Description:        *body.Description,
@@ -3178,6 +4045,42 @@ func NewCreateCoachPayload(body *CreateCoachRequestBody) *coachee.CreateCoachPay
 		TextAvailability:   body.TextAvailability,
 		Vat:                body.Vat,
 	}
+	return v
+}
+
+// NewLoginCoachPayload builds a coachee service LoginCoach endpoint payload.
+func NewLoginCoachPayload(body *LoginCoachRequestBody) *coachee.LoginCoachPayload {
+	v := &coachee.LoginCoachPayload{
+		Email:    *body.Email,
+		Password: *body.Password,
+	}
+	return v
+}
+
+// NewStartCoachPasswordRecoveryFlowPayload builds a coachee service
+// StartCoachPasswordRecoveryFlow endpoint payload.
+func NewStartCoachPasswordRecoveryFlowPayload(body *StartCoachPasswordRecoveryFlowRequestBody) *coachee.StartCoachPasswordRecoveryFlowPayload {
+	v := &coachee.StartCoachPasswordRecoveryFlowPayload{
+		Email: *body.Email,
+	}
+	return v
+}
+
+// NewCheckCoachPasswordRecoveryTokenPayload builds a coachee service
+// CheckCoachPasswordRecoveryToken endpoint payload.
+func NewCheckCoachPasswordRecoveryTokenPayload(token string) *coachee.CheckCoachPasswordRecoveryTokenPayload {
+	return &coachee.CheckCoachPasswordRecoveryTokenPayload{
+		Token: token,
+	}
+}
+
+// NewFinalizeCoachPasswordRecoveryFlowPayload builds a coachee service
+// FinalizeCoachPasswordRecoveryFlow endpoint payload.
+func NewFinalizeCoachPasswordRecoveryFlowPayload(body *FinalizeCoachPasswordRecoveryFlowRequestBody, token string) *coachee.FinalizeCoachPasswordRecoveryFlowPayload {
+	v := &coachee.FinalizeCoachPasswordRecoveryFlowPayload{
+		Password: *body.Password,
+	}
+	v.Token = token
 	return v
 }
 
@@ -3316,6 +4219,16 @@ func NewCreateOrderPayload(body *CreateOrderRequestBody, token string) *coachee.
 	return v
 }
 
+// NewRegisterStripeExpressPayload builds a coachee service
+// RegisterStripeExpress endpoint payload.
+func NewRegisterStripeExpressPayload(body *RegisterStripeExpressRequestBody, id uint) *coachee.RegisterStripeExpressPayload {
+	v := &coachee.RegisterStripeExpressPayload{
+		ExpressID: *body.ExpressID,
+	}
+	v.ID = id
+	return v
+}
+
 // ValidateCreateCoachRequestBody runs the validations defined on
 // CreateCoachRequestBody
 func ValidateCreateCoachRequestBody(body *CreateCoachRequestBody) (err error) {
@@ -3327,6 +4240,9 @@ func ValidateCreateCoachRequestBody(body *CreateCoachRequestBody) (err error) {
 	}
 	if body.Email == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("email", "body"))
+	}
+	if body.Password == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("password", "body"))
 	}
 	if body.Phone == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("phone", "body"))
@@ -3345,6 +4261,36 @@ func ValidateCreateCoachRequestBody(body *CreateCoachRequestBody) (err error) {
 	}
 	if body.TextPrograms == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("textPrograms", "body"))
+	}
+	return
+}
+
+// ValidateLoginCoachRequestBody runs the validations defined on
+// LoginCoachRequestBody
+func ValidateLoginCoachRequestBody(body *LoginCoachRequestBody) (err error) {
+	if body.Email == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("email", "body"))
+	}
+	if body.Password == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("password", "body"))
+	}
+	return
+}
+
+// ValidateStartCoachPasswordRecoveryFlowRequestBody runs the validations
+// defined on StartCoachPasswordRecoveryFlowRequestBody
+func ValidateStartCoachPasswordRecoveryFlowRequestBody(body *StartCoachPasswordRecoveryFlowRequestBody) (err error) {
+	if body.Email == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("email", "body"))
+	}
+	return
+}
+
+// ValidateFinalizeCoachPasswordRecoveryFlowRequestBody runs the validations
+// defined on FinalizeCoachPasswordRecoveryFlowRequestBody
+func ValidateFinalizeCoachPasswordRecoveryFlowRequestBody(body *FinalizeCoachPasswordRecoveryFlowRequestBody) (err error) {
+	if body.Password == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("password", "body"))
 	}
 	return
 }
@@ -3453,6 +4399,15 @@ func ValidateCreateOrderRequestBody(body *CreateOrderRequestBody) (err error) {
 	}
 	if body.IntroCall == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("introCall", "body"))
+	}
+	return
+}
+
+// ValidateRegisterStripeExpressRequestBody runs the validations defined on
+// RegisterStripeExpressRequestBody
+func ValidateRegisterStripeExpressRequestBody(body *RegisterStripeExpressRequestBody) (err error) {
+	if body.ExpressID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("expressId", "body"))
 	}
 	return
 }

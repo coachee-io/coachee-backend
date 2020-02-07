@@ -78,6 +78,24 @@ func TestCoachRepository_Create(t *testing.T) {
 	require.Equal(t, *coach, *coach2)
 }
 
+func TestCoachRepository_GetByEmail(t *testing.T) {
+	db := NewDatabase(t)
+	repo := mysql.NewCoachRepository(db)
+	defer db.Close()
+
+	coach := testCoach()
+
+	err := repo.Create(repository.DefaultNoTransaction, coach)
+	require.Nil(t, err)
+
+	coach2, err := repo.GetByEmail(repository.DefaultNoTransaction, coach.Email)
+	require.Nil(t, err)
+	coach2.CreatedAt = coach.CreatedAt //slight diff
+	coach2.UpdatedAt = coach.UpdatedAt
+	coach2.IntroCall = coach.IntroCall
+	require.Equal(t, *coach, *coach2)
+}
+
 func TestCoachRepository_GetByPage(t *testing.T) {
 	db := NewDatabase(t)
 	repo := mysql.NewCoachRepository(db)

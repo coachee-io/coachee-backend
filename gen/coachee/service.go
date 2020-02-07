@@ -24,6 +24,14 @@ type Service interface {
 	LenCoaches(context.Context, *LenCoachesPayload) (res uint, err error)
 	// CreateCoaches creates a base coach
 	CreateCoach(context.Context, *CreateCoachPayload) (res uint, err error)
+	// Logs in a coach to stripe express
+	LoginCoach(context.Context, *LoginCoachPayload) (res string, err error)
+	// starts the process of recovering a password
+	StartCoachPasswordRecoveryFlow(context.Context, *StartCoachPasswordRecoveryFlowPayload) (err error)
+	// verifies if a recovery token is still valid
+	CheckCoachPasswordRecoveryToken(context.Context, *CheckCoachPasswordRecoveryTokenPayload) (err error)
+	// finalizes the password recovery flow by resetting a new password
+	FinalizeCoachPasswordRecoveryFlow(context.Context, *FinalizeCoachPasswordRecoveryFlowPayload) (err error)
 	// UpdateCoaches updates a coach
 	UpdateCoach(context.Context, *UpdateCoachPayload) (err error)
 	// creates a certification for a coach
@@ -50,6 +58,8 @@ type Service interface {
 	FinalizePasswordRecoveryFlow(context.Context, *FinalizePasswordRecoveryFlowPayload) (err error)
 	// creates a new order
 	CreateOrder(context.Context, *CreateOrderPayload) (res *CreateOrderResult, err error)
+	// registers a stripe express account in stripe and associates it to a coach
+	RegisterStripeExpress(context.Context, *RegisterStripeExpressPayload) (err error)
 }
 
 // Auther defines the authorization functions to be implemented by the service.
@@ -66,7 +76,7 @@ const ServiceName = "coachee"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [17]string{"GetCoaches", "GetCoach", "LenCoaches", "CreateCoach", "UpdateCoach", "CreateCertification", "DeleteCertification", "CreateProgram", "DeleteProgram", "CreateAvailability", "DeleteAvailability", "CreateCustomer", "CustomerLogin", "StartPasswordRecoveryFlow", "CheckPasswordRecoveryToken", "FinalizePasswordRecoveryFlow", "CreateOrder"}
+var MethodNames = [22]string{"GetCoaches", "GetCoach", "LenCoaches", "CreateCoach", "LoginCoach", "StartCoachPasswordRecoveryFlow", "CheckCoachPasswordRecoveryToken", "FinalizeCoachPasswordRecoveryFlow", "UpdateCoach", "CreateCertification", "DeleteCertification", "CreateProgram", "DeleteProgram", "CreateAvailability", "DeleteAvailability", "CreateCustomer", "CustomerLogin", "StartPasswordRecoveryFlow", "CheckPasswordRecoveryToken", "FinalizePasswordRecoveryFlow", "CreateOrder", "RegisterStripeExpress"}
 
 // GetCoachesPayload is the payload type of the coachee service GetCoaches
 // method.
@@ -108,6 +118,7 @@ type CreateCoachPayload struct {
 	FirstName          string
 	LastName           string
 	Email              string
+	Password           string
 	Phone              string
 	Tags               string
 	Description        string
@@ -118,6 +129,32 @@ type CreateCoachPayload struct {
 	TextPrograms       string
 	TextAvailability   *string
 	Vat                *string
+}
+
+// LoginCoachPayload is the payload type of the coachee service LoginCoach
+// method.
+type LoginCoachPayload struct {
+	Email    string
+	Password string
+}
+
+// StartCoachPasswordRecoveryFlowPayload is the payload type of the coachee
+// service StartCoachPasswordRecoveryFlow method.
+type StartCoachPasswordRecoveryFlowPayload struct {
+	Email string
+}
+
+// CheckCoachPasswordRecoveryTokenPayload is the payload type of the coachee
+// service CheckCoachPasswordRecoveryToken method.
+type CheckCoachPasswordRecoveryTokenPayload struct {
+	Token string
+}
+
+// FinalizeCoachPasswordRecoveryFlowPayload is the payload type of the coachee
+// service FinalizeCoachPasswordRecoveryFlow method.
+type FinalizeCoachPasswordRecoveryFlowPayload struct {
+	Token    string
+	Password string
 }
 
 // UpdateCoachPayload is the payload type of the coachee service UpdateCoach
@@ -247,6 +284,13 @@ type CreateOrderPayload struct {
 type CreateOrderResult struct {
 	ClientSecret  string
 	PublishingKey string
+}
+
+// RegisterStripeExpressPayload is the payload type of the coachee service
+// RegisterStripeExpress method.
+type RegisterStripeExpressPayload struct {
+	ID        uint
+	ExpressID string
 }
 
 // represents a coach certification

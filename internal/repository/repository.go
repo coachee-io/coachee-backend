@@ -10,6 +10,7 @@ type Coach interface {
 
 	Create(tx Transaction, coach *model.Coach) error
 	GetByID(tx Transaction, id uint) (*model.Coach, error)
+	GetByEmail(tx Transaction, email string) (*model.Coach, error)
 	GetByPage(tx Transaction, tag string, limit, page uint) ([]*model.Coach, error)
 	Update(tx Transaction, coach *model.Coach) error
 	Length(tx Transaction, tag string) (uint, error)
@@ -40,4 +41,12 @@ type Recovery interface {
 
 	Create(transaction Transaction, client *model.Recovery) error
 	GetByID(transaction Transaction, id string) (*model.Recovery, error)
+}
+
+// CoachRecovery is the repository to interact and persist password recovery flows for a coach
+type CoachRecovery interface {
+	Begin() Transaction
+
+	Create(transaction Transaction, client *model.CoachRecovery) error
+	GetByID(transaction Transaction, id string) (*model.CoachRecovery, error)
 }

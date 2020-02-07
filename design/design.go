@@ -199,6 +199,7 @@ var _ = Service("coachee", func() {
 			Attribute("firstName", String)
 			Attribute("lastName", String)
 			Attribute("email", String)
+			Attribute("password", String)
 			Attribute("phone", String)
 			Attribute("tags", String)
 			Attribute("description", String)
@@ -210,7 +211,7 @@ var _ = Service("coachee", func() {
 			Attribute("textAvailability", String)
 			Attribute("vat", String)
 
-			Required("firstName", "lastName", "email", "phone", "tags", "description", "introCall",
+			Required("firstName", "lastName", "email", "password", "phone", "tags", "description", "introCall",
 				"textCertifications", "textPrograms")
 		})
 
@@ -219,6 +220,66 @@ var _ = Service("coachee", func() {
 		HTTP(func() {
 			POST("/coaches")
 			Response(StatusCreated)
+		})
+	})
+
+	Method("LoginCoach", func() {
+		Description("Logs in a coach to stripe express")
+		Payload(func() {
+			Attribute("email", String)
+			Attribute("password", String)
+
+			Required("email", "password")
+		})
+
+		Result(String)
+
+		HTTP(func() {
+			POST("/coaches/login")
+			Response(StatusOK)
+		})
+	})
+
+	Method("StartCoachPasswordRecoveryFlow", func() {
+		Description("starts the process of recovering a password")
+		Payload(func() {
+			Attribute("email", String)
+
+			Required("email")
+		})
+
+		HTTP(func() {
+			POST("/coaches/recovery")
+			Response(StatusOK)
+		})
+	})
+
+	Method("CheckCoachPasswordRecoveryToken", func() {
+		Description("verifies if a recovery token is still valid")
+		Payload(func() {
+			Attribute("token", String)
+
+			Required("token")
+		})
+
+		HTTP(func() {
+			GET("/coaches/recovery/{token}")
+			Response(StatusOK)
+		})
+	})
+
+	Method("FinalizeCoachPasswordRecoveryFlow", func() {
+		Description("finalizes the password recovery flow by resetting a new password ")
+		Payload(func() {
+			Attribute("token", String)
+			Attribute("password", String)
+
+			Required("token", "password")
+		})
+
+		HTTP(func() {
+			POST("/coaches/recovery/{token}")
+			Response(StatusOK)
 		})
 	})
 
@@ -454,6 +515,22 @@ var _ = Service("coachee", func() {
 
 		HTTP(func() {
 			POST("/orders")
+			Response(StatusCreated)
+		})
+	})
+
+	Method("RegisterStripeExpress", func() {
+		Description("registers a stripe express account in stripe and associates it to a coach")
+
+		Payload(func() {
+			Attribute("id", UInt)
+			Attribute("expressId", String)
+
+			Required("id", "expressId")
+		})
+
+		HTTP(func() {
+			POST("/coaches/{id}/stripe")
 			Response(StatusCreated)
 		})
 	})

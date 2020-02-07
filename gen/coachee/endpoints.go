@@ -16,23 +16,28 @@ import (
 
 // Endpoints wraps the "coachee" service endpoints.
 type Endpoints struct {
-	GetCoaches                   goa.Endpoint
-	GetCoach                     goa.Endpoint
-	LenCoaches                   goa.Endpoint
-	CreateCoach                  goa.Endpoint
-	UpdateCoach                  goa.Endpoint
-	CreateCertification          goa.Endpoint
-	DeleteCertification          goa.Endpoint
-	CreateProgram                goa.Endpoint
-	DeleteProgram                goa.Endpoint
-	CreateAvailability           goa.Endpoint
-	DeleteAvailability           goa.Endpoint
-	CreateCustomer               goa.Endpoint
-	CustomerLogin                goa.Endpoint
-	StartPasswordRecoveryFlow    goa.Endpoint
-	CheckPasswordRecoveryToken   goa.Endpoint
-	FinalizePasswordRecoveryFlow goa.Endpoint
-	CreateOrder                  goa.Endpoint
+	GetCoaches                        goa.Endpoint
+	GetCoach                          goa.Endpoint
+	LenCoaches                        goa.Endpoint
+	CreateCoach                       goa.Endpoint
+	LoginCoach                        goa.Endpoint
+	StartCoachPasswordRecoveryFlow    goa.Endpoint
+	CheckCoachPasswordRecoveryToken   goa.Endpoint
+	FinalizeCoachPasswordRecoveryFlow goa.Endpoint
+	UpdateCoach                       goa.Endpoint
+	CreateCertification               goa.Endpoint
+	DeleteCertification               goa.Endpoint
+	CreateProgram                     goa.Endpoint
+	DeleteProgram                     goa.Endpoint
+	CreateAvailability                goa.Endpoint
+	DeleteAvailability                goa.Endpoint
+	CreateCustomer                    goa.Endpoint
+	CustomerLogin                     goa.Endpoint
+	StartPasswordRecoveryFlow         goa.Endpoint
+	CheckPasswordRecoveryToken        goa.Endpoint
+	FinalizePasswordRecoveryFlow      goa.Endpoint
+	CreateOrder                       goa.Endpoint
+	RegisterStripeExpress             goa.Endpoint
 }
 
 // NewEndpoints wraps the methods of the "coachee" service with endpoints.
@@ -40,23 +45,28 @@ func NewEndpoints(s Service) *Endpoints {
 	// Casting service to Auther interface
 	a := s.(Auther)
 	return &Endpoints{
-		GetCoaches:                   NewGetCoachesEndpoint(s),
-		GetCoach:                     NewGetCoachEndpoint(s),
-		LenCoaches:                   NewLenCoachesEndpoint(s),
-		CreateCoach:                  NewCreateCoachEndpoint(s),
-		UpdateCoach:                  NewUpdateCoachEndpoint(s),
-		CreateCertification:          NewCreateCertificationEndpoint(s),
-		DeleteCertification:          NewDeleteCertificationEndpoint(s),
-		CreateProgram:                NewCreateProgramEndpoint(s),
-		DeleteProgram:                NewDeleteProgramEndpoint(s),
-		CreateAvailability:           NewCreateAvailabilityEndpoint(s),
-		DeleteAvailability:           NewDeleteAvailabilityEndpoint(s),
-		CreateCustomer:               NewCreateCustomerEndpoint(s),
-		CustomerLogin:                NewCustomerLoginEndpoint(s),
-		StartPasswordRecoveryFlow:    NewStartPasswordRecoveryFlowEndpoint(s),
-		CheckPasswordRecoveryToken:   NewCheckPasswordRecoveryTokenEndpoint(s),
-		FinalizePasswordRecoveryFlow: NewFinalizePasswordRecoveryFlowEndpoint(s),
-		CreateOrder:                  NewCreateOrderEndpoint(s, a.JWTAuth),
+		GetCoaches:                        NewGetCoachesEndpoint(s),
+		GetCoach:                          NewGetCoachEndpoint(s),
+		LenCoaches:                        NewLenCoachesEndpoint(s),
+		CreateCoach:                       NewCreateCoachEndpoint(s),
+		LoginCoach:                        NewLoginCoachEndpoint(s),
+		StartCoachPasswordRecoveryFlow:    NewStartCoachPasswordRecoveryFlowEndpoint(s),
+		CheckCoachPasswordRecoveryToken:   NewCheckCoachPasswordRecoveryTokenEndpoint(s),
+		FinalizeCoachPasswordRecoveryFlow: NewFinalizeCoachPasswordRecoveryFlowEndpoint(s),
+		UpdateCoach:                       NewUpdateCoachEndpoint(s),
+		CreateCertification:               NewCreateCertificationEndpoint(s),
+		DeleteCertification:               NewDeleteCertificationEndpoint(s),
+		CreateProgram:                     NewCreateProgramEndpoint(s),
+		DeleteProgram:                     NewDeleteProgramEndpoint(s),
+		CreateAvailability:                NewCreateAvailabilityEndpoint(s),
+		DeleteAvailability:                NewDeleteAvailabilityEndpoint(s),
+		CreateCustomer:                    NewCreateCustomerEndpoint(s),
+		CustomerLogin:                     NewCustomerLoginEndpoint(s),
+		StartPasswordRecoveryFlow:         NewStartPasswordRecoveryFlowEndpoint(s),
+		CheckPasswordRecoveryToken:        NewCheckPasswordRecoveryTokenEndpoint(s),
+		FinalizePasswordRecoveryFlow:      NewFinalizePasswordRecoveryFlowEndpoint(s),
+		CreateOrder:                       NewCreateOrderEndpoint(s, a.JWTAuth),
+		RegisterStripeExpress:             NewRegisterStripeExpressEndpoint(s),
 	}
 }
 
@@ -66,6 +76,10 @@ func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.GetCoach = m(e.GetCoach)
 	e.LenCoaches = m(e.LenCoaches)
 	e.CreateCoach = m(e.CreateCoach)
+	e.LoginCoach = m(e.LoginCoach)
+	e.StartCoachPasswordRecoveryFlow = m(e.StartCoachPasswordRecoveryFlow)
+	e.CheckCoachPasswordRecoveryToken = m(e.CheckCoachPasswordRecoveryToken)
+	e.FinalizeCoachPasswordRecoveryFlow = m(e.FinalizeCoachPasswordRecoveryFlow)
 	e.UpdateCoach = m(e.UpdateCoach)
 	e.CreateCertification = m(e.CreateCertification)
 	e.DeleteCertification = m(e.DeleteCertification)
@@ -79,6 +93,7 @@ func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.CheckPasswordRecoveryToken = m(e.CheckPasswordRecoveryToken)
 	e.FinalizePasswordRecoveryFlow = m(e.FinalizePasswordRecoveryFlow)
 	e.CreateOrder = m(e.CreateOrder)
+	e.RegisterStripeExpress = m(e.RegisterStripeExpress)
 }
 
 // NewGetCoachesEndpoint returns an endpoint function that calls the method
@@ -114,6 +129,43 @@ func NewCreateCoachEndpoint(s Service) goa.Endpoint {
 	return func(ctx context.Context, req interface{}) (interface{}, error) {
 		p := req.(*CreateCoachPayload)
 		return s.CreateCoach(ctx, p)
+	}
+}
+
+// NewLoginCoachEndpoint returns an endpoint function that calls the method
+// "LoginCoach" of service "coachee".
+func NewLoginCoachEndpoint(s Service) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*LoginCoachPayload)
+		return s.LoginCoach(ctx, p)
+	}
+}
+
+// NewStartCoachPasswordRecoveryFlowEndpoint returns an endpoint function that
+// calls the method "StartCoachPasswordRecoveryFlow" of service "coachee".
+func NewStartCoachPasswordRecoveryFlowEndpoint(s Service) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*StartCoachPasswordRecoveryFlowPayload)
+		return nil, s.StartCoachPasswordRecoveryFlow(ctx, p)
+	}
+}
+
+// NewCheckCoachPasswordRecoveryTokenEndpoint returns an endpoint function that
+// calls the method "CheckCoachPasswordRecoveryToken" of service "coachee".
+func NewCheckCoachPasswordRecoveryTokenEndpoint(s Service) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*CheckCoachPasswordRecoveryTokenPayload)
+		return nil, s.CheckCoachPasswordRecoveryToken(ctx, p)
+	}
+}
+
+// NewFinalizeCoachPasswordRecoveryFlowEndpoint returns an endpoint function
+// that calls the method "FinalizeCoachPasswordRecoveryFlow" of service
+// "coachee".
+func NewFinalizeCoachPasswordRecoveryFlowEndpoint(s Service) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*FinalizeCoachPasswordRecoveryFlowPayload)
+		return nil, s.FinalizeCoachPasswordRecoveryFlow(ctx, p)
 	}
 }
 
@@ -241,5 +293,14 @@ func NewCreateOrderEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpo
 			return nil, err
 		}
 		return s.CreateOrder(ctx, p)
+	}
+}
+
+// NewRegisterStripeExpressEndpoint returns an endpoint function that calls the
+// method "RegisterStripeExpress" of service "coachee".
+func NewRegisterStripeExpressEndpoint(s Service) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*RegisterStripeExpressPayload)
+		return nil, s.RegisterStripeExpress(ctx, p)
 	}
 }

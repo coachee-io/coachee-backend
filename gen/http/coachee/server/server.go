@@ -19,25 +19,30 @@ import (
 
 // Server lists the coachee service endpoint HTTP handlers.
 type Server struct {
-	Mounts                       []*MountPoint
-	GetCoaches                   http.Handler
-	GetCoach                     http.Handler
-	LenCoaches                   http.Handler
-	CreateCoach                  http.Handler
-	UpdateCoach                  http.Handler
-	CreateCertification          http.Handler
-	DeleteCertification          http.Handler
-	CreateProgram                http.Handler
-	DeleteProgram                http.Handler
-	CreateAvailability           http.Handler
-	DeleteAvailability           http.Handler
-	CreateCustomer               http.Handler
-	CustomerLogin                http.Handler
-	StartPasswordRecoveryFlow    http.Handler
-	CheckPasswordRecoveryToken   http.Handler
-	FinalizePasswordRecoveryFlow http.Handler
-	CreateOrder                  http.Handler
-	CORS                         http.Handler
+	Mounts                            []*MountPoint
+	GetCoaches                        http.Handler
+	GetCoach                          http.Handler
+	LenCoaches                        http.Handler
+	CreateCoach                       http.Handler
+	LoginCoach                        http.Handler
+	StartCoachPasswordRecoveryFlow    http.Handler
+	CheckCoachPasswordRecoveryToken   http.Handler
+	FinalizeCoachPasswordRecoveryFlow http.Handler
+	UpdateCoach                       http.Handler
+	CreateCertification               http.Handler
+	DeleteCertification               http.Handler
+	CreateProgram                     http.Handler
+	DeleteProgram                     http.Handler
+	CreateAvailability                http.Handler
+	DeleteAvailability                http.Handler
+	CreateCustomer                    http.Handler
+	CustomerLogin                     http.Handler
+	StartPasswordRecoveryFlow         http.Handler
+	CheckPasswordRecoveryToken        http.Handler
+	FinalizePasswordRecoveryFlow      http.Handler
+	CreateOrder                       http.Handler
+	RegisterStripeExpress             http.Handler
+	CORS                              http.Handler
 }
 
 // ErrorNamer is an interface implemented by generated error structs that
@@ -77,6 +82,10 @@ func New(
 			{"GetCoach", "GET", "/coaches/{id}"},
 			{"LenCoaches", "GET", "/coaches/{tag}/length"},
 			{"CreateCoach", "POST", "/coaches"},
+			{"LoginCoach", "POST", "/coaches/login"},
+			{"StartCoachPasswordRecoveryFlow", "POST", "/coaches/recovery"},
+			{"CheckCoachPasswordRecoveryToken", "GET", "/coaches/recovery/{token}"},
+			{"FinalizeCoachPasswordRecoveryFlow", "POST", "/coaches/recovery/{token}"},
 			{"UpdateCoach", "POST", "/coaches/{id}"},
 			{"CreateCertification", "POST", "/coaches/{id}/certifications"},
 			{"DeleteCertification", "DELETE", "/coaches/{id}/certifications/{certID}"},
@@ -90,9 +99,13 @@ func New(
 			{"CheckPasswordRecoveryToken", "GET", "/recovery/{token}"},
 			{"FinalizePasswordRecoveryFlow", "POST", "/recovery/{token}"},
 			{"CreateOrder", "POST", "/orders"},
+			{"RegisterStripeExpress", "POST", "/coaches/{id}/stripe"},
 			{"CORS", "OPTIONS", "/coaches"},
 			{"CORS", "OPTIONS", "/coaches/{id}"},
 			{"CORS", "OPTIONS", "/coaches/{tag}/length"},
+			{"CORS", "OPTIONS", "/coaches/login"},
+			{"CORS", "OPTIONS", "/coaches/recovery"},
+			{"CORS", "OPTIONS", "/coaches/recovery/{token}"},
 			{"CORS", "OPTIONS", "/coaches/{id}/certifications"},
 			{"CORS", "OPTIONS", "/coaches/{id}/certifications/{certID}"},
 			{"CORS", "OPTIONS", "/coaches/{id}/programs"},
@@ -104,25 +117,31 @@ func New(
 			{"CORS", "OPTIONS", "/recovery"},
 			{"CORS", "OPTIONS", "/recovery/{token}"},
 			{"CORS", "OPTIONS", "/orders"},
+			{"CORS", "OPTIONS", "/coaches/{id}/stripe"},
 		},
-		GetCoaches:                   NewGetCoachesHandler(e.GetCoaches, mux, decoder, encoder, errhandler, formatter),
-		GetCoach:                     NewGetCoachHandler(e.GetCoach, mux, decoder, encoder, errhandler, formatter),
-		LenCoaches:                   NewLenCoachesHandler(e.LenCoaches, mux, decoder, encoder, errhandler, formatter),
-		CreateCoach:                  NewCreateCoachHandler(e.CreateCoach, mux, decoder, encoder, errhandler, formatter),
-		UpdateCoach:                  NewUpdateCoachHandler(e.UpdateCoach, mux, decoder, encoder, errhandler, formatter),
-		CreateCertification:          NewCreateCertificationHandler(e.CreateCertification, mux, decoder, encoder, errhandler, formatter),
-		DeleteCertification:          NewDeleteCertificationHandler(e.DeleteCertification, mux, decoder, encoder, errhandler, formatter),
-		CreateProgram:                NewCreateProgramHandler(e.CreateProgram, mux, decoder, encoder, errhandler, formatter),
-		DeleteProgram:                NewDeleteProgramHandler(e.DeleteProgram, mux, decoder, encoder, errhandler, formatter),
-		CreateAvailability:           NewCreateAvailabilityHandler(e.CreateAvailability, mux, decoder, encoder, errhandler, formatter),
-		DeleteAvailability:           NewDeleteAvailabilityHandler(e.DeleteAvailability, mux, decoder, encoder, errhandler, formatter),
-		CreateCustomer:               NewCreateCustomerHandler(e.CreateCustomer, mux, decoder, encoder, errhandler, formatter),
-		CustomerLogin:                NewCustomerLoginHandler(e.CustomerLogin, mux, decoder, encoder, errhandler, formatter),
-		StartPasswordRecoveryFlow:    NewStartPasswordRecoveryFlowHandler(e.StartPasswordRecoveryFlow, mux, decoder, encoder, errhandler, formatter),
-		CheckPasswordRecoveryToken:   NewCheckPasswordRecoveryTokenHandler(e.CheckPasswordRecoveryToken, mux, decoder, encoder, errhandler, formatter),
-		FinalizePasswordRecoveryFlow: NewFinalizePasswordRecoveryFlowHandler(e.FinalizePasswordRecoveryFlow, mux, decoder, encoder, errhandler, formatter),
-		CreateOrder:                  NewCreateOrderHandler(e.CreateOrder, mux, decoder, encoder, errhandler, formatter),
-		CORS:                         NewCORSHandler(),
+		GetCoaches:                        NewGetCoachesHandler(e.GetCoaches, mux, decoder, encoder, errhandler, formatter),
+		GetCoach:                          NewGetCoachHandler(e.GetCoach, mux, decoder, encoder, errhandler, formatter),
+		LenCoaches:                        NewLenCoachesHandler(e.LenCoaches, mux, decoder, encoder, errhandler, formatter),
+		CreateCoach:                       NewCreateCoachHandler(e.CreateCoach, mux, decoder, encoder, errhandler, formatter),
+		LoginCoach:                        NewLoginCoachHandler(e.LoginCoach, mux, decoder, encoder, errhandler, formatter),
+		StartCoachPasswordRecoveryFlow:    NewStartCoachPasswordRecoveryFlowHandler(e.StartCoachPasswordRecoveryFlow, mux, decoder, encoder, errhandler, formatter),
+		CheckCoachPasswordRecoveryToken:   NewCheckCoachPasswordRecoveryTokenHandler(e.CheckCoachPasswordRecoveryToken, mux, decoder, encoder, errhandler, formatter),
+		FinalizeCoachPasswordRecoveryFlow: NewFinalizeCoachPasswordRecoveryFlowHandler(e.FinalizeCoachPasswordRecoveryFlow, mux, decoder, encoder, errhandler, formatter),
+		UpdateCoach:                       NewUpdateCoachHandler(e.UpdateCoach, mux, decoder, encoder, errhandler, formatter),
+		CreateCertification:               NewCreateCertificationHandler(e.CreateCertification, mux, decoder, encoder, errhandler, formatter),
+		DeleteCertification:               NewDeleteCertificationHandler(e.DeleteCertification, mux, decoder, encoder, errhandler, formatter),
+		CreateProgram:                     NewCreateProgramHandler(e.CreateProgram, mux, decoder, encoder, errhandler, formatter),
+		DeleteProgram:                     NewDeleteProgramHandler(e.DeleteProgram, mux, decoder, encoder, errhandler, formatter),
+		CreateAvailability:                NewCreateAvailabilityHandler(e.CreateAvailability, mux, decoder, encoder, errhandler, formatter),
+		DeleteAvailability:                NewDeleteAvailabilityHandler(e.DeleteAvailability, mux, decoder, encoder, errhandler, formatter),
+		CreateCustomer:                    NewCreateCustomerHandler(e.CreateCustomer, mux, decoder, encoder, errhandler, formatter),
+		CustomerLogin:                     NewCustomerLoginHandler(e.CustomerLogin, mux, decoder, encoder, errhandler, formatter),
+		StartPasswordRecoveryFlow:         NewStartPasswordRecoveryFlowHandler(e.StartPasswordRecoveryFlow, mux, decoder, encoder, errhandler, formatter),
+		CheckPasswordRecoveryToken:        NewCheckPasswordRecoveryTokenHandler(e.CheckPasswordRecoveryToken, mux, decoder, encoder, errhandler, formatter),
+		FinalizePasswordRecoveryFlow:      NewFinalizePasswordRecoveryFlowHandler(e.FinalizePasswordRecoveryFlow, mux, decoder, encoder, errhandler, formatter),
+		CreateOrder:                       NewCreateOrderHandler(e.CreateOrder, mux, decoder, encoder, errhandler, formatter),
+		RegisterStripeExpress:             NewRegisterStripeExpressHandler(e.RegisterStripeExpress, mux, decoder, encoder, errhandler, formatter),
+		CORS:                              NewCORSHandler(),
 	}
 }
 
@@ -135,6 +154,10 @@ func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.GetCoach = m(s.GetCoach)
 	s.LenCoaches = m(s.LenCoaches)
 	s.CreateCoach = m(s.CreateCoach)
+	s.LoginCoach = m(s.LoginCoach)
+	s.StartCoachPasswordRecoveryFlow = m(s.StartCoachPasswordRecoveryFlow)
+	s.CheckCoachPasswordRecoveryToken = m(s.CheckCoachPasswordRecoveryToken)
+	s.FinalizeCoachPasswordRecoveryFlow = m(s.FinalizeCoachPasswordRecoveryFlow)
 	s.UpdateCoach = m(s.UpdateCoach)
 	s.CreateCertification = m(s.CreateCertification)
 	s.DeleteCertification = m(s.DeleteCertification)
@@ -148,6 +171,7 @@ func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.CheckPasswordRecoveryToken = m(s.CheckPasswordRecoveryToken)
 	s.FinalizePasswordRecoveryFlow = m(s.FinalizePasswordRecoveryFlow)
 	s.CreateOrder = m(s.CreateOrder)
+	s.RegisterStripeExpress = m(s.RegisterStripeExpress)
 	s.CORS = m(s.CORS)
 }
 
@@ -157,6 +181,10 @@ func Mount(mux goahttp.Muxer, h *Server) {
 	MountGetCoachHandler(mux, h.GetCoach)
 	MountLenCoachesHandler(mux, h.LenCoaches)
 	MountCreateCoachHandler(mux, h.CreateCoach)
+	MountLoginCoachHandler(mux, h.LoginCoach)
+	MountStartCoachPasswordRecoveryFlowHandler(mux, h.StartCoachPasswordRecoveryFlow)
+	MountCheckCoachPasswordRecoveryTokenHandler(mux, h.CheckCoachPasswordRecoveryToken)
+	MountFinalizeCoachPasswordRecoveryFlowHandler(mux, h.FinalizeCoachPasswordRecoveryFlow)
 	MountUpdateCoachHandler(mux, h.UpdateCoach)
 	MountCreateCertificationHandler(mux, h.CreateCertification)
 	MountDeleteCertificationHandler(mux, h.DeleteCertification)
@@ -170,6 +198,7 @@ func Mount(mux goahttp.Muxer, h *Server) {
 	MountCheckPasswordRecoveryTokenHandler(mux, h.CheckPasswordRecoveryToken)
 	MountFinalizePasswordRecoveryFlowHandler(mux, h.FinalizePasswordRecoveryFlow)
 	MountCreateOrderHandler(mux, h.CreateOrder)
+	MountRegisterStripeExpressHandler(mux, h.RegisterStripeExpress)
 	MountCORSHandler(mux, h.CORS)
 }
 
@@ -362,6 +391,221 @@ func NewCreateCoachHandler(
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "CreateCoach")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "coachee")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+
+		res, err := endpoint(ctx, payload)
+
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountLoginCoachHandler configures the mux to serve the "coachee" service
+// "LoginCoach" endpoint.
+func MountLoginCoachHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := handleCoacheeOrigin(h).(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("POST", "/coaches/login", f)
+}
+
+// NewLoginCoachHandler creates a HTTP handler which loads the HTTP request and
+// calls the "coachee" service "LoginCoach" endpoint.
+func NewLoginCoachHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeLoginCoachRequest(mux, decoder)
+		encodeResponse = EncodeLoginCoachResponse(encoder)
+		encodeError    = EncodeLoginCoachError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "LoginCoach")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "coachee")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+
+		res, err := endpoint(ctx, payload)
+
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountStartCoachPasswordRecoveryFlowHandler configures the mux to serve the
+// "coachee" service "StartCoachPasswordRecoveryFlow" endpoint.
+func MountStartCoachPasswordRecoveryFlowHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := handleCoacheeOrigin(h).(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("POST", "/coaches/recovery", f)
+}
+
+// NewStartCoachPasswordRecoveryFlowHandler creates a HTTP handler which loads
+// the HTTP request and calls the "coachee" service
+// "StartCoachPasswordRecoveryFlow" endpoint.
+func NewStartCoachPasswordRecoveryFlowHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeStartCoachPasswordRecoveryFlowRequest(mux, decoder)
+		encodeResponse = EncodeStartCoachPasswordRecoveryFlowResponse(encoder)
+		encodeError    = EncodeStartCoachPasswordRecoveryFlowError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "StartCoachPasswordRecoveryFlow")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "coachee")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+
+		res, err := endpoint(ctx, payload)
+
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountCheckCoachPasswordRecoveryTokenHandler configures the mux to serve the
+// "coachee" service "CheckCoachPasswordRecoveryToken" endpoint.
+func MountCheckCoachPasswordRecoveryTokenHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := handleCoacheeOrigin(h).(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("GET", "/coaches/recovery/{token}", f)
+}
+
+// NewCheckCoachPasswordRecoveryTokenHandler creates a HTTP handler which loads
+// the HTTP request and calls the "coachee" service
+// "CheckCoachPasswordRecoveryToken" endpoint.
+func NewCheckCoachPasswordRecoveryTokenHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeCheckCoachPasswordRecoveryTokenRequest(mux, decoder)
+		encodeResponse = EncodeCheckCoachPasswordRecoveryTokenResponse(encoder)
+		encodeError    = EncodeCheckCoachPasswordRecoveryTokenError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "CheckCoachPasswordRecoveryToken")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "coachee")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+
+		res, err := endpoint(ctx, payload)
+
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountFinalizeCoachPasswordRecoveryFlowHandler configures the mux to serve
+// the "coachee" service "FinalizeCoachPasswordRecoveryFlow" endpoint.
+func MountFinalizeCoachPasswordRecoveryFlowHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := handleCoacheeOrigin(h).(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("POST", "/coaches/recovery/{token}", f)
+}
+
+// NewFinalizeCoachPasswordRecoveryFlowHandler creates a HTTP handler which
+// loads the HTTP request and calls the "coachee" service
+// "FinalizeCoachPasswordRecoveryFlow" endpoint.
+func NewFinalizeCoachPasswordRecoveryFlowHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeFinalizeCoachPasswordRecoveryFlowRequest(mux, decoder)
+		encodeResponse = EncodeFinalizeCoachPasswordRecoveryFlowResponse(encoder)
+		encodeError    = EncodeFinalizeCoachPasswordRecoveryFlowError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "FinalizeCoachPasswordRecoveryFlow")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "coachee")
 		payload, err := decodeRequest(r)
 		if err != nil {
@@ -1077,6 +1321,59 @@ func NewCreateOrderHandler(
 	})
 }
 
+// MountRegisterStripeExpressHandler configures the mux to serve the "coachee"
+// service "RegisterStripeExpress" endpoint.
+func MountRegisterStripeExpressHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := handleCoacheeOrigin(h).(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("POST", "/coaches/{id}/stripe", f)
+}
+
+// NewRegisterStripeExpressHandler creates a HTTP handler which loads the HTTP
+// request and calls the "coachee" service "RegisterStripeExpress" endpoint.
+func NewRegisterStripeExpressHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeRegisterStripeExpressRequest(mux, decoder)
+		encodeResponse = EncodeRegisterStripeExpressResponse(encoder)
+		encodeError    = EncodeRegisterStripeExpressError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "RegisterStripeExpress")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "coachee")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+
+		res, err := endpoint(ctx, payload)
+
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
 // MountCORSHandler configures the mux to serve the CORS endpoints for the
 // service coachee.
 func MountCORSHandler(mux goahttp.Muxer, h http.Handler) {
@@ -1090,6 +1387,9 @@ func MountCORSHandler(mux goahttp.Muxer, h http.Handler) {
 	mux.Handle("OPTIONS", "/coaches", f)
 	mux.Handle("OPTIONS", "/coaches/{id}", f)
 	mux.Handle("OPTIONS", "/coaches/{tag}/length", f)
+	mux.Handle("OPTIONS", "/coaches/login", f)
+	mux.Handle("OPTIONS", "/coaches/recovery", f)
+	mux.Handle("OPTIONS", "/coaches/recovery/{token}", f)
 	mux.Handle("OPTIONS", "/coaches/{id}/certifications", f)
 	mux.Handle("OPTIONS", "/coaches/{id}/certifications/{certID}", f)
 	mux.Handle("OPTIONS", "/coaches/{id}/programs", f)
@@ -1101,6 +1401,7 @@ func MountCORSHandler(mux goahttp.Muxer, h http.Handler) {
 	mux.Handle("OPTIONS", "/recovery", f)
 	mux.Handle("OPTIONS", "/recovery/{token}", f)
 	mux.Handle("OPTIONS", "/orders", f)
+	mux.Handle("OPTIONS", "/coaches/{id}/stripe", f)
 }
 
 // NewCORSHandler creates a HTTP handler which returns a simple 200 response.
