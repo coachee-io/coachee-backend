@@ -29,7 +29,10 @@ func (s *Service) StartPasswordRecoveryFlow(ctx context.Context, p *coachee.Star
 		return err
 	}
 
-	// TODO: send email, check db for now
+	if err := s.email.SendClientPasswordRecoveryEmail(customer.Email, recovery.ID); err != nil {
+		l.Error().Err(err).Msg("failed to send recovery email")
+		return coachee.MakeInternal(err)
+	}
 	return nil
 }
 
@@ -120,7 +123,10 @@ func (s *Service) StartCoachPasswordRecoveryFlow(ctx context.Context, p *coachee
 		return err
 	}
 
-	// TODO: send email, check db for now
+	if err := s.email.SendCoachPasswordRecoveryEmail(coach.Email, recovery.ID); err != nil {
+		l.Error().Err(err).Msg("failed to send recovery email")
+		return coachee.MakeInternal(err)
+	}
 	return nil
 }
 

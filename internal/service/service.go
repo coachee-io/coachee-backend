@@ -21,6 +21,7 @@ type Service struct {
 	coachRecoveryRepository repository.CoachRecovery
 
 	stripe         Stripe
+	email          Email
 	publishableKey string
 }
 
@@ -32,6 +33,14 @@ type Stripe interface {
 	LoginStripeExpress(stripeID string) (string, error)
 }
 
+// Email is the email client to send emails
+type Email interface {
+	SendBookingEmail(to, programme, coachName string) error
+	SendWelcomeEmail(to, token string) error
+	SendClientPasswordRecoveryEmail(to, token string) error
+	SendCoachPasswordRecoveryEmail(to, token string) error
+}
+
 // NewCoachee returns the coachee service implementation.
 func NewCoachee(ctx context.Context,
 	coach repository.Coach,
@@ -40,6 +49,7 @@ func NewCoachee(ctx context.Context,
 	recovery repository.Recovery,
 	coachRecovery repository.CoachRecovery,
 	stripe Stripe,
+	email Email,
 	pubKey string) *Service {
 
 	log := zerolog.New(os.Stderr).With().Timestamp().Str("component", "service").Logger()
@@ -51,6 +61,7 @@ func NewCoachee(ctx context.Context,
 		recoveryRepository:      recovery,
 		coachRecoveryRepository: coachRecovery,
 		stripe:                  stripe,
+		email:                   email,
 		publishableKey:          pubKey,
 	}
 }

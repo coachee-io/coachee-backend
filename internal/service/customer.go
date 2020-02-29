@@ -70,6 +70,11 @@ func (s *Service) CreateCustomer(ctx context.Context, p *coachee.CreateCustomerP
 		return nil, coachee.MakeInternal(err)
 	}
 
+	if err := s.email.SendWelcomeEmail(client.Email, "random_token"); err != nil {
+		l.Error().Err(err).Msg("failed to send recovery email")
+		return nil, coachee.MakeInternal(err)
+	}
+
 	if err := tx.Commit(); err != nil {
 		l.Error().Err(err).Msg("failed to commit client changes")
 		return nil, coachee.MakeTransient(err)

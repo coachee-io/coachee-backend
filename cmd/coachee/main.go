@@ -2,6 +2,7 @@ package main
 
 import (
 	"coachee-backend/gen/coachee"
+	"coachee-backend/internal/email"
 	"coachee-backend/internal/model"
 	"coachee-backend/internal/repository/mysql"
 	"coachee-backend/internal/repository/mysql/connector"
@@ -71,8 +72,14 @@ func main() {
 	// Initialize stripe client
 	stripeClient := stripe.NewClient(appCtx, *stripeKey)
 
+	// InitializeMailClient
+	emailClient, err := email.NewClient(appCtx, *domainF)
+	if err != nil {
+		panic(err)
+	}
+
 	// Initialize the services.
-	coacheeSvc := service.NewCoachee(appCtx, coachRepository, clientRepository, orderRepository, recoveryRepository, coachRecoveryRepository, stripeClient, *pubKey)
+	coacheeSvc := service.NewCoachee(appCtx, coachRepository, clientRepository, orderRepository, recoveryRepository, coachRecoveryRepository, stripeClient, emailClient, *pubKey)
 
 	// Wrap the services in endpoints that can be invoked from other services
 	// potentially running in different processes.
