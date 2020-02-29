@@ -466,7 +466,7 @@ starts the process of recovering a password
 
 Example:
     `+os.Args[0]+` coachee start-coach-password-recovery-flow --body '{
-      "email": "Et sit rerum."
+      "email": "Autem iste sint."
    }'
 `, os.Args[0])
 }
@@ -478,7 +478,7 @@ verifies if a recovery token is still valid
     -token STRING: 
 
 Example:
-    `+os.Args[0]+` coachee check-coach-password-recovery-token --token "Reiciendis praesentium minima repudiandae."
+    `+os.Args[0]+` coachee check-coach-password-recovery-token --token "Esse sit aliquam."
 `, os.Args[0])
 }
 
@@ -491,8 +491,8 @@ finalizes the password recovery flow by resetting a new password
 
 Example:
     `+os.Args[0]+` coachee finalize-coach-password-recovery-flow --body '{
-      "password": "Alias velit."
-   }' --token "Soluta aliquid saepe."
+      "password": "Tempora fugit et provident dolore provident repellendus."
+   }' --token "Velit eveniet."
 `, os.Args[0])
 }
 
@@ -505,19 +505,19 @@ UpdateCoaches updates a coach
 
 Example:
     `+os.Args[0]+` coachee update-coach --body '{
-      "city": "Voluptates omnis cumque quo.",
-      "country": "Rerum officiis.",
-      "description": "Voluptatibus odio minima repudiandae.",
-      "email": "Ut officia et hic quo.",
-      "firstName": "Ratione laudantium quae tenetur.",
-      "introCall": 16520207768300965020,
-      "lastName": "Sunt praesentium aut quasi ipsum dolores.",
-      "phone": "Amet non asperiores quia non commodi.",
-      "pictureURL": "Voluptatem ab omnis quaerat neque sunt.",
-      "stripeID": "Soluta atque aliquid consequatur.",
-      "tags": "Qui excepturi vel ut consectetur.",
-      "vat": "Consequuntur vitae id fugit."
-   }' --id 16420333329941967903
+      "city": "Voluptatibus odio minima repudiandae.",
+      "country": "Voluptates omnis cumque quo.",
+      "description": "Qui excepturi vel ut consectetur.",
+      "email": "Sunt praesentium aut quasi ipsum dolores.",
+      "firstName": "Possimus numquam.",
+      "introCall": 1864340654662324785,
+      "lastName": "Ratione laudantium quae tenetur.",
+      "phone": "Ut officia et hic quo.",
+      "pictureURL": "Consequatur velit.",
+      "stripeID": "Officiis quo nobis soluta atque.",
+      "tags": "Amet non asperiores quia non commodi.",
+      "vat": "Ab omnis quaerat neque sunt voluptatem."
+   }' --id 10902984444721593680
 `, os.Args[0])
 }
 
@@ -531,14 +531,14 @@ creates a certification for a coach
 Example:
     `+os.Args[0]+` coachee create-certification --body '{
       "certification": {
-         "description": "Esse placeat consequatur cum dolorem quo.",
-         "id": "Odit quia voluptas labore.",
-         "institution": "Dolorum reprehenderit exercitationem est dolores.",
-         "month": 1,
-         "title": "Nulla assumenda distinctio facere neque quis.",
-         "year": 2056
+         "description": "Assumenda distinctio.",
+         "id": "Similique necessitatibus sint qui.",
+         "institution": "Neque quis sunt esse placeat consequatur.",
+         "month": 11,
+         "title": "Quia voluptas labore voluptatum.",
+         "year": 1982
       }
-   }' --id 2951058717071938166
+   }' --id 9090717329548761575
 `, os.Args[0])
 }
 
@@ -550,7 +550,7 @@ deletes a certification for a coach
     -cert-id STRING: 
 
 Example:
-    `+os.Args[0]+` coachee delete-certification --id 9298173230984856226 --cert-id "Amet fugiat ab dolorum quas beatae."
+    `+os.Args[0]+` coachee delete-certification --id 16413458301791859641 --cert-id "Non et voluptates veniam illum dolore amet."
 `, os.Args[0])
 }
 
@@ -564,15 +564,15 @@ creates a program for a coach
 Example:
     `+os.Args[0]+` coachee create-program --body '{
       "program": {
-         "description": "Quod veritatis ad deleniti ut quisquam.",
-         "duration": 10743805826872925376,
-         "id": "Facere quos eum rerum architecto et.",
-         "name": "Quidem aut libero rerum mollitia accusantium.",
-         "sessions": 6582573386058109301,
-         "taxPercent": 6298650967954407519,
-         "totalPrice": 6657815490139943817
+         "description": "Tempore fugit doloremque quod veritatis.",
+         "duration": 15441528118912166289,
+         "id": "Sint sit laboriosam tempora modi facere quos.",
+         "name": "Rerum architecto et facere quidem aut libero.",
+         "sessions": 6313759655879750564,
+         "taxPercent": 13999771392470398024,
+         "totalPrice": 15409970536085466204
       }
-   }' --id 15116783344750699019
+   }' --id 14289087638958674140
 `, os.Args[0])
 }
 
@@ -584,7 +584,7 @@ deletes a program for a coach
     -program-id STRING: 
 
 Example:
-    `+os.Args[0]+` coachee delete-program --id 5810359726494431239 --program-id "Ipsa neque provident nemo."
+    `+os.Args[0]+` coachee delete-program --id 1055964891972257649 --program-id "Excepturi eum repudiandae ipsa neque provident nemo."
 `, os.Args[0])
 }
 

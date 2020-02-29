@@ -189,31 +189,31 @@ func (s *Service) RegisterStripeExpress(ctx context.Context, p *coachee.Register
 }
 
 // LoginCoach returns a stripe express login link
-func (s *Service) LoginCoach(ctx context.Context, p *coachee.LoginCoachPayload) (string, error) {
+func (s *Service) LoginCoach(ctx context.Context, p *coachee.LoginCoachPayload) (res *coachee.LoginCoachResult, err error) {
 	l := s.logger.With().Str("service", "LoginCoach").Str("email", p.Email).Logger()
 
 	coach, err := s.coachRepository.GetByEmail(repository.DefaultNoTransaction, p.Email)
 	if err != nil {
 		l.Error().Err(err).Msg("failed to retrieve coach")
-		return "", err
+		return nil, err
 	}
 
 	err = auth.VerifyPassword(coach.Password, p.Password)
 	if err != nil {
 		l.Debug().Err(err).Msg("failed to authenticate")
-		return "", coachee.MakeValidation(errors.New("wrong password"))
+		return nil, coachee.MakeValidation(errors.New("wrong password"))
 	}
 
 	if coach.StripeID == "" {
 		l.Info().Msg("empty stripe expressID")
-		return "", coachee.MakeUnauthorized(errors.New("stripe express account has not been set up yet"))
+		return nil, coachee.MakeUnauthorized(errors.New("stripe express account has not been set up yet"))
 	}
 
 	url, err := s.stripe.LoginStripeExpress(coach.StripeID)
 	if err != nil {
 		l.Error().Err(err).Msg("failed to retrieve stripe express account login url")
-		return "", coachee.MakeInternal(err)
+		return nil, coachee.MakeInternal(err)
 	}
 
-	return url, nil
+	return &coachee.LoginCoachResult{URL: url}, nil
 }

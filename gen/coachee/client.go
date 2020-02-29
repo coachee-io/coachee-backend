@@ -108,13 +108,13 @@ func (c *Client) CreateCoach(ctx context.Context, p *CreateCoachPayload) (res ui
 }
 
 // LoginCoach calls the "LoginCoach" endpoint of the "coachee" service.
-func (c *Client) LoginCoach(ctx context.Context, p *LoginCoachPayload) (res string, err error) {
+func (c *Client) LoginCoach(ctx context.Context, p *LoginCoachPayload) (res *LoginCoachResult, err error) {
 	var ires interface{}
 	ires, err = c.LoginCoachEndpoint(ctx, p)
 	if err != nil {
 		return
 	}
-	return ires.(string), nil
+	return ires.(*LoginCoachResult), nil
 }
 
 // StartCoachPasswordRecoveryFlow calls the "StartCoachPasswordRecoveryFlow"

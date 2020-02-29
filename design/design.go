@@ -232,7 +232,11 @@ var _ = Service("coachee", func() {
 			Required("email", "password")
 		})
 
-		Result(String)
+		Result(func() {
+			Attribute("url", String)
+
+			Required("url")
+		})
 
 		HTTP(func() {
 			POST("/coaches/login")

@@ -149,6 +149,12 @@ type GetCoachResponseBody struct {
 	Availability   []*AvailabilityResponseBody  `form:"availability,omitempty" json:"availability,omitempty" xml:"availability,omitempty"`
 }
 
+// LoginCoachResponseBody is the type of the "coachee" service "LoginCoach"
+// endpoint HTTP response body.
+type LoginCoachResponseBody struct {
+	URL *string `form:"url,omitempty" json:"url,omitempty" xml:"url,omitempty"`
+}
+
 // CreateCustomerResponseBody is the type of the "coachee" service
 // "CreateCustomer" endpoint HTTP response body.
 type CreateCustomerResponseBody struct {
@@ -2822,6 +2828,15 @@ func NewCreateCoachUnauthorized(body *CreateCoachUnauthorizedResponseBody) *goa.
 	return v
 }
 
+// NewLoginCoachResultOK builds a "coachee" service "LoginCoach" endpoint
+// result from a HTTP "OK" response.
+func NewLoginCoachResultOK(body *LoginCoachResponseBody) *coachee.LoginCoachResult {
+	v := &coachee.LoginCoachResult{
+		URL: *body.URL,
+	}
+	return v
+}
+
 // NewLoginCoachInternal builds a coachee service LoginCoach endpoint internal
 // error.
 func NewLoginCoachInternal(body *LoginCoachInternalResponseBody) *goa.ServiceError {
@@ -4161,6 +4176,15 @@ func ValidateGetCoachResponseBody(body *GetCoachResponseBody) (err error) {
 				err = goa.MergeErrors(err, err2)
 			}
 		}
+	}
+	return
+}
+
+// ValidateLoginCoachResponseBody runs the validations defined on
+// LoginCoachResponseBody
+func ValidateLoginCoachResponseBody(body *LoginCoachResponseBody) (err error) {
+	if body.URL == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("url", "body"))
 	}
 	return
 }

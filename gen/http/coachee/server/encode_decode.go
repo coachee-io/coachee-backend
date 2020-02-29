@@ -488,9 +488,9 @@ func EncodeCreateCoachError(encoder func(context.Context, http.ResponseWriter) g
 // coachee LoginCoach endpoint.
 func EncodeLoginCoachResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
 	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
-		res := v.(string)
+		res := v.(*coachee.LoginCoachResult)
 		enc := encoder(ctx, w)
-		body := res
+		body := NewLoginCoachResponseBody(res)
 		w.WriteHeader(http.StatusOK)
 		return enc.Encode(body)
 	}

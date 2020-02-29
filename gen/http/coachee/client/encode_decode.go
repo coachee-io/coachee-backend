@@ -689,14 +689,19 @@ func DecodeLoginCoachResponse(decoder func(*http.Response) goahttp.Decoder, rest
 		switch resp.StatusCode {
 		case http.StatusOK:
 			var (
-				body string
+				body LoginCoachResponseBody
 				err  error
 			)
 			err = decoder(resp).Decode(&body)
 			if err != nil {
 				return nil, goahttp.ErrDecodingError("coachee", "LoginCoach", err)
 			}
-			return body, nil
+			err = ValidateLoginCoachResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("coachee", "LoginCoach", err)
+			}
+			res := NewLoginCoachResultOK(&body)
+			return res, nil
 		case http.StatusInternalServerError:
 			en := resp.Header.Get("goa-error")
 			switch en {

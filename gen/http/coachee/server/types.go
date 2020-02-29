@@ -149,6 +149,12 @@ type GetCoachResponseBody struct {
 	Availability   []*AvailabilityResponseBody  `form:"availability,omitempty" json:"availability,omitempty" xml:"availability,omitempty"`
 }
 
+// LoginCoachResponseBody is the type of the "coachee" service "LoginCoach"
+// endpoint HTTP response body.
+type LoginCoachResponseBody struct {
+	URL string `form:"url" json:"url" xml:"url"`
+}
+
 // CreateCustomerResponseBody is the type of the "coachee" service
 // "CreateCustomer" endpoint HTTP response body.
 type CreateCustomerResponseBody struct {
@@ -2373,6 +2379,15 @@ func NewGetCoachResponseBody(res *coachee.Coach) *GetCoachResponseBody {
 		for i, val := range res.Availability {
 			body.Availability[i] = marshalCoacheeAvailabilityToAvailabilityResponseBody(val)
 		}
+	}
+	return body
+}
+
+// NewLoginCoachResponseBody builds the HTTP response body from the result of
+// the "LoginCoach" endpoint of the "coachee" service.
+func NewLoginCoachResponseBody(res *coachee.LoginCoachResult) *LoginCoachResponseBody {
+	body := &LoginCoachResponseBody{
+		URL: res.URL,
 	}
 	return body
 }

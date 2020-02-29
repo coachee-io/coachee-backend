@@ -25,7 +25,7 @@ type Service interface {
 	// CreateCoaches creates a base coach
 	CreateCoach(context.Context, *CreateCoachPayload) (res uint, err error)
 	// Logs in a coach to stripe express
-	LoginCoach(context.Context, *LoginCoachPayload) (res string, err error)
+	LoginCoach(context.Context, *LoginCoachPayload) (res *LoginCoachResult, err error)
 	// starts the process of recovering a password
 	StartCoachPasswordRecoveryFlow(context.Context, *StartCoachPasswordRecoveryFlowPayload) (err error)
 	// verifies if a recovery token is still valid
@@ -136,6 +136,11 @@ type CreateCoachPayload struct {
 type LoginCoachPayload struct {
 	Email    string
 	Password string
+}
+
+// LoginCoachResult is the result type of the coachee service LoginCoach method.
+type LoginCoachResult struct {
+	URL string
 }
 
 // StartCoachPasswordRecoveryFlowPayload is the payload type of the coachee
