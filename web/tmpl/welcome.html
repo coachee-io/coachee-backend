@@ -1,0 +1,75 @@
+{{template "header"}}
+  <table width="100%" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+      <td>
+        <table style="width: 100%; max-width: 600px" align="center" border="0" cellpadding="0" cellspacing="0">
+          <tr>
+            <td>
+              {{template "logo"}}
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div style="padding: 0 15px">
+                <h2 class="heading--primary">Welcome to Coachee</h2>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div style="padding: 0 15px">
+                <p>Please, confirm your email address using the link below to finish your registration</p>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div style="padding: 0 15px">
+                <p style="text-align: center">
+                  <a href="{{.PrimaryURL}}" class="link link--primary">
+                    Verify Account
+                  </a>
+                </p>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div style="padding: 0 15px">
+                <div class="image">
+                  <img src="../../static/images/mail.svg" alt="Welcome Email" />
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div style="padding: 0 15px">
+                <p>Once it is done, you can 
+                  <span class="highlighted">check our certified coaches</span> 
+                  and start your journey!
+                </p>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div style="padding: 0 15px">
+                <p style="text-align: center">
+                  <a href="{{.SecondaryURL}}" class="link link--accent">
+                    Start Browsing
+                  </a>
+                </p>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              {{template "copyright"}}
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+{{template "footer"}}
