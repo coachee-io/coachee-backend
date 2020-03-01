@@ -25,5 +25,5 @@ services:
       - EMAIL_USERNAME=joaotest76@gmail.com
       - EMAIL_PASSWORD=Matematica123
     ports:
-      - 80:8080
+      - 8080:80
     command: -domain 127.0.0.1
