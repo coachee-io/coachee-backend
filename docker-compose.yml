@@ -22,4 +22,6 @@ services:
       - DB_USER=coachee_user
       - DB_PASSWORD=coachee_pass
       - DB_NAME=coachee_db
-    command: -domain 0.0.0.0
+      - EMAIL_USERNAME=joaotest76@gmail.com
+      - EMAIL_PASSWORD=Matematica123
+    command: -domain 127.0.0.1
