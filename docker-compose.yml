@@ -24,4 +24,6 @@ services:
       - DB_NAME=coachee_db
       - EMAIL_USERNAME=joaotest76@gmail.com
       - EMAIL_PASSWORD=Matematica123
-    command: -http-port 8080 -domain 0.0.0.0
+    ports:
+      - "127.0.0.1:8080:8080"
+    command: -http-port 8080 -domain 127.0.0.1
