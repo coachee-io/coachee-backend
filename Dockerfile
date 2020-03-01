@@ -10,6 +10,7 @@ COPY . ./
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix nocgo -o /app ./cmd/coachee
 
 # Final image
-FROM gcr.io/distroless/base
+FROM alpine:3.11
 COPY --from=builder /app ./
+COPY web ./web
 ENTRYPOINT ["./app"]

@@ -9,17 +9,17 @@ import (
 )
 
 const (
-	basePath           = "../../web/tmpl/"
-	confirmBookingPath = basePath + "confirm-booking.html"
-	copyrightPath      = basePath + "copyright.html"
-	footerPath         = basePath + "footer.html"
-	forgotPasswordPath = basePath + "forgot-password.html"
-	headerPath         = basePath + "header.html"
-	logoPath           = basePath + "logo.html"
-	welcomePath        = basePath + "welcome.html"
+	confirmBooking = "confirm-booking.html"
+	copyright      = "copyright.html"
+	footer         = "footer.html"
+	forgotPassword = "forgot-password.html"
+	header         = "header.html"
+	logo           = "logo.html"
+	welcome        = "welcome.html"
 )
 
 type config struct {
+	Path     string `env:"EMAIL_PATH" envDefault:"/web/tmpl/"`
 	Username string `env:"EMAIL_USERNAME,required"`
 	Password string `env:"EMAIL_PASSWORD,required"`
 	Host     string `env:"EMAIL_HOST" envDefault:"smtp.gmail.com"`
@@ -49,6 +49,14 @@ func NewClient(ctx context.Context, hostname string) (*Client, error) {
 	}
 
 	client.auth = smtp.PlainAuth("", client.config.Username, client.config.Password, client.config.Host)
+
+	confirmBookingPath := client.config.Path + confirmBooking
+	copyrightPath := client.config.Path + copyright
+	footerPath := client.config.Path + footer
+	forgotPasswordPath := client.config.Path + forgotPassword
+	headerPath := client.config.Path + header
+	logoPath := client.config.Path + logo
+	welcomePath := client.config.Path + welcome
 
 	welcomeTemplate, err := template.ParseFiles(welcomePath, headerPath, logoPath, copyrightPath, footerPath)
 	if err != nil {
