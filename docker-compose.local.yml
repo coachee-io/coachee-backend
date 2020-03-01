@@ -10,6 +10,9 @@ services:
       - MYSQL_ROOT_PASSWORD=coachee_pass
     volumes:
       - ./db/init:/docker-entrypoint-initdb.d
+    ports:
+      - 3306:3306
+      - 33060:33060
   coachee:
     build:
       context: .
@@ -24,4 +27,6 @@ services:
       - DB_NAME=coachee_db
       - EMAIL_USERNAME=joaotest76@gmail.com
       - EMAIL_PASSWORD=Matematica123
-    command: -domain 127.0.0.1
+    ports:
+      - 80:80
+    command: -domain 0.0.0.0

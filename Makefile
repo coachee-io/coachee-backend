@@ -26,6 +26,12 @@ stop:
 gen:
 	goa gen coachee-backend/design
 
+test-start:
+	docker-compose --file docker-compose.local.yml up -d
+
+test-stop:
+	docker-compose --file docker-compose.local.yml down
+
 db-start:
 	docker-compose --file docker-compose.local.yml up -d mysql
 
