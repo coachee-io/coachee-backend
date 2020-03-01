@@ -14,7 +14,6 @@ import (
 
 	goahttp "goa.design/goa/v3/http"
 	goa "goa.design/goa/v3/pkg"
-	"goa.design/plugins/v3/cors"
 )
 
 // Server lists the coachee service endpoint HTTP handlers.
@@ -42,7 +41,6 @@ type Server struct {
 	FinalizePasswordRecoveryFlow      http.Handler
 	CreateOrder                       http.Handler
 	RegisterStripeExpress             http.Handler
-	CORS                              http.Handler
 }
 
 // ErrorNamer is an interface implemented by generated error structs that
@@ -100,24 +98,6 @@ func New(
 			{"FinalizePasswordRecoveryFlow", "POST", "/recovery/{token}"},
 			{"CreateOrder", "POST", "/orders"},
 			{"RegisterStripeExpress", "POST", "/coaches/{id}/stripe"},
-			{"CORS", "OPTIONS", "/coaches"},
-			{"CORS", "OPTIONS", "/coaches/{id}"},
-			{"CORS", "OPTIONS", "/coaches/{tag}/length"},
-			{"CORS", "OPTIONS", "/coaches/login"},
-			{"CORS", "OPTIONS", "/coaches/recovery"},
-			{"CORS", "OPTIONS", "/coaches/recovery/{token}"},
-			{"CORS", "OPTIONS", "/coaches/{id}/certifications"},
-			{"CORS", "OPTIONS", "/coaches/{id}/certifications/{certID}"},
-			{"CORS", "OPTIONS", "/coaches/{id}/programs"},
-			{"CORS", "OPTIONS", "/coaches/{id}/programs/{programID}"},
-			{"CORS", "OPTIONS", "/coaches/{id}/availability"},
-			{"CORS", "OPTIONS", "/coaches/{id}/availability/{avID}"},
-			{"CORS", "OPTIONS", "/clients"},
-			{"CORS", "OPTIONS", "/clients/login"},
-			{"CORS", "OPTIONS", "/recovery"},
-			{"CORS", "OPTIONS", "/recovery/{token}"},
-			{"CORS", "OPTIONS", "/orders"},
-			{"CORS", "OPTIONS", "/coaches/{id}/stripe"},
 		},
 		GetCoaches:                        NewGetCoachesHandler(e.GetCoaches, mux, decoder, encoder, errhandler, formatter),
 		GetCoach:                          NewGetCoachHandler(e.GetCoach, mux, decoder, encoder, errhandler, formatter),
@@ -141,7 +121,6 @@ func New(
 		FinalizePasswordRecoveryFlow:      NewFinalizePasswordRecoveryFlowHandler(e.FinalizePasswordRecoveryFlow, mux, decoder, encoder, errhandler, formatter),
 		CreateOrder:                       NewCreateOrderHandler(e.CreateOrder, mux, decoder, encoder, errhandler, formatter),
 		RegisterStripeExpress:             NewRegisterStripeExpressHandler(e.RegisterStripeExpress, mux, decoder, encoder, errhandler, formatter),
-		CORS:                              NewCORSHandler(),
 	}
 }
 
@@ -172,7 +151,6 @@ func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.FinalizePasswordRecoveryFlow = m(s.FinalizePasswordRecoveryFlow)
 	s.CreateOrder = m(s.CreateOrder)
 	s.RegisterStripeExpress = m(s.RegisterStripeExpress)
-	s.CORS = m(s.CORS)
 }
 
 // Mount configures the mux to serve the coachee endpoints.
@@ -199,13 +177,12 @@ func Mount(mux goahttp.Muxer, h *Server) {
 	MountFinalizePasswordRecoveryFlowHandler(mux, h.FinalizePasswordRecoveryFlow)
 	MountCreateOrderHandler(mux, h.CreateOrder)
 	MountRegisterStripeExpressHandler(mux, h.RegisterStripeExpress)
-	MountCORSHandler(mux, h.CORS)
 }
 
 // MountGetCoachesHandler configures the mux to serve the "coachee" service
 // "GetCoaches" endpoint.
 func MountGetCoachesHandler(mux goahttp.Muxer, h http.Handler) {
-	f, ok := handleCoacheeOrigin(h).(http.HandlerFunc)
+	f, ok := h.(http.HandlerFunc)
 	if !ok {
 		f = func(w http.ResponseWriter, r *http.Request) {
 			h.ServeHTTP(w, r)
@@ -258,7 +235,7 @@ func NewGetCoachesHandler(
 // MountGetCoachHandler configures the mux to serve the "coachee" service
 // "GetCoach" endpoint.
 func MountGetCoachHandler(mux goahttp.Muxer, h http.Handler) {
-	f, ok := handleCoacheeOrigin(h).(http.HandlerFunc)
+	f, ok := h.(http.HandlerFunc)
 	if !ok {
 		f = func(w http.ResponseWriter, r *http.Request) {
 			h.ServeHTTP(w, r)
@@ -311,7 +288,7 @@ func NewGetCoachHandler(
 // MountLenCoachesHandler configures the mux to serve the "coachee" service
 // "LenCoaches" endpoint.
 func MountLenCoachesHandler(mux goahttp.Muxer, h http.Handler) {
-	f, ok := handleCoacheeOrigin(h).(http.HandlerFunc)
+	f, ok := h.(http.HandlerFunc)
 	if !ok {
 		f = func(w http.ResponseWriter, r *http.Request) {
 			h.ServeHTTP(w, r)
@@ -364,7 +341,7 @@ func NewLenCoachesHandler(
 // MountCreateCoachHandler configures the mux to serve the "coachee" service
 // "CreateCoach" endpoint.
 func MountCreateCoachHandler(mux goahttp.Muxer, h http.Handler) {
-	f, ok := handleCoacheeOrigin(h).(http.HandlerFunc)
+	f, ok := h.(http.HandlerFunc)
 	if !ok {
 		f = func(w http.ResponseWriter, r *http.Request) {
 			h.ServeHTTP(w, r)
@@ -417,7 +394,7 @@ func NewCreateCoachHandler(
 // MountLoginCoachHandler configures the mux to serve the "coachee" service
 // "LoginCoach" endpoint.
 func MountLoginCoachHandler(mux goahttp.Muxer, h http.Handler) {
-	f, ok := handleCoacheeOrigin(h).(http.HandlerFunc)
+	f, ok := h.(http.HandlerFunc)
 	if !ok {
 		f = func(w http.ResponseWriter, r *http.Request) {
 			h.ServeHTTP(w, r)
@@ -470,7 +447,7 @@ func NewLoginCoachHandler(
 // MountStartCoachPasswordRecoveryFlowHandler configures the mux to serve the
 // "coachee" service "StartCoachPasswordRecoveryFlow" endpoint.
 func MountStartCoachPasswordRecoveryFlowHandler(mux goahttp.Muxer, h http.Handler) {
-	f, ok := handleCoacheeOrigin(h).(http.HandlerFunc)
+	f, ok := h.(http.HandlerFunc)
 	if !ok {
 		f = func(w http.ResponseWriter, r *http.Request) {
 			h.ServeHTTP(w, r)
@@ -524,7 +501,7 @@ func NewStartCoachPasswordRecoveryFlowHandler(
 // MountCheckCoachPasswordRecoveryTokenHandler configures the mux to serve the
 // "coachee" service "CheckCoachPasswordRecoveryToken" endpoint.
 func MountCheckCoachPasswordRecoveryTokenHandler(mux goahttp.Muxer, h http.Handler) {
-	f, ok := handleCoacheeOrigin(h).(http.HandlerFunc)
+	f, ok := h.(http.HandlerFunc)
 	if !ok {
 		f = func(w http.ResponseWriter, r *http.Request) {
 			h.ServeHTTP(w, r)
@@ -578,7 +555,7 @@ func NewCheckCoachPasswordRecoveryTokenHandler(
 // MountFinalizeCoachPasswordRecoveryFlowHandler configures the mux to serve
 // the "coachee" service "FinalizeCoachPasswordRecoveryFlow" endpoint.
 func MountFinalizeCoachPasswordRecoveryFlowHandler(mux goahttp.Muxer, h http.Handler) {
-	f, ok := handleCoacheeOrigin(h).(http.HandlerFunc)
+	f, ok := h.(http.HandlerFunc)
 	if !ok {
 		f = func(w http.ResponseWriter, r *http.Request) {
 			h.ServeHTTP(w, r)
@@ -632,7 +609,7 @@ func NewFinalizeCoachPasswordRecoveryFlowHandler(
 // MountUpdateCoachHandler configures the mux to serve the "coachee" service
 // "UpdateCoach" endpoint.
 func MountUpdateCoachHandler(mux goahttp.Muxer, h http.Handler) {
-	f, ok := handleCoacheeOrigin(h).(http.HandlerFunc)
+	f, ok := h.(http.HandlerFunc)
 	if !ok {
 		f = func(w http.ResponseWriter, r *http.Request) {
 			h.ServeHTTP(w, r)
@@ -685,7 +662,7 @@ func NewUpdateCoachHandler(
 // MountCreateCertificationHandler configures the mux to serve the "coachee"
 // service "CreateCertification" endpoint.
 func MountCreateCertificationHandler(mux goahttp.Muxer, h http.Handler) {
-	f, ok := handleCoacheeOrigin(h).(http.HandlerFunc)
+	f, ok := h.(http.HandlerFunc)
 	if !ok {
 		f = func(w http.ResponseWriter, r *http.Request) {
 			h.ServeHTTP(w, r)
@@ -738,7 +715,7 @@ func NewCreateCertificationHandler(
 // MountDeleteCertificationHandler configures the mux to serve the "coachee"
 // service "DeleteCertification" endpoint.
 func MountDeleteCertificationHandler(mux goahttp.Muxer, h http.Handler) {
-	f, ok := handleCoacheeOrigin(h).(http.HandlerFunc)
+	f, ok := h.(http.HandlerFunc)
 	if !ok {
 		f = func(w http.ResponseWriter, r *http.Request) {
 			h.ServeHTTP(w, r)
@@ -791,7 +768,7 @@ func NewDeleteCertificationHandler(
 // MountCreateProgramHandler configures the mux to serve the "coachee" service
 // "CreateProgram" endpoint.
 func MountCreateProgramHandler(mux goahttp.Muxer, h http.Handler) {
-	f, ok := handleCoacheeOrigin(h).(http.HandlerFunc)
+	f, ok := h.(http.HandlerFunc)
 	if !ok {
 		f = func(w http.ResponseWriter, r *http.Request) {
 			h.ServeHTTP(w, r)
@@ -844,7 +821,7 @@ func NewCreateProgramHandler(
 // MountDeleteProgramHandler configures the mux to serve the "coachee" service
 // "DeleteProgram" endpoint.
 func MountDeleteProgramHandler(mux goahttp.Muxer, h http.Handler) {
-	f, ok := handleCoacheeOrigin(h).(http.HandlerFunc)
+	f, ok := h.(http.HandlerFunc)
 	if !ok {
 		f = func(w http.ResponseWriter, r *http.Request) {
 			h.ServeHTTP(w, r)
@@ -897,7 +874,7 @@ func NewDeleteProgramHandler(
 // MountCreateAvailabilityHandler configures the mux to serve the "coachee"
 // service "CreateAvailability" endpoint.
 func MountCreateAvailabilityHandler(mux goahttp.Muxer, h http.Handler) {
-	f, ok := handleCoacheeOrigin(h).(http.HandlerFunc)
+	f, ok := h.(http.HandlerFunc)
 	if !ok {
 		f = func(w http.ResponseWriter, r *http.Request) {
 			h.ServeHTTP(w, r)
@@ -950,7 +927,7 @@ func NewCreateAvailabilityHandler(
 // MountDeleteAvailabilityHandler configures the mux to serve the "coachee"
 // service "DeleteAvailability" endpoint.
 func MountDeleteAvailabilityHandler(mux goahttp.Muxer, h http.Handler) {
-	f, ok := handleCoacheeOrigin(h).(http.HandlerFunc)
+	f, ok := h.(http.HandlerFunc)
 	if !ok {
 		f = func(w http.ResponseWriter, r *http.Request) {
 			h.ServeHTTP(w, r)
@@ -1003,7 +980,7 @@ func NewDeleteAvailabilityHandler(
 // MountCreateCustomerHandler configures the mux to serve the "coachee" service
 // "CreateCustomer" endpoint.
 func MountCreateCustomerHandler(mux goahttp.Muxer, h http.Handler) {
-	f, ok := handleCoacheeOrigin(h).(http.HandlerFunc)
+	f, ok := h.(http.HandlerFunc)
 	if !ok {
 		f = func(w http.ResponseWriter, r *http.Request) {
 			h.ServeHTTP(w, r)
@@ -1056,7 +1033,7 @@ func NewCreateCustomerHandler(
 // MountCustomerLoginHandler configures the mux to serve the "coachee" service
 // "CustomerLogin" endpoint.
 func MountCustomerLoginHandler(mux goahttp.Muxer, h http.Handler) {
-	f, ok := handleCoacheeOrigin(h).(http.HandlerFunc)
+	f, ok := h.(http.HandlerFunc)
 	if !ok {
 		f = func(w http.ResponseWriter, r *http.Request) {
 			h.ServeHTTP(w, r)
@@ -1109,7 +1086,7 @@ func NewCustomerLoginHandler(
 // MountStartPasswordRecoveryFlowHandler configures the mux to serve the
 // "coachee" service "StartPasswordRecoveryFlow" endpoint.
 func MountStartPasswordRecoveryFlowHandler(mux goahttp.Muxer, h http.Handler) {
-	f, ok := handleCoacheeOrigin(h).(http.HandlerFunc)
+	f, ok := h.(http.HandlerFunc)
 	if !ok {
 		f = func(w http.ResponseWriter, r *http.Request) {
 			h.ServeHTTP(w, r)
@@ -1163,7 +1140,7 @@ func NewStartPasswordRecoveryFlowHandler(
 // MountCheckPasswordRecoveryTokenHandler configures the mux to serve the
 // "coachee" service "CheckPasswordRecoveryToken" endpoint.
 func MountCheckPasswordRecoveryTokenHandler(mux goahttp.Muxer, h http.Handler) {
-	f, ok := handleCoacheeOrigin(h).(http.HandlerFunc)
+	f, ok := h.(http.HandlerFunc)
 	if !ok {
 		f = func(w http.ResponseWriter, r *http.Request) {
 			h.ServeHTTP(w, r)
@@ -1217,7 +1194,7 @@ func NewCheckPasswordRecoveryTokenHandler(
 // MountFinalizePasswordRecoveryFlowHandler configures the mux to serve the
 // "coachee" service "FinalizePasswordRecoveryFlow" endpoint.
 func MountFinalizePasswordRecoveryFlowHandler(mux goahttp.Muxer, h http.Handler) {
-	f, ok := handleCoacheeOrigin(h).(http.HandlerFunc)
+	f, ok := h.(http.HandlerFunc)
 	if !ok {
 		f = func(w http.ResponseWriter, r *http.Request) {
 			h.ServeHTTP(w, r)
@@ -1271,7 +1248,7 @@ func NewFinalizePasswordRecoveryFlowHandler(
 // MountCreateOrderHandler configures the mux to serve the "coachee" service
 // "CreateOrder" endpoint.
 func MountCreateOrderHandler(mux goahttp.Muxer, h http.Handler) {
-	f, ok := handleCoacheeOrigin(h).(http.HandlerFunc)
+	f, ok := h.(http.HandlerFunc)
 	if !ok {
 		f = func(w http.ResponseWriter, r *http.Request) {
 			h.ServeHTTP(w, r)
@@ -1324,7 +1301,7 @@ func NewCreateOrderHandler(
 // MountRegisterStripeExpressHandler configures the mux to serve the "coachee"
 // service "RegisterStripeExpress" endpoint.
 func MountRegisterStripeExpressHandler(mux goahttp.Muxer, h http.Handler) {
-	f, ok := handleCoacheeOrigin(h).(http.HandlerFunc)
+	f, ok := h.(http.HandlerFunc)
 	if !ok {
 		f = func(w http.ResponseWriter, r *http.Request) {
 			h.ServeHTTP(w, r)
@@ -1371,81 +1348,5 @@ func NewRegisterStripeExpressHandler(
 		if err := encodeResponse(ctx, w, res); err != nil {
 			errhandler(ctx, w, err)
 		}
-	})
-}
-
-// MountCORSHandler configures the mux to serve the CORS endpoints for the
-// service coachee.
-func MountCORSHandler(mux goahttp.Muxer, h http.Handler) {
-	h = handleCoacheeOrigin(h)
-	f, ok := h.(http.HandlerFunc)
-	if !ok {
-		f = func(w http.ResponseWriter, r *http.Request) {
-			h.ServeHTTP(w, r)
-		}
-	}
-	mux.Handle("OPTIONS", "/coaches", f)
-	mux.Handle("OPTIONS", "/coaches/{id}", f)
-	mux.Handle("OPTIONS", "/coaches/{tag}/length", f)
-	mux.Handle("OPTIONS", "/coaches/login", f)
-	mux.Handle("OPTIONS", "/coaches/recovery", f)
-	mux.Handle("OPTIONS", "/coaches/recovery/{token}", f)
-	mux.Handle("OPTIONS", "/coaches/{id}/certifications", f)
-	mux.Handle("OPTIONS", "/coaches/{id}/certifications/{certID}", f)
-	mux.Handle("OPTIONS", "/coaches/{id}/programs", f)
-	mux.Handle("OPTIONS", "/coaches/{id}/programs/{programID}", f)
-	mux.Handle("OPTIONS", "/coaches/{id}/availability", f)
-	mux.Handle("OPTIONS", "/coaches/{id}/availability/{avID}", f)
-	mux.Handle("OPTIONS", "/clients", f)
-	mux.Handle("OPTIONS", "/clients/login", f)
-	mux.Handle("OPTIONS", "/recovery", f)
-	mux.Handle("OPTIONS", "/recovery/{token}", f)
-	mux.Handle("OPTIONS", "/orders", f)
-	mux.Handle("OPTIONS", "/coaches/{id}/stripe", f)
-}
-
-// NewCORSHandler creates a HTTP handler which returns a simple 200 response.
-func NewCORSHandler() http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(200)
-	})
-}
-
-// handleCoacheeOrigin applies the CORS response headers corresponding to the
-// origin for the service coachee.
-func handleCoacheeOrigin(h http.Handler) http.Handler {
-	origHndlr := h.(http.HandlerFunc)
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		origin := r.Header.Get("Origin")
-		if origin == "" {
-			// Not a CORS request
-			origHndlr(w, r)
-			return
-		}
-		if cors.MatchOrigin(origin, "*") {
-			w.Header().Set("Access-Control-Allow-Origin", origin)
-			w.Header().Set("Access-Control-Allow-Credentials", "true")
-			if acrm := r.Header.Get("Access-Control-Request-Method"); acrm != "" {
-				// We are handling a preflight request
-				w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
-				w.Header().Set("Access-Control-Allow-Headers", "*")
-			}
-			origHndlr(w, r)
-			return
-		}
-		if cors.MatchOrigin(origin, "localhost") {
-			w.Header().Set("Access-Control-Allow-Origin", origin)
-			w.Header().Set("Vary", "Origin")
-			w.Header().Set("Access-Control-Allow-Credentials", "true")
-			if acrm := r.Header.Get("Access-Control-Request-Method"); acrm != "" {
-				// We are handling a preflight request
-				w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
-				w.Header().Set("Access-Control-Allow-Headers", "*")
-			}
-			origHndlr(w, r)
-			return
-		}
-		origHndlr(w, r)
-		return
 	})
 }

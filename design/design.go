@@ -2,7 +2,6 @@ package design
 
 import (
 	. "goa.design/goa/v3/dsl"
-	cors "goa.design/plugins/v3/cors/dsl"
 )
 
 // API describes the global properties of the API server.
@@ -115,17 +114,6 @@ var JWT = JWTSecurity("jwt", func() {
 })
 
 var _ = Service("coachee", func() {
-	cors.Origin("*", func() {
-		cors.Headers("*")
-		cors.Methods("GET", "POST", "PUT", "DELETE")
-		cors.Credentials()
-	})
-	cors.Origin("localhost", func() {
-		cors.Headers("*")
-		cors.Methods("GET", "POST", "PUT", "DELETE")
-		cors.Credentials()
-	})
-
 	Description("The coachee service performs operations on coachees")
 
 	// error definition
