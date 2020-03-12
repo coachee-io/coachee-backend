@@ -168,9 +168,10 @@ func (s *Service) UpdateCoach(ctx context.Context, p *coachee.UpdateCoachPayload
 
 // RegisterStripeExpress registers a stripe express account and associates it to a coach
 func (s *Service) RegisterStripeExpress(ctx context.Context, p *coachee.RegisterStripeExpressPayload) error {
-	l := s.logger.With().Str("service", "RegisterStripeExpress").Logger()
+	l := s.logger.With().Str("service", "RegisterStripeExpress").Str("code", p.AuthorizationCode).Logger()
+	l.Debug().Msg("endpoint called")
 
-	stripeID, err := s.stripe.RegisterStripeExpress(p.ExpressID)
+	stripeID, err := s.stripe.RegisterStripeExpress(p.AuthorizationCode)
 	if err != nil {
 		l.Error().Err(err).Msg("failed to register stripe express")
 		return err

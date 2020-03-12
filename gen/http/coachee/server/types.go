@@ -126,7 +126,7 @@ type CreateOrderRequestBody struct {
 // RegisterStripeExpressRequestBody is the type of the "coachee" service
 // "RegisterStripeExpress" endpoint HTTP request body.
 type RegisterStripeExpressRequestBody struct {
-	ExpressID *string `form:"expressId,omitempty" json:"expressId,omitempty" xml:"expressId,omitempty"`
+	AuthorizationCode *string `form:"authorizationCode,omitempty" json:"authorizationCode,omitempty" xml:"authorizationCode,omitempty"`
 }
 
 // GetCoachesResponseBody is the type of the "coachee" service "GetCoaches"
@@ -4238,7 +4238,7 @@ func NewCreateOrderPayload(body *CreateOrderRequestBody, token string) *coachee.
 // RegisterStripeExpress endpoint payload.
 func NewRegisterStripeExpressPayload(body *RegisterStripeExpressRequestBody, id uint) *coachee.RegisterStripeExpressPayload {
 	v := &coachee.RegisterStripeExpressPayload{
-		ExpressID: *body.ExpressID,
+		AuthorizationCode: *body.AuthorizationCode,
 	}
 	v.ID = id
 	return v
@@ -4421,8 +4421,8 @@ func ValidateCreateOrderRequestBody(body *CreateOrderRequestBody) (err error) {
 // ValidateRegisterStripeExpressRequestBody runs the validations defined on
 // RegisterStripeExpressRequestBody
 func ValidateRegisterStripeExpressRequestBody(body *RegisterStripeExpressRequestBody) (err error) {
-	if body.ExpressID == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("expressId", "body"))
+	if body.AuthorizationCode == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("authorizationCode", "body"))
 	}
 	return
 }

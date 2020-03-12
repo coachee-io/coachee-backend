@@ -521,7 +521,7 @@ paths:
         schema:
           $ref: '#/definitions/CoacheeRegisterStripeExpressRequestBody'
           required:
-          - expressId
+          - authorizationCode
       responses:
         "201":
           description: Created response.
@@ -5555,13 +5555,13 @@ definitions:
     title: CoacheeRegisterStripeExpressRequestBody
     type: object
     properties:
-      expressId:
+      authorizationCode:
         type: string
         example: Error accusamus.
     example:
-      expressId: Nisi beatae nobis inventore eaque.
+      authorizationCode: Nisi beatae nobis inventore eaque.
     required:
-    - expressId
+    - authorizationCode
   CoacheeRegisterStripeExpressTransientResponseBody:
     title: 'Mediatype identifier: application/vnd.goa.error; view=default'
     type: object

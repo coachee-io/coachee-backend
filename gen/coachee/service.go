@@ -294,8 +294,8 @@ type CreateOrderResult struct {
 // RegisterStripeExpressPayload is the payload type of the coachee service
 // RegisterStripeExpress method.
 type RegisterStripeExpressPayload struct {
-	ID        uint
-	ExpressID string
+	ID                uint
+	AuthorizationCode string
 }
 
 // represents a coach certification

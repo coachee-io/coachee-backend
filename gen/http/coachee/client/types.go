@@ -126,7 +126,7 @@ type CreateOrderRequestBody struct {
 // RegisterStripeExpressRequestBody is the type of the "coachee" service
 // "RegisterStripeExpress" endpoint HTTP request body.
 type RegisterStripeExpressRequestBody struct {
-	ExpressID string `form:"expressId" json:"expressId" xml:"expressId"`
+	AuthorizationCode string `form:"authorizationCode" json:"authorizationCode" xml:"authorizationCode"`
 }
 
 // GetCoachesResponseBody is the type of the "coachee" service "GetCoaches"
@@ -2472,7 +2472,7 @@ func NewCreateOrderRequestBody(p *coachee.CreateOrderPayload) *CreateOrderReques
 // payload of the "RegisterStripeExpress" endpoint of the "coachee" service.
 func NewRegisterStripeExpressRequestBody(p *coachee.RegisterStripeExpressPayload) *RegisterStripeExpressRequestBody {
 	body := &RegisterStripeExpressRequestBody{
-		ExpressID: p.ExpressID,
+		AuthorizationCode: p.AuthorizationCode,
 	}
 	return body
 }

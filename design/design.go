@@ -516,9 +516,9 @@ var _ = Service("coachee", func() {
 
 		Payload(func() {
 			Attribute("id", UInt)
-			Attribute("expressId", String)
+			Attribute("authorizationCode", String)
 
-			Required("id", "expressId")
+			Required("id", "authorizationCode")
 		})
 
 		HTTP(func() {

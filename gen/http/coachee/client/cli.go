@@ -535,7 +535,7 @@ func BuildRegisterStripeExpressPayload(coacheeRegisterStripeExpressBody string, 
 	{
 		err = json.Unmarshal([]byte(coacheeRegisterStripeExpressBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, example of valid JSON:\n%s", "'{\n      \"expressId\": \"Et dignissimos quae voluptatem voluptate rem dolor.\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, example of valid JSON:\n%s", "'{\n      \"authorizationCode\": \"Et dignissimos quae voluptatem voluptate rem dolor.\"\n   }'")
 		}
 	}
 	var id uint
@@ -548,7 +548,7 @@ func BuildRegisterStripeExpressPayload(coacheeRegisterStripeExpressBody string, 
 		}
 	}
 	v := &coachee.RegisterStripeExpressPayload{
-		ExpressID: body.ExpressID,
+		AuthorizationCode: body.AuthorizationCode,
 	}
 	v.ID = id
 	return v, nil

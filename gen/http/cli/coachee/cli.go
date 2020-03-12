@@ -713,7 +713,7 @@ registers a stripe express account in stripe and associates it to a coach
 
 Example:
     `+os.Args[0]+` coachee register-stripe-express --body '{
-      "expressId": "Et dignissimos quae voluptatem voluptate rem dolor."
+      "authorizationCode": "Et dignissimos quae voluptatem voluptate rem dolor."
    }' --id 10622349987736117164
 `, os.Args[0])
 }
