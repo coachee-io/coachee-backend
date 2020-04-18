@@ -36,10 +36,11 @@ func EncodeGetCoachesResponse(encoder func(context.Context, http.ResponseWriter)
 func DecodeGetCoachesRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
 	return func(r *http.Request) (interface{}, error) {
 		var (
-			tag   *string
-			limit *uint
-			page  *uint
-			err   error
+			tag     *string
+			limit   *uint
+			page    *uint
+			showAll *bool
+			err     error
 		)
 		tagRaw := r.URL.Query().Get("tag")
 		if tagRaw != "" {
@@ -67,10 +68,20 @@ func DecodeGetCoachesRequest(mux goahttp.Muxer, decoder func(*http.Request) goah
 				page = &pv
 			}
 		}
+		{
+			showAllRaw := r.URL.Query().Get("show_all")
+			if showAllRaw != "" {
+				v, err2 := strconv.ParseBool(showAllRaw)
+				if err2 != nil {
+					err = goa.MergeErrors(err, goa.InvalidFieldTypeError("showAll", showAllRaw, "boolean"))
+				}
+				showAll = &v
+			}
+		}
 		if err != nil {
 			return nil, err
 		}
-		payload := NewGetCoachesPayload(tag, limit, page)
+		payload := NewGetCoachesPayload(tag, limit, page, showAll)
 
 		return payload, nil
 	}
@@ -951,7 +962,8 @@ func DecodeUpdateCoachRequest(mux goahttp.Muxer, decoder func(*http.Request) goa
 		}
 
 		var (
-			id uint
+			id    uint
+			token string
 
 			params = mux.Vars(r)
 		)
@@ -963,10 +975,19 @@ func DecodeUpdateCoachRequest(mux goahttp.Muxer, decoder func(*http.Request) goa
 			}
 			id = uint(v)
 		}
+		token = r.Header.Get("Authorization")
+		if token == "" {
+			err = goa.MergeErrors(err, goa.MissingFieldError("Authorization", "header"))
+		}
 		if err != nil {
 			return nil, err
 		}
-		payload := NewUpdateCoachPayload(&body, id)
+		payload := NewUpdateCoachPayload(&body, id, token)
+		if strings.Contains(payload.Token, " ") {
+			// Remove authorization scheme prefix (e.g. "Bearer")
+			cred := strings.SplitN(payload.Token, " ", 2)[1]
+			payload.Token = cred
+		}
 
 		return payload, nil
 	}
@@ -1078,7 +1099,8 @@ func DecodeCreateCertificationRequest(mux goahttp.Muxer, decoder func(*http.Requ
 		}
 
 		var (
-			id uint
+			id    uint
+			token string
 
 			params = mux.Vars(r)
 		)
@@ -1090,10 +1112,19 @@ func DecodeCreateCertificationRequest(mux goahttp.Muxer, decoder func(*http.Requ
 			}
 			id = uint(v)
 		}
+		token = r.Header.Get("Authorization")
+		if token == "" {
+			err = goa.MergeErrors(err, goa.MissingFieldError("Authorization", "header"))
+		}
 		if err != nil {
 			return nil, err
 		}
-		payload := NewCreateCertificationPayload(&body, id)
+		payload := NewCreateCertificationPayload(&body, id, token)
+		if strings.Contains(payload.Token, " ") {
+			// Remove authorization scheme prefix (e.g. "Bearer")
+			cred := strings.SplitN(payload.Token, " ", 2)[1]
+			payload.Token = cred
+		}
 
 		return payload, nil
 	}
@@ -1191,6 +1222,7 @@ func DecodeDeleteCertificationRequest(mux goahttp.Muxer, decoder func(*http.Requ
 		var (
 			id     uint
 			certID string
+			token  string
 			err    error
 
 			params = mux.Vars(r)
@@ -1204,10 +1236,19 @@ func DecodeDeleteCertificationRequest(mux goahttp.Muxer, decoder func(*http.Requ
 			id = uint(v)
 		}
 		certID = params["certID"]
+		token = r.Header.Get("Authorization")
+		if token == "" {
+			err = goa.MergeErrors(err, goa.MissingFieldError("Authorization", "header"))
+		}
 		if err != nil {
 			return nil, err
 		}
-		payload := NewDeleteCertificationPayload(id, certID)
+		payload := NewDeleteCertificationPayload(id, certID, token)
+		if strings.Contains(payload.Token, " ") {
+			// Remove authorization scheme prefix (e.g. "Bearer")
+			cred := strings.SplitN(payload.Token, " ", 2)[1]
+			payload.Token = cred
+		}
 
 		return payload, nil
 	}
@@ -1319,7 +1360,8 @@ func DecodeCreateProgramRequest(mux goahttp.Muxer, decoder func(*http.Request) g
 		}
 
 		var (
-			id uint
+			id    uint
+			token string
 
 			params = mux.Vars(r)
 		)
@@ -1331,10 +1373,19 @@ func DecodeCreateProgramRequest(mux goahttp.Muxer, decoder func(*http.Request) g
 			}
 			id = uint(v)
 		}
+		token = r.Header.Get("Authorization")
+		if token == "" {
+			err = goa.MergeErrors(err, goa.MissingFieldError("Authorization", "header"))
+		}
 		if err != nil {
 			return nil, err
 		}
-		payload := NewCreateProgramPayload(&body, id)
+		payload := NewCreateProgramPayload(&body, id, token)
+		if strings.Contains(payload.Token, " ") {
+			// Remove authorization scheme prefix (e.g. "Bearer")
+			cred := strings.SplitN(payload.Token, " ", 2)[1]
+			payload.Token = cred
+		}
 
 		return payload, nil
 	}
@@ -1432,6 +1483,7 @@ func DecodeDeleteProgramRequest(mux goahttp.Muxer, decoder func(*http.Request) g
 		var (
 			id        uint
 			programID string
+			token     string
 			err       error
 
 			params = mux.Vars(r)
@@ -1445,10 +1497,19 @@ func DecodeDeleteProgramRequest(mux goahttp.Muxer, decoder func(*http.Request) g
 			id = uint(v)
 		}
 		programID = params["programID"]
+		token = r.Header.Get("Authorization")
+		if token == "" {
+			err = goa.MergeErrors(err, goa.MissingFieldError("Authorization", "header"))
+		}
 		if err != nil {
 			return nil, err
 		}
-		payload := NewDeleteProgramPayload(id, programID)
+		payload := NewDeleteProgramPayload(id, programID, token)
+		if strings.Contains(payload.Token, " ") {
+			// Remove authorization scheme prefix (e.g. "Bearer")
+			cred := strings.SplitN(payload.Token, " ", 2)[1]
+			payload.Token = cred
+		}
 
 		return payload, nil
 	}
@@ -1560,7 +1621,8 @@ func DecodeCreateAvailabilityRequest(mux goahttp.Muxer, decoder func(*http.Reque
 		}
 
 		var (
-			id uint
+			id    uint
+			token string
 
 			params = mux.Vars(r)
 		)
@@ -1572,10 +1634,19 @@ func DecodeCreateAvailabilityRequest(mux goahttp.Muxer, decoder func(*http.Reque
 			}
 			id = uint(v)
 		}
+		token = r.Header.Get("Authorization")
+		if token == "" {
+			err = goa.MergeErrors(err, goa.MissingFieldError("Authorization", "header"))
+		}
 		if err != nil {
 			return nil, err
 		}
-		payload := NewCreateAvailabilityPayload(&body, id)
+		payload := NewCreateAvailabilityPayload(&body, id, token)
+		if strings.Contains(payload.Token, " ") {
+			// Remove authorization scheme prefix (e.g. "Bearer")
+			cred := strings.SplitN(payload.Token, " ", 2)[1]
+			payload.Token = cred
+		}
 
 		return payload, nil
 	}
@@ -1671,9 +1742,10 @@ func EncodeDeleteAvailabilityResponse(encoder func(context.Context, http.Respons
 func DecodeDeleteAvailabilityRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
 	return func(r *http.Request) (interface{}, error) {
 		var (
-			id   uint
-			avID string
-			err  error
+			id    uint
+			avID  string
+			token string
+			err   error
 
 			params = mux.Vars(r)
 		)
@@ -1686,10 +1758,19 @@ func DecodeDeleteAvailabilityRequest(mux goahttp.Muxer, decoder func(*http.Reque
 			id = uint(v)
 		}
 		avID = params["avID"]
+		token = r.Header.Get("Authorization")
+		if token == "" {
+			err = goa.MergeErrors(err, goa.MissingFieldError("Authorization", "header"))
+		}
 		if err != nil {
 			return nil, err
 		}
-		payload := NewDeleteAvailabilityPayload(id, avID)
+		payload := NewDeleteAvailabilityPayload(id, avID, token)
+		if strings.Contains(payload.Token, " ") {
+			// Remove authorization scheme prefix (e.g. "Bearer")
+			cred := strings.SplitN(payload.Token, " ", 2)[1]
+			payload.Token = cred
+		}
 
 		return payload, nil
 	}
@@ -2571,6 +2652,119 @@ func EncodeRegisterStripeExpressError(encoder func(context.Context, http.Respons
 				body = formatter(res)
 			} else {
 				body = NewRegisterStripeExpressUnauthorizedResponseBody(res)
+			}
+			w.Header().Set("goa-error", "unauthorized")
+			w.WriteHeader(http.StatusUnauthorized)
+			return enc.Encode(body)
+		default:
+			return encodeError(ctx, w, v)
+		}
+	}
+}
+
+// EncodeAdminLoginResponse returns an encoder for responses returned by the
+// coachee AdminLogin endpoint.
+func EncodeAdminLoginResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		res := v.(*coachee.AdminLoginResult)
+		enc := encoder(ctx, w)
+		body := NewAdminLoginResponseBody(res)
+		w.WriteHeader(http.StatusOK)
+		return enc.Encode(body)
+	}
+}
+
+// DecodeAdminLoginRequest returns a decoder for requests sent to the coachee
+// AdminLogin endpoint.
+func DecodeAdminLoginRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			body AdminLoginRequestBody
+			err  error
+		)
+		err = decoder(r).Decode(&body)
+		if err != nil {
+			if err == io.EOF {
+				return nil, goa.MissingPayloadError()
+			}
+			return nil, goa.DecodePayloadError(err.Error())
+		}
+		err = ValidateAdminLoginRequestBody(&body)
+		if err != nil {
+			return nil, err
+		}
+		payload := NewAdminLoginPayload(&body)
+
+		return payload, nil
+	}
+}
+
+// EncodeAdminLoginError returns an encoder for errors returned by the
+// AdminLogin coachee endpoint.
+func EncodeAdminLoginError(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder, formatter func(err error) goahttp.Statuser) func(context.Context, http.ResponseWriter, error) error {
+	encodeError := goahttp.ErrorEncoder(encoder, formatter)
+	return func(ctx context.Context, w http.ResponseWriter, v error) error {
+		en, ok := v.(ErrorNamer)
+		if !ok {
+			return encodeError(ctx, w, v)
+		}
+		switch en.ErrorName() {
+		case "internal":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewAdminLoginInternalResponseBody(res)
+			}
+			w.Header().Set("goa-error", "internal")
+			w.WriteHeader(http.StatusInternalServerError)
+			return enc.Encode(body)
+		case "transient":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewAdminLoginTransientResponseBody(res)
+			}
+			w.Header().Set("goa-error", "transient")
+			w.WriteHeader(http.StatusInternalServerError)
+			return enc.Encode(body)
+		case "notFound":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewAdminLoginNotFoundResponseBody(res)
+			}
+			w.Header().Set("goa-error", "notFound")
+			w.WriteHeader(http.StatusNotFound)
+			return enc.Encode(body)
+		case "validation":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewAdminLoginValidationResponseBody(res)
+			}
+			w.Header().Set("goa-error", "validation")
+			w.WriteHeader(http.StatusBadRequest)
+			return enc.Encode(body)
+		case "unauthorized":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewAdminLoginUnauthorizedResponseBody(res)
 			}
 			w.Header().Set("goa-error", "unauthorized")
 			w.WriteHeader(http.StatusUnauthorized)

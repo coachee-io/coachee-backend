@@ -59,7 +59,7 @@ func (r CoachRepository) GetByEmail(transaction repository.Transaction, email st
 }
 
 // GetByPage returns a page of coaches by a tag with pagination
-func (r CoachRepository) GetByPage(transaction repository.Transaction, tag string, limit, page uint) ([]*model.Coach, error) {
+func (r CoachRepository) GetByPage(transaction repository.Transaction, tag string, limit, page uint, showAll bool) ([]*model.Coach, error) {
 	tx := r.checkTransaction(transaction)
 
 	tag = "%" + tag + "%"
@@ -67,7 +67,14 @@ func (r CoachRepository) GetByPage(transaction repository.Transaction, tag strin
 	offset := page * limit
 
 	var coaches []*model.Coach
-	if err := tx.Where("tags LIKE ?", tag).Limit(limit).Offset(offset).Find(&coaches).Error; err != nil {
+	var err error
+	if showAll {
+		err = tx.Where("tags LIKE ?", tag).Limit(limit).Offset(offset).Find(&coaches).Error
+	} else {
+		err = tx.Where("tags LIKE ? AND status = ?", tag, string(model.StatusActive)).Limit(limit).Offset(offset).Find(&coaches).Error
+	}
+
+	if err != nil {
 		return nil, parseError(err)
 	}
 

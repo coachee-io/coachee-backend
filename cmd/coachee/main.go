@@ -25,13 +25,15 @@ func main() {
 	// Define command line flags, add any other flag required to configure the
 	// service.
 	var (
-		hostF     = flag.String("host", "development", "Server host (valid values: development)")
-		domainF   = flag.String("domain", "", "Host domain name (overrides host domain specified in service design)")
-		httpPortF = flag.String("http-port", "", "HTTP port (overrides host HTTP port specified in service design)")
-		secureF   = flag.Bool("secure", false, "Use secure scheme (https or grpcs)")
-		dbgF      = flag.Bool("debug", false, "Log request and response bodies")
-		stripeKey = flag.String("stripe-key", "sk_test_yKV7Mo9kSpokxpFvwxKRtbyd00knjXTpJh", "stripe key")
-		pubKey    = flag.String("pub-key", "pk_test_bmGuB7UJfIeeeofOouGHeJcd00MQjvjYVL", "pub key")
+		hostF         = flag.String("host", "development", "Server host (valid values: development)")
+		domainF       = flag.String("domain", "", "Host domain name (overrides host domain specified in service design)")
+		httpPortF     = flag.String("http-port", "", "HTTP port (overrides host HTTP port specified in service design)")
+		secureF       = flag.Bool("secure", false, "Use secure scheme (https or grpcs)")
+		dbgF          = flag.Bool("debug", false, "Log request and response bodies")
+		stripeKey     = flag.String("stripe-key", "sk_test_yKV7Mo9kSpokxpFvwxKRtbyd00knjXTpJh", "stripe key")
+		pubKey        = flag.String("pub-key", "pk_test_bmGuB7UJfIeeeofOouGHeJcd00MQjvjYVL", "pub key")
+		adminEmail    = flag.String("admin", "test@test.com", "admin email")
+		adminPassword = flag.String("pass", "rucalindo19", "admin password")
 	)
 	flag.Parse()
 
@@ -78,8 +80,24 @@ func main() {
 		panic(err)
 	}
 
+	svc := service.Config{
+		Coach:         coachRepository,
+		Customer:      clientRepository,
+		Order:         orderRepository,
+		Recovery:      recoveryRepository,
+		CoachRecovery: coachRecoveryRepository,
+		Stripe:        stripeClient,
+		Email:         emailClient,
+		PubKey:        *pubKey,
+		AdminEmail:    *adminEmail,
+		AdminPassword: *adminPassword,
+	}
+
 	// Initialize the services.
-	coacheeSvc := service.NewCoachee(appCtx, coachRepository, clientRepository, orderRepository, recoveryRepository, coachRecoveryRepository, stripeClient, emailClient, *pubKey)
+	coacheeSvc, err := service.NewCoachee(appCtx, svc)
+	if err != nil {
+		panic("failed to start service: " + err.Error())
+	}
 
 	// Wrap the services in endpoints that can be invoked from other services
 	// potentially running in different processes.

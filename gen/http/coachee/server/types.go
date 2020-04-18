@@ -129,6 +129,13 @@ type RegisterStripeExpressRequestBody struct {
 	AuthorizationCode *string `form:"authorizationCode,omitempty" json:"authorizationCode,omitempty" xml:"authorizationCode,omitempty"`
 }
 
+// AdminLoginRequestBody is the type of the "coachee" service "AdminLogin"
+// endpoint HTTP request body.
+type AdminLoginRequestBody struct {
+	Email    *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
+	Password *string `form:"password,omitempty" json:"password,omitempty" xml:"password,omitempty"`
+}
+
 // GetCoachesResponseBody is the type of the "coachee" service "GetCoaches"
 // endpoint HTTP response body.
 type GetCoachesResponseBody []*CoachResponse
@@ -176,6 +183,13 @@ type CustomerLoginResponseBody struct {
 type CreateOrderResponseBody struct {
 	ClientSecret  string `form:"clientSecret" json:"clientSecret" xml:"clientSecret"`
 	PublishingKey string `form:"publishingKey" json:"publishingKey" xml:"publishingKey"`
+}
+
+// AdminLoginResponseBody is the type of the "coachee" service "AdminLogin"
+// endpoint HTTP response body.
+type AdminLoginResponseBody struct {
+	Token  string `form:"token" json:"token" xml:"token"`
+	Expiry int64  `form:"expiry" json:"expiry" xml:"expiry"`
 }
 
 // GetCoachesInternalResponseBody is the type of the "coachee" service
@@ -2203,6 +2217,96 @@ type RegisterStripeExpressUnauthorizedResponseBody struct {
 	Fault bool `form:"fault" json:"fault" xml:"fault"`
 }
 
+// AdminLoginInternalResponseBody is the type of the "coachee" service
+// "AdminLogin" endpoint HTTP response body for the "internal" error.
+type AdminLoginInternalResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// AdminLoginTransientResponseBody is the type of the "coachee" service
+// "AdminLogin" endpoint HTTP response body for the "transient" error.
+type AdminLoginTransientResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// AdminLoginNotFoundResponseBody is the type of the "coachee" service
+// "AdminLogin" endpoint HTTP response body for the "notFound" error.
+type AdminLoginNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// AdminLoginValidationResponseBody is the type of the "coachee" service
+// "AdminLogin" endpoint HTTP response body for the "validation" error.
+type AdminLoginValidationResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// AdminLoginUnauthorizedResponseBody is the type of the "coachee" service
+// "AdminLogin" endpoint HTTP response body for the "unauthorized" error.
+type AdminLoginUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
 // CoachResponse is used to define fields on response body types.
 type CoachResponse struct {
 	ID             uint                     `form:"id" json:"id" xml:"id"`
@@ -2424,6 +2528,16 @@ func NewCreateOrderResponseBody(res *coachee.CreateOrderResult) *CreateOrderResp
 	body := &CreateOrderResponseBody{
 		ClientSecret:  res.ClientSecret,
 		PublishingKey: res.PublishingKey,
+	}
+	return body
+}
+
+// NewAdminLoginResponseBody builds the HTTP response body from the result of
+// the "AdminLogin" endpoint of the "coachee" service.
+func NewAdminLoginResponseBody(res *coachee.AdminLoginResult) *AdminLoginResponseBody {
+	body := &AdminLoginResponseBody{
+		Token:  res.Token,
+		Expiry: res.Expiry,
 	}
 	return body
 }
@@ -4019,12 +4133,83 @@ func NewRegisterStripeExpressUnauthorizedResponseBody(res *goa.ServiceError) *Re
 	return body
 }
 
+// NewAdminLoginInternalResponseBody builds the HTTP response body from the
+// result of the "AdminLogin" endpoint of the "coachee" service.
+func NewAdminLoginInternalResponseBody(res *goa.ServiceError) *AdminLoginInternalResponseBody {
+	body := &AdminLoginInternalResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewAdminLoginTransientResponseBody builds the HTTP response body from the
+// result of the "AdminLogin" endpoint of the "coachee" service.
+func NewAdminLoginTransientResponseBody(res *goa.ServiceError) *AdminLoginTransientResponseBody {
+	body := &AdminLoginTransientResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewAdminLoginNotFoundResponseBody builds the HTTP response body from the
+// result of the "AdminLogin" endpoint of the "coachee" service.
+func NewAdminLoginNotFoundResponseBody(res *goa.ServiceError) *AdminLoginNotFoundResponseBody {
+	body := &AdminLoginNotFoundResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewAdminLoginValidationResponseBody builds the HTTP response body from the
+// result of the "AdminLogin" endpoint of the "coachee" service.
+func NewAdminLoginValidationResponseBody(res *goa.ServiceError) *AdminLoginValidationResponseBody {
+	body := &AdminLoginValidationResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewAdminLoginUnauthorizedResponseBody builds the HTTP response body from the
+// result of the "AdminLogin" endpoint of the "coachee" service.
+func NewAdminLoginUnauthorizedResponseBody(res *goa.ServiceError) *AdminLoginUnauthorizedResponseBody {
+	body := &AdminLoginUnauthorizedResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
 // NewGetCoachesPayload builds a coachee service GetCoaches endpoint payload.
-func NewGetCoachesPayload(tag *string, limit *uint, page *uint) *coachee.GetCoachesPayload {
+func NewGetCoachesPayload(tag *string, limit *uint, page *uint, showAll *bool) *coachee.GetCoachesPayload {
 	return &coachee.GetCoachesPayload{
-		Tag:   tag,
-		Limit: limit,
-		Page:  page,
+		Tag:     tag,
+		Limit:   limit,
+		Page:    page,
+		ShowAll: showAll,
 	}
 }
 
@@ -4100,7 +4285,7 @@ func NewFinalizeCoachPasswordRecoveryFlowPayload(body *FinalizeCoachPasswordReco
 }
 
 // NewUpdateCoachPayload builds a coachee service UpdateCoach endpoint payload.
-func NewUpdateCoachPayload(body *UpdateCoachRequestBody, id uint) *coachee.UpdateCoachPayload {
+func NewUpdateCoachPayload(body *UpdateCoachRequestBody, id uint, token string) *coachee.UpdateCoachPayload {
 	v := &coachee.UpdateCoachPayload{
 		FirstName:   body.FirstName,
 		LastName:    body.LastName,
@@ -4116,60 +4301,67 @@ func NewUpdateCoachPayload(body *UpdateCoachRequestBody, id uint) *coachee.Updat
 		Vat:         body.Vat,
 	}
 	v.ID = id
+	v.Token = token
 	return v
 }
 
 // NewCreateCertificationPayload builds a coachee service CreateCertification
 // endpoint payload.
-func NewCreateCertificationPayload(body *CreateCertificationRequestBody, id uint) *coachee.CreateCertificationPayload {
+func NewCreateCertificationPayload(body *CreateCertificationRequestBody, id uint, token string) *coachee.CreateCertificationPayload {
 	v := &coachee.CreateCertificationPayload{}
 	v.Certification = unmarshalCertificationRequestBodyToCoacheeCertification(body.Certification)
 	v.ID = id
+	v.Token = token
 	return v
 }
 
 // NewDeleteCertificationPayload builds a coachee service DeleteCertification
 // endpoint payload.
-func NewDeleteCertificationPayload(id uint, certID string) *coachee.DeleteCertificationPayload {
+func NewDeleteCertificationPayload(id uint, certID string, token string) *coachee.DeleteCertificationPayload {
 	return &coachee.DeleteCertificationPayload{
 		ID:     id,
 		CertID: certID,
+		Token:  token,
 	}
 }
 
 // NewCreateProgramPayload builds a coachee service CreateProgram endpoint
 // payload.
-func NewCreateProgramPayload(body *CreateProgramRequestBody, id uint) *coachee.CreateProgramPayload {
+func NewCreateProgramPayload(body *CreateProgramRequestBody, id uint, token string) *coachee.CreateProgramPayload {
 	v := &coachee.CreateProgramPayload{}
 	v.Program = unmarshalProgramRequestBodyToCoacheeProgram(body.Program)
 	v.ID = id
+	v.Token = token
 	return v
 }
 
 // NewDeleteProgramPayload builds a coachee service DeleteProgram endpoint
 // payload.
-func NewDeleteProgramPayload(id uint, programID string) *coachee.DeleteProgramPayload {
+func NewDeleteProgramPayload(id uint, programID string, token string) *coachee.DeleteProgramPayload {
 	return &coachee.DeleteProgramPayload{
 		ID:        id,
 		ProgramID: programID,
+		Token:     token,
 	}
 }
 
 // NewCreateAvailabilityPayload builds a coachee service CreateAvailability
 // endpoint payload.
-func NewCreateAvailabilityPayload(body *CreateAvailabilityRequestBody, id uint) *coachee.CreateAvailabilityPayload {
+func NewCreateAvailabilityPayload(body *CreateAvailabilityRequestBody, id uint, token string) *coachee.CreateAvailabilityPayload {
 	v := &coachee.CreateAvailabilityPayload{}
 	v.Availability = unmarshalAvailabilityRequestBodyToCoacheeAvailability(body.Availability)
 	v.ID = id
+	v.Token = token
 	return v
 }
 
 // NewDeleteAvailabilityPayload builds a coachee service DeleteAvailability
 // endpoint payload.
-func NewDeleteAvailabilityPayload(id uint, avID string) *coachee.DeleteAvailabilityPayload {
+func NewDeleteAvailabilityPayload(id uint, avID string, token string) *coachee.DeleteAvailabilityPayload {
 	return &coachee.DeleteAvailabilityPayload{
-		ID:   id,
-		AvID: avID,
+		ID:    id,
+		AvID:  avID,
+		Token: token,
 	}
 }
 
@@ -4241,6 +4433,15 @@ func NewRegisterStripeExpressPayload(body *RegisterStripeExpressRequestBody, id 
 		AuthorizationCode: *body.AuthorizationCode,
 	}
 	v.ID = id
+	return v
+}
+
+// NewAdminLoginPayload builds a coachee service AdminLogin endpoint payload.
+func NewAdminLoginPayload(body *AdminLoginRequestBody) *coachee.AdminLoginPayload {
+	v := &coachee.AdminLoginPayload{
+		Email:    *body.Email,
+		Password: *body.Password,
+	}
 	return v
 }
 
@@ -4423,6 +4624,18 @@ func ValidateCreateOrderRequestBody(body *CreateOrderRequestBody) (err error) {
 func ValidateRegisterStripeExpressRequestBody(body *RegisterStripeExpressRequestBody) (err error) {
 	if body.AuthorizationCode == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("authorizationCode", "body"))
+	}
+	return
+}
+
+// ValidateAdminLoginRequestBody runs the validations defined on
+// AdminLoginRequestBody
+func ValidateAdminLoginRequestBody(body *AdminLoginRequestBody) (err error) {
+	if body.Email == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("email", "body"))
+	}
+	if body.Password == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("password", "body"))
 	}
 	return
 }

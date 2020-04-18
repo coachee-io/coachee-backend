@@ -138,6 +138,7 @@ var _ = Service("coachee", func() {
 			Attribute("tag", String)
 			Attribute("limit", UInt)
 			Attribute("page", UInt)
+			Attribute("show_all", Boolean)
 		})
 
 		Result(ArrayOf(coachResult))
@@ -147,6 +148,7 @@ var _ = Service("coachee", func() {
 			Param("tag")
 			Param("limit")
 			Param("page")
+			Param("show_all")
 			Response(StatusOK)
 		})
 	})
@@ -277,7 +279,12 @@ var _ = Service("coachee", func() {
 
 	Method("UpdateCoach", func() {
 		Description("UpdateCoaches updates a coach")
+		Security(JWT, func() {
+			Scope("admin")
+		})
+
 		Payload(func() {
+			Token("token", String, "JWT token used to perform authorization")
 			Attribute("id", UInt)
 			Attribute("firstName", String)
 			Attribute("lastName", String)
@@ -292,7 +299,7 @@ var _ = Service("coachee", func() {
 			Attribute("pictureURL", String)
 			Attribute("vat", String)
 
-			Required("id")
+			Required("token", "id")
 		})
 
 		HTTP(func() {
@@ -303,11 +310,16 @@ var _ = Service("coachee", func() {
 
 	Method("CreateCertification", func() {
 		Description("creates a certification for a coach")
+		Security(JWT, func() {
+			Scope("admin")
+		})
+
 		Payload(func() {
+			Token("token", String, "JWT token used to perform authorization")
 			Attribute("id", UInt)
 			Attribute("certification", certification)
 
-			Required("id", "certification")
+			Required("token", "id", "certification")
 		})
 
 		HTTP(func() {
@@ -318,11 +330,16 @@ var _ = Service("coachee", func() {
 
 	Method("DeleteCertification", func() {
 		Description("deletes a certification for a coach")
+		Security(JWT, func() {
+			Scope("admin")
+		})
+
 		Payload(func() {
+			Token("token", String, "JWT token used to perform authorization")
 			Attribute("id", UInt)
 			Attribute("certID", String)
 
-			Required("id", "certID")
+			Required("token", "id", "certID")
 		})
 
 		HTTP(func() {
@@ -333,11 +350,16 @@ var _ = Service("coachee", func() {
 
 	Method("CreateProgram", func() {
 		Description("creates a program for a coach")
+		Security(JWT, func() {
+			Scope("admin")
+		})
+
 		Payload(func() {
+			Token("token", String, "JWT token used to perform authorization")
 			Attribute("id", UInt)
 			Attribute("program", program)
 
-			Required("id", "program")
+			Required("token", "id", "program")
 		})
 
 		HTTP(func() {
@@ -348,11 +370,16 @@ var _ = Service("coachee", func() {
 
 	Method("DeleteProgram", func() {
 		Description("deletes a program for a coach")
+		Security(JWT, func() {
+			Scope("admin")
+		})
+
 		Payload(func() {
+			Token("token", String, "JWT token used to perform authorization")
 			Attribute("id", UInt)
 			Attribute("programID", String)
 
-			Required("id", "programID")
+			Required("token", "id", "programID")
 		})
 
 		HTTP(func() {
@@ -363,11 +390,16 @@ var _ = Service("coachee", func() {
 
 	Method("CreateAvailability", func() {
 		Description("creates an availability for a coach")
+		Security(JWT, func() {
+			Scope("admin")
+		})
+
 		Payload(func() {
+			Token("token", String, "JWT token used to perform authorization")
 			Attribute("id", UInt)
 			Attribute("availability", availability)
 
-			Required("id", "availability")
+			Required("token", "id", "availability")
 		})
 
 		HTTP(func() {
@@ -378,11 +410,16 @@ var _ = Service("coachee", func() {
 
 	Method("DeleteAvailability", func() {
 		Description("deletes an availability for a coach")
+		Security(JWT, func() {
+			Scope("admin")
+		})
+
 		Payload(func() {
+			Token("token", String, "JWT token used to perform authorization")
 			Attribute("id", UInt)
 			Attribute("avID", String)
 
-			Required("id", "avID")
+			Required("token", "id", "avID")
 		})
 
 		HTTP(func() {
@@ -524,6 +561,28 @@ var _ = Service("coachee", func() {
 		HTTP(func() {
 			POST("/coaches/{id}/stripe")
 			Response(StatusCreated)
+		})
+	})
+
+	Method("AdminLogin", func() {
+		Description("logs in a customer and returns a jwt")
+		Payload(func() {
+			Attribute("email", String)
+			Attribute("password", String)
+
+			Required("email", "password")
+		})
+
+		Result(func() {
+			Attribute("token", String)
+			Attribute("expiry", Int64)
+
+			Required("token", "expiry")
+		})
+
+		HTTP(func() {
+			POST("/admin/login")
+			Response(StatusOK)
 		})
 	})
 })

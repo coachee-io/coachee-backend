@@ -1,6 +1,8 @@
 package service
 
 import (
+	"coachee-backend/gen/coachee"
+	"coachee-backend/internal/auth"
 	"coachee-backend/internal/model"
 	"coachee-backend/internal/repository"
 	"context"
@@ -23,6 +25,9 @@ type Service struct {
 	stripe         Stripe
 	email          Email
 	publishableKey string
+
+	adminEmail string
+	password   string
 }
 
 // Stripe is the interface for the stripe client
@@ -41,27 +46,41 @@ type Email interface {
 	SendCoachPasswordRecoveryEmail(to, token string) error
 }
 
+type Config struct {
+	Coach         repository.Coach
+	Customer      repository.Customer
+	Order         repository.Order
+	Recovery      repository.Recovery
+	CoachRecovery repository.CoachRecovery
+	Stripe        Stripe
+	Email         Email
+	PubKey        string
+	AdminEmail    string
+	AdminPassword string
+}
+
 // NewCoachee returns the coachee service implementation.
-func NewCoachee(ctx context.Context,
-	coach repository.Coach,
-	client repository.Customer,
-	order repository.Order,
-	recovery repository.Recovery,
-	coachRecovery repository.CoachRecovery,
-	stripe Stripe,
-	email Email,
-	pubKey string) *Service {
+func NewCoachee(ctx context.Context, config Config) (*Service, error) {
 
 	log := zerolog.New(os.Stderr).With().Timestamp().Str("component", "service").Logger()
+
+	hashedPass, err := auth.Hash(config.AdminPassword)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to hash admin password")
+		return nil, coachee.MakeValidation(err)
+	}
+
 	return &Service{
 		logger:                  &log,
-		coachRepository:         coach,
-		customerRepository:      client,
-		orderRepository:         order,
-		recoveryRepository:      recovery,
-		coachRecoveryRepository: coachRecovery,
-		stripe:                  stripe,
-		email:                   email,
-		publishableKey:          pubKey,
-	}
+		coachRepository:         config.Coach,
+		customerRepository:      config.Customer,
+		orderRepository:         config.Order,
+		recoveryRepository:      config.Recovery,
+		coachRecoveryRepository: config.CoachRecovery,
+		stripe:                  config.Stripe,
+		email:                   config.Email,
+		publishableKey:          config.PubKey,
+		adminEmail:              config.AdminEmail,
+		password:                string(hashedPass),
+	}, nil
 }

@@ -26,8 +26,12 @@ func (s *Service) GetCoaches(ctx context.Context, p *coachee.GetCoachesPayload) 
 	if p.Tag != nil {
 		tag = *p.Tag
 	}
+	var showAll bool
+	if p.ShowAll != nil {
+		showAll = *p.ShowAll
+	}
 
-	coaches, err := s.coachRepository.GetByPage(repository.DefaultNoTransaction, tag, limit, page)
+	coaches, err := s.coachRepository.GetByPage(repository.DefaultNoTransaction, tag, limit, page, showAll)
 	if err != nil {
 		s.logger.Error().Err(err).Str("tags", tag).Msg("failed to retrieve coaches")
 		return nil, err
@@ -179,6 +183,7 @@ func (s *Service) RegisterStripeExpress(ctx context.Context, p *coachee.Register
 
 	coachUpdate := &model.Coach{
 		ID:       p.ID,
+		Status:   model.StatusActive,
 		StripeID: stripeID,
 	}
 	if err := s.coachRepository.Update(repository.DefaultNoTransaction, coachUpdate); err != nil {

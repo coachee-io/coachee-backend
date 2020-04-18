@@ -106,31 +106,52 @@ func TestCoachRepository_GetByPage(t *testing.T) {
 	require.Nil(t, err)
 
 	coach2 := testCoach()
+	coach2.Email = "lize2@gmail.com"
 	err = repo.Create(repository.DefaultNoTransaction, coach2)
 	require.Nil(t, err)
 
 	coach3 := testCoach()
+	coach3.Email = "lize3@gmail.com"
 	coach3.Tags = "life"
 	err = repo.Create(repository.DefaultNoTransaction, coach3)
 	require.Nil(t, err)
 
-	coaches, err := repo.GetByPage(repository.DefaultNoTransaction, coach.Tags, 100, 0)
+	coaches, err := repo.GetByPage(repository.DefaultNoTransaction, coach.Tags, 100, 0, false)
 	require.Nil(t, err)
 	require.Len(t, coaches, 2)
 
-	coaches, err = repo.GetByPage(repository.DefaultNoTransaction, coach.Tags, 1, 1)
+	coaches, err = repo.GetByPage(repository.DefaultNoTransaction, coach.Tags, 1, 1, false)
 	require.Nil(t, err)
 	require.Len(t, coaches, 1)
 	require.Equal(t, coach2.ID, coaches[0].ID)
 
-	coaches, err = repo.GetByPage(repository.DefaultNoTransaction, "life", 1, 0)
+	coaches, err = repo.GetByPage(repository.DefaultNoTransaction, "life", 1, 0, false)
 	require.Nil(t, err)
 	require.Len(t, coaches, 1)
 	require.Equal(t, coach3.ID, coaches[0].ID)
 
-	coaches, err = repo.GetByPage(repository.DefaultNoTransaction, "life", 1, 1)
+	coaches, err = repo.GetByPage(repository.DefaultNoTransaction, "life", 1, 1, false)
 	require.Nil(t, err)
 	require.Len(t, coaches, 0)
+}
+
+func TestCoachRepository_GetByPage_Notactive(t *testing.T) {
+	db := NewDatabase(t)
+	repo := mysql.NewCoachRepository(db)
+	defer db.Close()
+
+	coach := testCoach()
+	coach.Status = model.StatusRegistered
+	err := repo.Create(repository.DefaultNoTransaction, coach)
+	require.Nil(t, err)
+
+	coaches, err := repo.GetByPage(repository.DefaultNoTransaction, coach.Tags, 100, 0, false)
+	require.Nil(t, err)
+	require.Len(t, coaches, 0)
+
+	coaches, err = repo.GetByPage(repository.DefaultNoTransaction, coach.Tags, 100, 0, true)
+	require.Nil(t, err)
+	require.Len(t, coaches, 1)
 }
 
 func TestCoachRepository_Update(t *testing.T) {

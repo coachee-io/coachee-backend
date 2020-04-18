@@ -37,10 +37,11 @@ type Client struct {
 	FinalizePasswordRecoveryFlowEndpoint      goa.Endpoint
 	CreateOrderEndpoint                       goa.Endpoint
 	RegisterStripeExpressEndpoint             goa.Endpoint
+	AdminLoginEndpoint                        goa.Endpoint
 }
 
 // NewClient initializes a "coachee" service client given the endpoints.
-func NewClient(getCoaches, getCoach, lenCoaches, createCoach, loginCoach, startCoachPasswordRecoveryFlow, checkCoachPasswordRecoveryToken, finalizeCoachPasswordRecoveryFlow, updateCoach, createCertification, deleteCertification, createProgram, deleteProgram, createAvailability, deleteAvailability, createCustomer, customerLogin, startPasswordRecoveryFlow, checkPasswordRecoveryToken, finalizePasswordRecoveryFlow, createOrder, registerStripeExpress goa.Endpoint) *Client {
+func NewClient(getCoaches, getCoach, lenCoaches, createCoach, loginCoach, startCoachPasswordRecoveryFlow, checkCoachPasswordRecoveryToken, finalizeCoachPasswordRecoveryFlow, updateCoach, createCertification, deleteCertification, createProgram, deleteProgram, createAvailability, deleteAvailability, createCustomer, customerLogin, startPasswordRecoveryFlow, checkPasswordRecoveryToken, finalizePasswordRecoveryFlow, createOrder, registerStripeExpress, adminLogin goa.Endpoint) *Client {
 	return &Client{
 		GetCoachesEndpoint:                        getCoaches,
 		GetCoachEndpoint:                          getCoach,
@@ -64,6 +65,7 @@ func NewClient(getCoaches, getCoach, lenCoaches, createCoach, loginCoach, startC
 		FinalizePasswordRecoveryFlowEndpoint:      finalizePasswordRecoveryFlow,
 		CreateOrderEndpoint:                       createOrder,
 		RegisterStripeExpressEndpoint:             registerStripeExpress,
+		AdminLoginEndpoint:                        adminLogin,
 	}
 }
 
@@ -240,4 +242,14 @@ func (c *Client) CreateOrder(ctx context.Context, p *CreateOrderPayload) (res *C
 func (c *Client) RegisterStripeExpress(ctx context.Context, p *RegisterStripeExpressPayload) (err error) {
 	_, err = c.RegisterStripeExpressEndpoint(ctx, p)
 	return
+}
+
+// AdminLogin calls the "AdminLogin" endpoint of the "coachee" service.
+func (c *Client) AdminLogin(ctx context.Context, p *AdminLoginPayload) (res *AdminLoginResult, err error) {
+	var ires interface{}
+	ires, err = c.AdminLoginEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.(*AdminLoginResult), nil
 }

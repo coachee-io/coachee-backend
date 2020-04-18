@@ -116,7 +116,7 @@ func (s *Service) CustomerLogin(ctx context.Context, p *coachee.CustomerLoginPay
 
 	return &coachee.CustomerLoginResult{
 		Token:  token,
-		Expiry: createdAt.Add(30 * time.Minute).Unix(),
+		Expiry: createdAt.Add(60 * time.Minute).Unix(),
 		User: &coachee.BaseClient{
 			ID:        client.ID,
 			FirstName: client.FirstName,

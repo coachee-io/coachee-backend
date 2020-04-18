@@ -11,7 +11,7 @@ type Coach interface {
 	Create(tx Transaction, coach *model.Coach) error
 	GetByID(tx Transaction, id uint) (*model.Coach, error)
 	GetByEmail(tx Transaction, email string) (*model.Coach, error)
-	GetByPage(tx Transaction, tag string, limit, page uint) ([]*model.Coach, error)
+	GetByPage(tx Transaction, tag string, limit, page uint, showAll bool) ([]*model.Coach, error)
 	Update(tx Transaction, coach *model.Coach) error
 	Length(tx Transaction, tag string) (uint, error)
 }

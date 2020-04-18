@@ -120,3 +120,8 @@ func CreateOrderCoacheePath() string {
 func RegisterStripeExpressCoacheePath(id uint) string {
 	return fmt.Sprintf("/coaches/%v/stripe", id)
 }
+
+// AdminLoginCoacheePath returns the URL path to the coachee service AdminLogin HTTP endpoint.
+func AdminLoginCoacheePath() string {
+	return "/admin/login"
+}

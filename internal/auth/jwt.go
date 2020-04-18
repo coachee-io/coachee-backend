@@ -20,7 +20,16 @@ func CreateUserToken(id uint, created time.Time) (string, error) {
 	claims["scopes"] = []string{"client"}
 	claims["id"] = id
 	claims["iat"] = created.Unix()
-	claims["exp"] = created.Add(30 * time.Minute).Unix()
+	claims["exp"] = created.Add(60 * time.Minute).Unix()
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString(secret)
+}
+
+func CreateAdminToken(created time.Time) (string, error) {
+	claims := jwt.MapClaims{}
+	claims["scopes"] = []string{"admin"}
+	claims["iat"] = created.Unix()
+	claims["exp"] = created.Add(60 * time.Minute).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString(secret)
 }

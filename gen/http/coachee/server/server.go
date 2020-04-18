@@ -41,6 +41,7 @@ type Server struct {
 	FinalizePasswordRecoveryFlow      http.Handler
 	CreateOrder                       http.Handler
 	RegisterStripeExpress             http.Handler
+	AdminLogin                        http.Handler
 }
 
 // ErrorNamer is an interface implemented by generated error structs that
@@ -98,6 +99,7 @@ func New(
 			{"FinalizePasswordRecoveryFlow", "POST", "/recovery/{token}"},
 			{"CreateOrder", "POST", "/orders"},
 			{"RegisterStripeExpress", "POST", "/coaches/{id}/stripe"},
+			{"AdminLogin", "POST", "/admin/login"},
 		},
 		GetCoaches:                        NewGetCoachesHandler(e.GetCoaches, mux, decoder, encoder, errhandler, formatter),
 		GetCoach:                          NewGetCoachHandler(e.GetCoach, mux, decoder, encoder, errhandler, formatter),
@@ -121,6 +123,7 @@ func New(
 		FinalizePasswordRecoveryFlow:      NewFinalizePasswordRecoveryFlowHandler(e.FinalizePasswordRecoveryFlow, mux, decoder, encoder, errhandler, formatter),
 		CreateOrder:                       NewCreateOrderHandler(e.CreateOrder, mux, decoder, encoder, errhandler, formatter),
 		RegisterStripeExpress:             NewRegisterStripeExpressHandler(e.RegisterStripeExpress, mux, decoder, encoder, errhandler, formatter),
+		AdminLogin:                        NewAdminLoginHandler(e.AdminLogin, mux, decoder, encoder, errhandler, formatter),
 	}
 }
 
@@ -151,6 +154,7 @@ func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.FinalizePasswordRecoveryFlow = m(s.FinalizePasswordRecoveryFlow)
 	s.CreateOrder = m(s.CreateOrder)
 	s.RegisterStripeExpress = m(s.RegisterStripeExpress)
+	s.AdminLogin = m(s.AdminLogin)
 }
 
 // Mount configures the mux to serve the coachee endpoints.
@@ -177,6 +181,7 @@ func Mount(mux goahttp.Muxer, h *Server) {
 	MountFinalizePasswordRecoveryFlowHandler(mux, h.FinalizePasswordRecoveryFlow)
 	MountCreateOrderHandler(mux, h.CreateOrder)
 	MountRegisterStripeExpressHandler(mux, h.RegisterStripeExpress)
+	MountAdminLoginHandler(mux, h.AdminLogin)
 }
 
 // MountGetCoachesHandler configures the mux to serve the "coachee" service
@@ -1328,6 +1333,59 @@ func NewRegisterStripeExpressHandler(
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "RegisterStripeExpress")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "coachee")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+
+		res, err := endpoint(ctx, payload)
+
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountAdminLoginHandler configures the mux to serve the "coachee" service
+// "AdminLogin" endpoint.
+func MountAdminLoginHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("POST", "/admin/login", f)
+}
+
+// NewAdminLoginHandler creates a HTTP handler which loads the HTTP request and
+// calls the "coachee" service "AdminLogin" endpoint.
+func NewAdminLoginHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeAdminLoginRequest(mux, decoder)
+		encodeResponse = EncodeAdminLoginResponse(encoder)
+		encodeError    = EncodeAdminLoginError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "AdminLogin")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "coachee")
 		payload, err := decodeRequest(r)
 		if err != nil {

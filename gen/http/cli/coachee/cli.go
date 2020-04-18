@@ -23,13 +23,13 @@ import (
 //    command (subcommand1|subcommand2|...)
 //
 func UsageCommands() string {
-	return `coachee (get-coaches|get-coach|len-coaches|create-coach|login-coach|start-coach-password-recovery-flow|check-coach-password-recovery-token|finalize-coach-password-recovery-flow|update-coach|create-certification|delete-certification|create-program|delete-program|create-availability|delete-availability|create-customer|customer-login|start-password-recovery-flow|check-password-recovery-token|finalize-password-recovery-flow|create-order|register-stripe-express)
+	return `coachee (get-coaches|get-coach|len-coaches|create-coach|login-coach|start-coach-password-recovery-flow|check-coach-password-recovery-token|finalize-coach-password-recovery-flow|update-coach|create-certification|delete-certification|create-program|delete-program|create-availability|delete-availability|create-customer|customer-login|start-password-recovery-flow|check-password-recovery-token|finalize-password-recovery-flow|create-order|register-stripe-express|admin-login)
 `
 }
 
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
-	return os.Args[0] + ` coachee get-coaches --tag "Minima enim est et quasi dolorum." --limit 12844975951497987771 --page 7380710577822469059` + "\n" +
+	return os.Args[0] + ` coachee get-coaches --tag "Illum veritatis nemo." --limit 9218027441373059103 --page 591557662460167685 --show-all true` + "\n" +
 		""
 }
 
@@ -45,10 +45,11 @@ func ParseEndpoint(
 	var (
 		coacheeFlags = flag.NewFlagSet("coachee", flag.ContinueOnError)
 
-		coacheeGetCoachesFlags     = flag.NewFlagSet("get-coaches", flag.ExitOnError)
-		coacheeGetCoachesTagFlag   = coacheeGetCoachesFlags.String("tag", "", "")
-		coacheeGetCoachesLimitFlag = coacheeGetCoachesFlags.String("limit", "", "")
-		coacheeGetCoachesPageFlag  = coacheeGetCoachesFlags.String("page", "", "")
+		coacheeGetCoachesFlags       = flag.NewFlagSet("get-coaches", flag.ExitOnError)
+		coacheeGetCoachesTagFlag     = coacheeGetCoachesFlags.String("tag", "", "")
+		coacheeGetCoachesLimitFlag   = coacheeGetCoachesFlags.String("limit", "", "")
+		coacheeGetCoachesPageFlag    = coacheeGetCoachesFlags.String("page", "", "")
+		coacheeGetCoachesShowAllFlag = coacheeGetCoachesFlags.String("show-all", "", "")
 
 		coacheeGetCoachFlags  = flag.NewFlagSet("get-coach", flag.ExitOnError)
 		coacheeGetCoachIDFlag = coacheeGetCoachFlags.String("id", "REQUIRED", "")
@@ -72,33 +73,40 @@ func ParseEndpoint(
 		coacheeFinalizeCoachPasswordRecoveryFlowBodyFlag  = coacheeFinalizeCoachPasswordRecoveryFlowFlags.String("body", "REQUIRED", "")
 		coacheeFinalizeCoachPasswordRecoveryFlowTokenFlag = coacheeFinalizeCoachPasswordRecoveryFlowFlags.String("token", "REQUIRED", "")
 
-		coacheeUpdateCoachFlags    = flag.NewFlagSet("update-coach", flag.ExitOnError)
-		coacheeUpdateCoachBodyFlag = coacheeUpdateCoachFlags.String("body", "REQUIRED", "")
-		coacheeUpdateCoachIDFlag   = coacheeUpdateCoachFlags.String("id", "REQUIRED", "")
+		coacheeUpdateCoachFlags     = flag.NewFlagSet("update-coach", flag.ExitOnError)
+		coacheeUpdateCoachBodyFlag  = coacheeUpdateCoachFlags.String("body", "REQUIRED", "")
+		coacheeUpdateCoachIDFlag    = coacheeUpdateCoachFlags.String("id", "REQUIRED", "")
+		coacheeUpdateCoachTokenFlag = coacheeUpdateCoachFlags.String("token", "REQUIRED", "")
 
-		coacheeCreateCertificationFlags    = flag.NewFlagSet("create-certification", flag.ExitOnError)
-		coacheeCreateCertificationBodyFlag = coacheeCreateCertificationFlags.String("body", "REQUIRED", "")
-		coacheeCreateCertificationIDFlag   = coacheeCreateCertificationFlags.String("id", "REQUIRED", "")
+		coacheeCreateCertificationFlags     = flag.NewFlagSet("create-certification", flag.ExitOnError)
+		coacheeCreateCertificationBodyFlag  = coacheeCreateCertificationFlags.String("body", "REQUIRED", "")
+		coacheeCreateCertificationIDFlag    = coacheeCreateCertificationFlags.String("id", "REQUIRED", "")
+		coacheeCreateCertificationTokenFlag = coacheeCreateCertificationFlags.String("token", "REQUIRED", "")
 
 		coacheeDeleteCertificationFlags      = flag.NewFlagSet("delete-certification", flag.ExitOnError)
 		coacheeDeleteCertificationIDFlag     = coacheeDeleteCertificationFlags.String("id", "REQUIRED", "")
 		coacheeDeleteCertificationCertIDFlag = coacheeDeleteCertificationFlags.String("cert-id", "REQUIRED", "")
+		coacheeDeleteCertificationTokenFlag  = coacheeDeleteCertificationFlags.String("token", "REQUIRED", "")
 
-		coacheeCreateProgramFlags    = flag.NewFlagSet("create-program", flag.ExitOnError)
-		coacheeCreateProgramBodyFlag = coacheeCreateProgramFlags.String("body", "REQUIRED", "")
-		coacheeCreateProgramIDFlag   = coacheeCreateProgramFlags.String("id", "REQUIRED", "")
+		coacheeCreateProgramFlags     = flag.NewFlagSet("create-program", flag.ExitOnError)
+		coacheeCreateProgramBodyFlag  = coacheeCreateProgramFlags.String("body", "REQUIRED", "")
+		coacheeCreateProgramIDFlag    = coacheeCreateProgramFlags.String("id", "REQUIRED", "")
+		coacheeCreateProgramTokenFlag = coacheeCreateProgramFlags.String("token", "REQUIRED", "")
 
 		coacheeDeleteProgramFlags         = flag.NewFlagSet("delete-program", flag.ExitOnError)
 		coacheeDeleteProgramIDFlag        = coacheeDeleteProgramFlags.String("id", "REQUIRED", "")
 		coacheeDeleteProgramProgramIDFlag = coacheeDeleteProgramFlags.String("program-id", "REQUIRED", "")
+		coacheeDeleteProgramTokenFlag     = coacheeDeleteProgramFlags.String("token", "REQUIRED", "")
 
-		coacheeCreateAvailabilityFlags    = flag.NewFlagSet("create-availability", flag.ExitOnError)
-		coacheeCreateAvailabilityBodyFlag = coacheeCreateAvailabilityFlags.String("body", "REQUIRED", "")
-		coacheeCreateAvailabilityIDFlag   = coacheeCreateAvailabilityFlags.String("id", "REQUIRED", "")
+		coacheeCreateAvailabilityFlags     = flag.NewFlagSet("create-availability", flag.ExitOnError)
+		coacheeCreateAvailabilityBodyFlag  = coacheeCreateAvailabilityFlags.String("body", "REQUIRED", "")
+		coacheeCreateAvailabilityIDFlag    = coacheeCreateAvailabilityFlags.String("id", "REQUIRED", "")
+		coacheeCreateAvailabilityTokenFlag = coacheeCreateAvailabilityFlags.String("token", "REQUIRED", "")
 
-		coacheeDeleteAvailabilityFlags    = flag.NewFlagSet("delete-availability", flag.ExitOnError)
-		coacheeDeleteAvailabilityIDFlag   = coacheeDeleteAvailabilityFlags.String("id", "REQUIRED", "")
-		coacheeDeleteAvailabilityAvIDFlag = coacheeDeleteAvailabilityFlags.String("av-id", "REQUIRED", "")
+		coacheeDeleteAvailabilityFlags     = flag.NewFlagSet("delete-availability", flag.ExitOnError)
+		coacheeDeleteAvailabilityIDFlag    = coacheeDeleteAvailabilityFlags.String("id", "REQUIRED", "")
+		coacheeDeleteAvailabilityAvIDFlag  = coacheeDeleteAvailabilityFlags.String("av-id", "REQUIRED", "")
+		coacheeDeleteAvailabilityTokenFlag = coacheeDeleteAvailabilityFlags.String("token", "REQUIRED", "")
 
 		coacheeCreateCustomerFlags    = flag.NewFlagSet("create-customer", flag.ExitOnError)
 		coacheeCreateCustomerBodyFlag = coacheeCreateCustomerFlags.String("body", "REQUIRED", "")
@@ -123,6 +131,9 @@ func ParseEndpoint(
 		coacheeRegisterStripeExpressFlags    = flag.NewFlagSet("register-stripe-express", flag.ExitOnError)
 		coacheeRegisterStripeExpressBodyFlag = coacheeRegisterStripeExpressFlags.String("body", "REQUIRED", "")
 		coacheeRegisterStripeExpressIDFlag   = coacheeRegisterStripeExpressFlags.String("id", "REQUIRED", "")
+
+		coacheeAdminLoginFlags    = flag.NewFlagSet("admin-login", flag.ExitOnError)
+		coacheeAdminLoginBodyFlag = coacheeAdminLoginFlags.String("body", "REQUIRED", "")
 	)
 	coacheeFlags.Usage = coacheeUsage
 	coacheeGetCoachesFlags.Usage = coacheeGetCoachesUsage
@@ -147,6 +158,7 @@ func ParseEndpoint(
 	coacheeFinalizePasswordRecoveryFlowFlags.Usage = coacheeFinalizePasswordRecoveryFlowUsage
 	coacheeCreateOrderFlags.Usage = coacheeCreateOrderUsage
 	coacheeRegisterStripeExpressFlags.Usage = coacheeRegisterStripeExpressUsage
+	coacheeAdminLoginFlags.Usage = coacheeAdminLoginUsage
 
 	if err := flag.CommandLine.Parse(os.Args[1:]); err != nil {
 		return nil, nil, err
@@ -248,6 +260,9 @@ func ParseEndpoint(
 			case "register-stripe-express":
 				epf = coacheeRegisterStripeExpressFlags
 
+			case "admin-login":
+				epf = coacheeAdminLoginFlags
+
 			}
 
 		}
@@ -275,7 +290,7 @@ func ParseEndpoint(
 			switch epn {
 			case "get-coaches":
 				endpoint = c.GetCoaches()
-				data, err = coacheec.BuildGetCoachesPayload(*coacheeGetCoachesTagFlag, *coacheeGetCoachesLimitFlag, *coacheeGetCoachesPageFlag)
+				data, err = coacheec.BuildGetCoachesPayload(*coacheeGetCoachesTagFlag, *coacheeGetCoachesLimitFlag, *coacheeGetCoachesPageFlag, *coacheeGetCoachesShowAllFlag)
 			case "get-coach":
 				endpoint = c.GetCoach()
 				data, err = coacheec.BuildGetCoachPayload(*coacheeGetCoachIDFlag)
@@ -299,25 +314,25 @@ func ParseEndpoint(
 				data, err = coacheec.BuildFinalizeCoachPasswordRecoveryFlowPayload(*coacheeFinalizeCoachPasswordRecoveryFlowBodyFlag, *coacheeFinalizeCoachPasswordRecoveryFlowTokenFlag)
 			case "update-coach":
 				endpoint = c.UpdateCoach()
-				data, err = coacheec.BuildUpdateCoachPayload(*coacheeUpdateCoachBodyFlag, *coacheeUpdateCoachIDFlag)
+				data, err = coacheec.BuildUpdateCoachPayload(*coacheeUpdateCoachBodyFlag, *coacheeUpdateCoachIDFlag, *coacheeUpdateCoachTokenFlag)
 			case "create-certification":
 				endpoint = c.CreateCertification()
-				data, err = coacheec.BuildCreateCertificationPayload(*coacheeCreateCertificationBodyFlag, *coacheeCreateCertificationIDFlag)
+				data, err = coacheec.BuildCreateCertificationPayload(*coacheeCreateCertificationBodyFlag, *coacheeCreateCertificationIDFlag, *coacheeCreateCertificationTokenFlag)
 			case "delete-certification":
 				endpoint = c.DeleteCertification()
-				data, err = coacheec.BuildDeleteCertificationPayload(*coacheeDeleteCertificationIDFlag, *coacheeDeleteCertificationCertIDFlag)
+				data, err = coacheec.BuildDeleteCertificationPayload(*coacheeDeleteCertificationIDFlag, *coacheeDeleteCertificationCertIDFlag, *coacheeDeleteCertificationTokenFlag)
 			case "create-program":
 				endpoint = c.CreateProgram()
-				data, err = coacheec.BuildCreateProgramPayload(*coacheeCreateProgramBodyFlag, *coacheeCreateProgramIDFlag)
+				data, err = coacheec.BuildCreateProgramPayload(*coacheeCreateProgramBodyFlag, *coacheeCreateProgramIDFlag, *coacheeCreateProgramTokenFlag)
 			case "delete-program":
 				endpoint = c.DeleteProgram()
-				data, err = coacheec.BuildDeleteProgramPayload(*coacheeDeleteProgramIDFlag, *coacheeDeleteProgramProgramIDFlag)
+				data, err = coacheec.BuildDeleteProgramPayload(*coacheeDeleteProgramIDFlag, *coacheeDeleteProgramProgramIDFlag, *coacheeDeleteProgramTokenFlag)
 			case "create-availability":
 				endpoint = c.CreateAvailability()
-				data, err = coacheec.BuildCreateAvailabilityPayload(*coacheeCreateAvailabilityBodyFlag, *coacheeCreateAvailabilityIDFlag)
+				data, err = coacheec.BuildCreateAvailabilityPayload(*coacheeCreateAvailabilityBodyFlag, *coacheeCreateAvailabilityIDFlag, *coacheeCreateAvailabilityTokenFlag)
 			case "delete-availability":
 				endpoint = c.DeleteAvailability()
-				data, err = coacheec.BuildDeleteAvailabilityPayload(*coacheeDeleteAvailabilityIDFlag, *coacheeDeleteAvailabilityAvIDFlag)
+				data, err = coacheec.BuildDeleteAvailabilityPayload(*coacheeDeleteAvailabilityIDFlag, *coacheeDeleteAvailabilityAvIDFlag, *coacheeDeleteAvailabilityTokenFlag)
 			case "create-customer":
 				endpoint = c.CreateCustomer()
 				data, err = coacheec.BuildCreateCustomerPayload(*coacheeCreateCustomerBodyFlag)
@@ -339,6 +354,9 @@ func ParseEndpoint(
 			case "register-stripe-express":
 				endpoint = c.RegisterStripeExpress()
 				data, err = coacheec.BuildRegisterStripeExpressPayload(*coacheeRegisterStripeExpressBodyFlag, *coacheeRegisterStripeExpressIDFlag)
+			case "admin-login":
+				endpoint = c.AdminLogin()
+				data, err = coacheec.BuildAdminLoginPayload(*coacheeAdminLoginBodyFlag)
 			}
 		}
 	}
@@ -378,21 +396,23 @@ COMMAND:
     finalize-password-recovery-flow: finalizes the password recovery flow by resetting a new password 
     create-order: creates a new order
     register-stripe-express: registers a stripe express account in stripe and associates it to a coach
+    admin-login: logs in a customer and returns a jwt
 
 Additional help:
     %s coachee COMMAND --help
 `, os.Args[0], os.Args[0])
 }
 func coacheeGetCoachesUsage() {
-	fmt.Fprintf(os.Stderr, `%s [flags] coachee get-coaches -tag STRING -limit UINT -page UINT
+	fmt.Fprintf(os.Stderr, `%s [flags] coachee get-coaches -tag STRING -limit UINT -page UINT -show-all BOOL
 
 GetCoaches returns an array of coaches according to a tag and pagination
     -tag STRING: 
     -limit UINT: 
     -page UINT: 
+    -show-all BOOL: 
 
 Example:
-    `+os.Args[0]+` coachee get-coaches --tag "Minima enim est et quasi dolorum." --limit 12844975951497987771 --page 7380710577822469059
+    `+os.Args[0]+` coachee get-coaches --tag "Illum veritatis nemo." --limit 9218027441373059103 --page 591557662460167685 --show-all true
 `, os.Args[0])
 }
 
@@ -403,7 +423,7 @@ GetCoach returns one coach according to the id
     -id UINT: 
 
 Example:
-    `+os.Args[0]+` coachee get-coach --id 2486718610872615963
+    `+os.Args[0]+` coachee get-coach --id 5533606029577546225
 `, os.Args[0])
 }
 
@@ -414,7 +434,7 @@ LenCoaches returns the amount of coaches with a given tag
     -tag STRING: 
 
 Example:
-    `+os.Args[0]+` coachee len-coaches --tag "Quidem qui accusamus mollitia."
+    `+os.Args[0]+` coachee len-coaches --tag "Corporis quia voluptatem repellat."
 `, os.Args[0])
 }
 
@@ -426,20 +446,20 @@ CreateCoaches creates a base coach
 
 Example:
     `+os.Args[0]+` coachee create-coach --body '{
-      "city": "Iusto incidunt odio.",
-      "country": "Quo incidunt ad recusandae quam.",
-      "description": "Esse molestiae eum et et.",
-      "email": "Quia voluptatem.",
-      "firstName": "Provident provident porro doloremque.",
-      "introCall": 2484851915066860437,
-      "lastName": "Nemo aut fuga saepe sed.",
-      "password": "Et autem voluptatem veniam.",
-      "phone": "Inventore fugit distinctio delectus culpa doloremque.",
-      "tags": "Est tempora iure id aspernatur.",
-      "textAvailability": "Beatae vel repellat id aperiam.",
-      "textCertifications": "Facilis qui rerum laborum sapiente quae magnam.",
-      "textPrograms": "Vero autem magnam rerum ut autem harum.",
-      "vat": "Facere repellat distinctio."
+      "city": "Repellat id aperiam fugit facere repellat.",
+      "country": "Architecto amet sint facere est incidunt rerum.",
+      "description": "Autem harum aut beatae.",
+      "email": "Quo incidunt ad recusandae quam.",
+      "firstName": "Esse molestiae eum et et.",
+      "introCall": 3032696638124261585,
+      "lastName": "Iusto incidunt odio.",
+      "password": "Sint facilis.",
+      "phone": "Rerum laborum.",
+      "tags": "Quae magnam ut vero autem magnam rerum.",
+      "textAvailability": "Iste assumenda.",
+      "textCertifications": "Praesentium accusamus autem autem.",
+      "textPrograms": "Sit sit accusantium neque ad enim.",
+      "vat": "Ut qui laboriosam id."
    }'
 `, os.Args[0])
 }
@@ -452,8 +472,8 @@ Logs in a coach to stripe express
 
 Example:
     `+os.Args[0]+` coachee login-coach --body '{
-      "email": "Ad enim saepe.",
-      "password": "Assumenda debitis."
+      "email": "Iste sint.",
+      "password": "Eum veritatis beatae et sit rerum quos."
    }'
 `, os.Args[0])
 }
@@ -466,7 +486,7 @@ starts the process of recovering a password
 
 Example:
     `+os.Args[0]+` coachee start-coach-password-recovery-flow --body '{
-      "email": "Autem iste sint."
+      "email": "Error consectetur in consequatur."
    }'
 `, os.Args[0])
 }
@@ -478,7 +498,7 @@ verifies if a recovery token is still valid
     -token STRING: 
 
 Example:
-    `+os.Args[0]+` coachee check-coach-password-recovery-token --token "Esse sit aliquam."
+    `+os.Args[0]+` coachee check-coach-password-recovery-token --token "Suscipit delectus fugit fugit quia aliquid."
 `, os.Args[0])
 }
 
@@ -491,131 +511,138 @@ finalizes the password recovery flow by resetting a new password
 
 Example:
     `+os.Args[0]+` coachee finalize-coach-password-recovery-flow --body '{
-      "password": "Tempora fugit et provident dolore provident repellendus."
-   }' --token "Velit eveniet."
+      "password": "Officia et hic."
+   }' --token "Fugit amet non asperiores quia non."
 `, os.Args[0])
 }
 
 func coacheeUpdateCoachUsage() {
-	fmt.Fprintf(os.Stderr, `%s [flags] coachee update-coach -body JSON -id UINT
+	fmt.Fprintf(os.Stderr, `%s [flags] coachee update-coach -body JSON -id UINT -token STRING
 
 UpdateCoaches updates a coach
     -body JSON: 
     -id UINT: 
+    -token STRING: 
 
 Example:
     `+os.Args[0]+` coachee update-coach --body '{
-      "city": "Voluptatibus odio minima repudiandae.",
-      "country": "Voluptates omnis cumque quo.",
-      "description": "Qui excepturi vel ut consectetur.",
-      "email": "Sunt praesentium aut quasi ipsum dolores.",
-      "firstName": "Possimus numquam.",
-      "introCall": 1864340654662324785,
-      "lastName": "Ratione laudantium quae tenetur.",
-      "phone": "Ut officia et hic quo.",
-      "pictureURL": "Consequatur velit.",
-      "stripeID": "Officiis quo nobis soluta atque.",
-      "tags": "Amet non asperiores quia non commodi.",
-      "vat": "Ab omnis quaerat neque sunt voluptatem."
-   }' --id 10902984444721593680
+      "city": "Beatae non quia blanditiis similique.",
+      "country": "Sint qui odit quia voluptas labore voluptatum.",
+      "description": "Tempore accusantium porro nisi aut.",
+      "email": "Quaerat neque sunt.",
+      "firstName": "Rerum rerum officiis quo nobis.",
+      "introCall": 3187574953544294077,
+      "lastName": "Atque aliquid consequatur velit voluptatem ab.",
+      "phone": "Consequuntur vitae id fugit.",
+      "pictureURL": "Esse placeat consequatur cum dolorem quo.",
+      "stripeID": "Distinctio facere neque quis.",
+      "tags": "Quia possimus.",
+      "vat": "Dolorum reprehenderit exercitationem est dolores."
+   }' --id 4633399502815089578 --token "Corporis voluptas sapiente deserunt molestiae."
 `, os.Args[0])
 }
 
 func coacheeCreateCertificationUsage() {
-	fmt.Fprintf(os.Stderr, `%s [flags] coachee create-certification -body JSON -id UINT
+	fmt.Fprintf(os.Stderr, `%s [flags] coachee create-certification -body JSON -id UINT -token STRING
 
 creates a certification for a coach
     -body JSON: 
     -id UINT: 
+    -token STRING: 
 
 Example:
     `+os.Args[0]+` coachee create-certification --body '{
       "certification": {
-         "description": "Assumenda distinctio.",
-         "id": "Similique necessitatibus sint qui.",
-         "institution": "Neque quis sunt esse placeat consequatur.",
-         "month": 11,
-         "title": "Quia voluptas labore voluptatum.",
-         "year": 1982
+         "description": "Quas assumenda ratione sit.",
+         "id": "Dolore amet fugiat ab.",
+         "institution": "Qui et sint sit.",
+         "month": 9,
+         "title": "Quas beatae quia exercitationem culpa quo.",
+         "year": 2096
       }
-   }' --id 9090717329548761575
+   }' --id 13466641166177143605 --token "Quos eum rerum architecto et facere."
 `, os.Args[0])
 }
 
 func coacheeDeleteCertificationUsage() {
-	fmt.Fprintf(os.Stderr, `%s [flags] coachee delete-certification -id UINT -cert-id STRING
+	fmt.Fprintf(os.Stderr, `%s [flags] coachee delete-certification -id UINT -cert-id STRING -token STRING
 
 deletes a certification for a coach
     -id UINT: 
     -cert-id STRING: 
+    -token STRING: 
 
 Example:
-    `+os.Args[0]+` coachee delete-certification --id 16413458301791859641 --cert-id "Non et voluptates veniam illum dolore amet."
+    `+os.Args[0]+` coachee delete-certification --id 6351686270455184110 --cert-id "Quia nihil tempora eos ut." --token "Nam earum."
 `, os.Args[0])
 }
 
 func coacheeCreateProgramUsage() {
-	fmt.Fprintf(os.Stderr, `%s [flags] coachee create-program -body JSON -id UINT
+	fmt.Fprintf(os.Stderr, `%s [flags] coachee create-program -body JSON -id UINT -token STRING
 
 creates a program for a coach
     -body JSON: 
     -id UINT: 
+    -token STRING: 
 
 Example:
     `+os.Args[0]+` coachee create-program --body '{
       "program": {
-         "description": "Tempore fugit doloremque quod veritatis.",
-         "duration": 15441528118912166289,
-         "id": "Sint sit laboriosam tempora modi facere quos.",
-         "name": "Rerum architecto et facere quidem aut libero.",
-         "sessions": 6313759655879750564,
-         "taxPercent": 13999771392470398024,
-         "totalPrice": 15409970536085466204
+         "description": "Soluta aut.",
+         "duration": 15114607970299711791,
+         "id": "Veritatis vel provident.",
+         "name": "Et nisi.",
+         "sessions": 13307923044606376,
+         "taxPercent": 13651844294565350471,
+         "totalPrice": 5153676287467924687
       }
-   }' --id 14289087638958674140
+   }' --id 10836590771505660290 --token "Nisi quo sit."
 `, os.Args[0])
 }
 
 func coacheeDeleteProgramUsage() {
-	fmt.Fprintf(os.Stderr, `%s [flags] coachee delete-program -id UINT -program-id STRING
+	fmt.Fprintf(os.Stderr, `%s [flags] coachee delete-program -id UINT -program-id STRING -token STRING
 
 deletes a program for a coach
     -id UINT: 
     -program-id STRING: 
+    -token STRING: 
 
 Example:
-    `+os.Args[0]+` coachee delete-program --id 1055964891972257649 --program-id "Excepturi eum repudiandae ipsa neque provident nemo."
+    `+os.Args[0]+` coachee delete-program --id 3581867312120967611 --program-id "Enim voluptas ad quia nulla." --token "Eos libero numquam sit aut optio sunt."
 `, os.Args[0])
 }
 
 func coacheeCreateAvailabilityUsage() {
-	fmt.Fprintf(os.Stderr, `%s [flags] coachee create-availability -body JSON -id UINT
+	fmt.Fprintf(os.Stderr, `%s [flags] coachee create-availability -body JSON -id UINT -token STRING
 
 creates an availability for a coach
     -body JSON: 
     -id UINT: 
+    -token STRING: 
 
 Example:
     `+os.Args[0]+` coachee create-availability --body '{
       "availability": {
-         "end": 1074,
-         "id": "Accusamus est.",
-         "start": 79,
-         "weekDay": 3
+         "end": 1408,
+         "id": "Ut magni et qui facere.",
+         "start": 161,
+         "weekDay": 0
       }
-   }' --id 3721427144435420446
+   }' --id 6393772440626229687 --token "Quia placeat adipisci error ipsa."
 `, os.Args[0])
 }
 
 func coacheeDeleteAvailabilityUsage() {
-	fmt.Fprintf(os.Stderr, `%s [flags] coachee delete-availability -id UINT -av-id STRING
+	fmt.Fprintf(os.Stderr, `%s [flags] coachee delete-availability -id UINT -av-id STRING -token STRING
 
 deletes an availability for a coach
     -id UINT: 
     -av-id STRING: 
+    -token STRING: 
 
 Example:
-    `+os.Args[0]+` coachee delete-availability --id 5812331916663122610 --av-id "Voluptas ad quia nulla aut eos libero."
+    `+os.Args[0]+` coachee delete-availability --id 16790991959080839072 --av-id "Sit voluptatem dolorem." --token "Assumenda molestias doloribus nobis voluptatem delectus."
 `, os.Args[0])
 }
 
@@ -627,11 +654,11 @@ creates a new customer
 
 Example:
     `+os.Args[0]+` coachee create-customer --body '{
-      "birthDate": 4912482196392485294,
-      "email": "Ad quibusdam neque sunt aut autem ut.",
-      "firstName": "Et qui facere facilis.",
-      "lastName": "Sapiente molestiae.",
-      "password": "Placeat adipisci error ipsa."
+      "birthDate": 1698203543092410010,
+      "email": "Nemo quaerat quia voluptates aut aut ex.",
+      "firstName": "Aut provident qui et quibusdam quod molestias.",
+      "lastName": "Commodi deleniti ea ut.",
+      "password": "Dolorem omnis rerum dolorem id."
    }'
 `, os.Args[0])
 }
@@ -644,8 +671,8 @@ logs in a customer and returns a jwt
 
 Example:
     `+os.Args[0]+` coachee customer-login --body '{
-      "email": "Nobis voluptatem delectus ut et.",
-      "password": "Iste natus doloribus sunt magni."
+      "email": "Id ullam cum.",
+      "password": "Necessitatibus non."
    }'
 `, os.Args[0])
 }
@@ -658,7 +685,7 @@ starts the process of recovering a password
 
 Example:
     `+os.Args[0]+` coachee start-password-recovery-flow --body '{
-      "email": "Deleniti ea ut alias dicta."
+      "email": "Natus in aut illum."
    }'
 `, os.Args[0])
 }
@@ -670,7 +697,7 @@ verifies if a recovery token is still valid
     -token STRING: 
 
 Example:
-    `+os.Args[0]+` coachee check-password-recovery-token --token "Ea autem dolorum."
+    `+os.Args[0]+` coachee check-password-recovery-token --token "Natus ut."
 `, os.Args[0])
 }
 
@@ -683,8 +710,8 @@ finalizes the password recovery flow by resetting a new password
 
 Example:
     `+os.Args[0]+` coachee finalize-password-recovery-flow --body '{
-      "password": "Necessitatibus non."
-   }' --token "Cumque facilis ut nisi quia iste."
+      "password": "Qui et eligendi illum."
+   }' --token "Eveniet reiciendis similique labore corrupti."
 `, os.Args[0])
 }
 
@@ -697,10 +724,10 @@ creates a new order
 
 Example:
     `+os.Args[0]+` coachee create-order --body '{
-      "coachId": 6155620230951574503,
-      "introCall": 4361438354368673299,
-      "programId": "Natus in aut illum."
-   }' --token "Praesentium sint."
+      "coachId": 14783857241464587954,
+      "introCall": 7335155683914690087,
+      "programId": "Odio quia."
+   }' --token "Aut qui est voluptatibus numquam."
 `, os.Args[0])
 }
 
@@ -713,7 +740,21 @@ registers a stripe express account in stripe and associates it to a coach
 
 Example:
     `+os.Args[0]+` coachee register-stripe-express --body '{
-      "authorizationCode": "Et dignissimos quae voluptatem voluptate rem dolor."
-   }' --id 10622349987736117164
+      "authorizationCode": "Molestiae veritatis eum facere alias in."
+   }' --id 18098937046746425210
+`, os.Args[0])
+}
+
+func coacheeAdminLoginUsage() {
+	fmt.Fprintf(os.Stderr, `%s [flags] coachee admin-login -body JSON
+
+logs in a customer and returns a jwt
+    -body JSON: 
+
+Example:
+    `+os.Args[0]+` coachee admin-login --body '{
+      "email": "Et deleniti repudiandae autem qui modi.",
+      "password": "Veniam rerum fugiat."
+   }'
 `, os.Args[0])
 }

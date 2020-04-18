@@ -26,7 +26,7 @@ type Coach struct {
 	ID          uint `gorm:"primary_key"`
 	FirstName   string
 	LastName    string
-	Email       string
+	Email       string `gorm:"not null;unique"`
 	Password    string
 	Phone       string
 	StripeID    string

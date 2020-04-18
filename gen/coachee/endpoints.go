@@ -38,6 +38,7 @@ type Endpoints struct {
 	FinalizePasswordRecoveryFlow      goa.Endpoint
 	CreateOrder                       goa.Endpoint
 	RegisterStripeExpress             goa.Endpoint
+	AdminLogin                        goa.Endpoint
 }
 
 // NewEndpoints wraps the methods of the "coachee" service with endpoints.
@@ -53,13 +54,13 @@ func NewEndpoints(s Service) *Endpoints {
 		StartCoachPasswordRecoveryFlow:    NewStartCoachPasswordRecoveryFlowEndpoint(s),
 		CheckCoachPasswordRecoveryToken:   NewCheckCoachPasswordRecoveryTokenEndpoint(s),
 		FinalizeCoachPasswordRecoveryFlow: NewFinalizeCoachPasswordRecoveryFlowEndpoint(s),
-		UpdateCoach:                       NewUpdateCoachEndpoint(s),
-		CreateCertification:               NewCreateCertificationEndpoint(s),
-		DeleteCertification:               NewDeleteCertificationEndpoint(s),
-		CreateProgram:                     NewCreateProgramEndpoint(s),
-		DeleteProgram:                     NewDeleteProgramEndpoint(s),
-		CreateAvailability:                NewCreateAvailabilityEndpoint(s),
-		DeleteAvailability:                NewDeleteAvailabilityEndpoint(s),
+		UpdateCoach:                       NewUpdateCoachEndpoint(s, a.JWTAuth),
+		CreateCertification:               NewCreateCertificationEndpoint(s, a.JWTAuth),
+		DeleteCertification:               NewDeleteCertificationEndpoint(s, a.JWTAuth),
+		CreateProgram:                     NewCreateProgramEndpoint(s, a.JWTAuth),
+		DeleteProgram:                     NewDeleteProgramEndpoint(s, a.JWTAuth),
+		CreateAvailability:                NewCreateAvailabilityEndpoint(s, a.JWTAuth),
+		DeleteAvailability:                NewDeleteAvailabilityEndpoint(s, a.JWTAuth),
 		CreateCustomer:                    NewCreateCustomerEndpoint(s),
 		CustomerLogin:                     NewCustomerLoginEndpoint(s),
 		StartPasswordRecoveryFlow:         NewStartPasswordRecoveryFlowEndpoint(s),
@@ -67,6 +68,7 @@ func NewEndpoints(s Service) *Endpoints {
 		FinalizePasswordRecoveryFlow:      NewFinalizePasswordRecoveryFlowEndpoint(s),
 		CreateOrder:                       NewCreateOrderEndpoint(s, a.JWTAuth),
 		RegisterStripeExpress:             NewRegisterStripeExpressEndpoint(s),
+		AdminLogin:                        NewAdminLoginEndpoint(s),
 	}
 }
 
@@ -94,6 +96,7 @@ func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.FinalizePasswordRecoveryFlow = m(e.FinalizePasswordRecoveryFlow)
 	e.CreateOrder = m(e.CreateOrder)
 	e.RegisterStripeExpress = m(e.RegisterStripeExpress)
+	e.AdminLogin = m(e.AdminLogin)
 }
 
 // NewGetCoachesEndpoint returns an endpoint function that calls the method
@@ -171,63 +174,133 @@ func NewFinalizeCoachPasswordRecoveryFlowEndpoint(s Service) goa.Endpoint {
 
 // NewUpdateCoachEndpoint returns an endpoint function that calls the method
 // "UpdateCoach" of service "coachee".
-func NewUpdateCoachEndpoint(s Service) goa.Endpoint {
+func NewUpdateCoachEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
 	return func(ctx context.Context, req interface{}) (interface{}, error) {
 		p := req.(*UpdateCoachPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{"client", "admin"},
+			RequiredScopes: []string{"admin"},
+		}
+		ctx, err = authJWTFn(ctx, p.Token, &sc)
+		if err != nil {
+			return nil, err
+		}
 		return nil, s.UpdateCoach(ctx, p)
 	}
 }
 
 // NewCreateCertificationEndpoint returns an endpoint function that calls the
 // method "CreateCertification" of service "coachee".
-func NewCreateCertificationEndpoint(s Service) goa.Endpoint {
+func NewCreateCertificationEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
 	return func(ctx context.Context, req interface{}) (interface{}, error) {
 		p := req.(*CreateCertificationPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{"client", "admin"},
+			RequiredScopes: []string{"admin"},
+		}
+		ctx, err = authJWTFn(ctx, p.Token, &sc)
+		if err != nil {
+			return nil, err
+		}
 		return nil, s.CreateCertification(ctx, p)
 	}
 }
 
 // NewDeleteCertificationEndpoint returns an endpoint function that calls the
 // method "DeleteCertification" of service "coachee".
-func NewDeleteCertificationEndpoint(s Service) goa.Endpoint {
+func NewDeleteCertificationEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
 	return func(ctx context.Context, req interface{}) (interface{}, error) {
 		p := req.(*DeleteCertificationPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{"client", "admin"},
+			RequiredScopes: []string{"admin"},
+		}
+		ctx, err = authJWTFn(ctx, p.Token, &sc)
+		if err != nil {
+			return nil, err
+		}
 		return nil, s.DeleteCertification(ctx, p)
 	}
 }
 
 // NewCreateProgramEndpoint returns an endpoint function that calls the method
 // "CreateProgram" of service "coachee".
-func NewCreateProgramEndpoint(s Service) goa.Endpoint {
+func NewCreateProgramEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
 	return func(ctx context.Context, req interface{}) (interface{}, error) {
 		p := req.(*CreateProgramPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{"client", "admin"},
+			RequiredScopes: []string{"admin"},
+		}
+		ctx, err = authJWTFn(ctx, p.Token, &sc)
+		if err != nil {
+			return nil, err
+		}
 		return nil, s.CreateProgram(ctx, p)
 	}
 }
 
 // NewDeleteProgramEndpoint returns an endpoint function that calls the method
 // "DeleteProgram" of service "coachee".
-func NewDeleteProgramEndpoint(s Service) goa.Endpoint {
+func NewDeleteProgramEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
 	return func(ctx context.Context, req interface{}) (interface{}, error) {
 		p := req.(*DeleteProgramPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{"client", "admin"},
+			RequiredScopes: []string{"admin"},
+		}
+		ctx, err = authJWTFn(ctx, p.Token, &sc)
+		if err != nil {
+			return nil, err
+		}
 		return nil, s.DeleteProgram(ctx, p)
 	}
 }
 
 // NewCreateAvailabilityEndpoint returns an endpoint function that calls the
 // method "CreateAvailability" of service "coachee".
-func NewCreateAvailabilityEndpoint(s Service) goa.Endpoint {
+func NewCreateAvailabilityEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
 	return func(ctx context.Context, req interface{}) (interface{}, error) {
 		p := req.(*CreateAvailabilityPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{"client", "admin"},
+			RequiredScopes: []string{"admin"},
+		}
+		ctx, err = authJWTFn(ctx, p.Token, &sc)
+		if err != nil {
+			return nil, err
+		}
 		return nil, s.CreateAvailability(ctx, p)
 	}
 }
 
 // NewDeleteAvailabilityEndpoint returns an endpoint function that calls the
 // method "DeleteAvailability" of service "coachee".
-func NewDeleteAvailabilityEndpoint(s Service) goa.Endpoint {
+func NewDeleteAvailabilityEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
 	return func(ctx context.Context, req interface{}) (interface{}, error) {
 		p := req.(*DeleteAvailabilityPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{"client", "admin"},
+			RequiredScopes: []string{"admin"},
+		}
+		ctx, err = authJWTFn(ctx, p.Token, &sc)
+		if err != nil {
+			return nil, err
+		}
 		return nil, s.DeleteAvailability(ctx, p)
 	}
 }
@@ -302,5 +375,14 @@ func NewRegisterStripeExpressEndpoint(s Service) goa.Endpoint {
 	return func(ctx context.Context, req interface{}) (interface{}, error) {
 		p := req.(*RegisterStripeExpressPayload)
 		return nil, s.RegisterStripeExpress(ctx, p)
+	}
+}
+
+// NewAdminLoginEndpoint returns an endpoint function that calls the method
+// "AdminLogin" of service "coachee".
+func NewAdminLoginEndpoint(s Service) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*AdminLoginPayload)
+		return s.AdminLogin(ctx, p)
 	}
 }

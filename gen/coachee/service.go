@@ -60,6 +60,8 @@ type Service interface {
 	CreateOrder(context.Context, *CreateOrderPayload) (res *CreateOrderResult, err error)
 	// registers a stripe express account in stripe and associates it to a coach
 	RegisterStripeExpress(context.Context, *RegisterStripeExpressPayload) (err error)
+	// logs in a customer and returns a jwt
+	AdminLogin(context.Context, *AdminLoginPayload) (res *AdminLoginResult, err error)
 }
 
 // Auther defines the authorization functions to be implemented by the service.
@@ -76,14 +78,15 @@ const ServiceName = "coachee"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [22]string{"GetCoaches", "GetCoach", "LenCoaches", "CreateCoach", "LoginCoach", "StartCoachPasswordRecoveryFlow", "CheckCoachPasswordRecoveryToken", "FinalizeCoachPasswordRecoveryFlow", "UpdateCoach", "CreateCertification", "DeleteCertification", "CreateProgram", "DeleteProgram", "CreateAvailability", "DeleteAvailability", "CreateCustomer", "CustomerLogin", "StartPasswordRecoveryFlow", "CheckPasswordRecoveryToken", "FinalizePasswordRecoveryFlow", "CreateOrder", "RegisterStripeExpress"}
+var MethodNames = [23]string{"GetCoaches", "GetCoach", "LenCoaches", "CreateCoach", "LoginCoach", "StartCoachPasswordRecoveryFlow", "CheckCoachPasswordRecoveryToken", "FinalizeCoachPasswordRecoveryFlow", "UpdateCoach", "CreateCertification", "DeleteCertification", "CreateProgram", "DeleteProgram", "CreateAvailability", "DeleteAvailability", "CreateCustomer", "CustomerLogin", "StartPasswordRecoveryFlow", "CheckPasswordRecoveryToken", "FinalizePasswordRecoveryFlow", "CreateOrder", "RegisterStripeExpress", "AdminLogin"}
 
 // GetCoachesPayload is the payload type of the coachee service GetCoaches
 // method.
 type GetCoachesPayload struct {
-	Tag   *string
-	Limit *uint
-	Page  *uint
+	Tag     *string
+	Limit   *uint
+	Page    *uint
+	ShowAll *bool
 }
 
 // GetCoachPayload is the payload type of the coachee service GetCoach method.
@@ -165,6 +168,8 @@ type FinalizeCoachPasswordRecoveryFlowPayload struct {
 // UpdateCoachPayload is the payload type of the coachee service UpdateCoach
 // method.
 type UpdateCoachPayload struct {
+	// JWT token used to perform authorization
+	Token       string
 	ID          uint
 	FirstName   *string
 	LastName    *string
@@ -183,6 +188,8 @@ type UpdateCoachPayload struct {
 // CreateCertificationPayload is the payload type of the coachee service
 // CreateCertification method.
 type CreateCertificationPayload struct {
+	// JWT token used to perform authorization
+	Token         string
 	ID            uint
 	Certification *Certification
 }
@@ -190,6 +197,8 @@ type CreateCertificationPayload struct {
 // DeleteCertificationPayload is the payload type of the coachee service
 // DeleteCertification method.
 type DeleteCertificationPayload struct {
+	// JWT token used to perform authorization
+	Token  string
 	ID     uint
 	CertID string
 }
@@ -197,6 +206,8 @@ type DeleteCertificationPayload struct {
 // CreateProgramPayload is the payload type of the coachee service
 // CreateProgram method.
 type CreateProgramPayload struct {
+	// JWT token used to perform authorization
+	Token   string
 	ID      uint
 	Program *Program
 }
@@ -204,6 +215,8 @@ type CreateProgramPayload struct {
 // DeleteProgramPayload is the payload type of the coachee service
 // DeleteProgram method.
 type DeleteProgramPayload struct {
+	// JWT token used to perform authorization
+	Token     string
 	ID        uint
 	ProgramID string
 }
@@ -211,6 +224,8 @@ type DeleteProgramPayload struct {
 // CreateAvailabilityPayload is the payload type of the coachee service
 // CreateAvailability method.
 type CreateAvailabilityPayload struct {
+	// JWT token used to perform authorization
+	Token        string
 	ID           uint
 	Availability *Availability
 }
@@ -218,8 +233,10 @@ type CreateAvailabilityPayload struct {
 // DeleteAvailabilityPayload is the payload type of the coachee service
 // DeleteAvailability method.
 type DeleteAvailabilityPayload struct {
-	ID   uint
-	AvID string
+	// JWT token used to perform authorization
+	Token string
+	ID    uint
+	AvID  string
 }
 
 // CreateCustomerPayload is the payload type of the coachee service
@@ -296,6 +313,19 @@ type CreateOrderResult struct {
 type RegisterStripeExpressPayload struct {
 	ID                uint
 	AuthorizationCode string
+}
+
+// AdminLoginPayload is the payload type of the coachee service AdminLogin
+// method.
+type AdminLoginPayload struct {
+	Email    string
+	Password string
+}
+
+// AdminLoginResult is the result type of the coachee service AdminLogin method.
+type AdminLoginResult struct {
+	Token  string
+	Expiry int64
 }
 
 // represents a coach certification

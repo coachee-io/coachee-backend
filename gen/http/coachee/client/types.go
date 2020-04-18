@@ -129,6 +129,13 @@ type RegisterStripeExpressRequestBody struct {
 	AuthorizationCode string `form:"authorizationCode" json:"authorizationCode" xml:"authorizationCode"`
 }
 
+// AdminLoginRequestBody is the type of the "coachee" service "AdminLogin"
+// endpoint HTTP request body.
+type AdminLoginRequestBody struct {
+	Email    string `form:"email" json:"email" xml:"email"`
+	Password string `form:"password" json:"password" xml:"password"`
+}
+
 // GetCoachesResponseBody is the type of the "coachee" service "GetCoaches"
 // endpoint HTTP response body.
 type GetCoachesResponseBody []*CoachResponse
@@ -176,6 +183,13 @@ type CustomerLoginResponseBody struct {
 type CreateOrderResponseBody struct {
 	ClientSecret  *string `form:"clientSecret,omitempty" json:"clientSecret,omitempty" xml:"clientSecret,omitempty"`
 	PublishingKey *string `form:"publishingKey,omitempty" json:"publishingKey,omitempty" xml:"publishingKey,omitempty"`
+}
+
+// AdminLoginResponseBody is the type of the "coachee" service "AdminLogin"
+// endpoint HTTP response body.
+type AdminLoginResponseBody struct {
+	Token  *string `form:"token,omitempty" json:"token,omitempty" xml:"token,omitempty"`
+	Expiry *int64  `form:"expiry,omitempty" json:"expiry,omitempty" xml:"expiry,omitempty"`
 }
 
 // GetCoachesInternalResponseBody is the type of the "coachee" service
@@ -2203,6 +2217,96 @@ type RegisterStripeExpressUnauthorizedResponseBody struct {
 	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
 }
 
+// AdminLoginInternalResponseBody is the type of the "coachee" service
+// "AdminLogin" endpoint HTTP response body for the "internal" error.
+type AdminLoginInternalResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// AdminLoginTransientResponseBody is the type of the "coachee" service
+// "AdminLogin" endpoint HTTP response body for the "transient" error.
+type AdminLoginTransientResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// AdminLoginNotFoundResponseBody is the type of the "coachee" service
+// "AdminLogin" endpoint HTTP response body for the "notFound" error.
+type AdminLoginNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// AdminLoginValidationResponseBody is the type of the "coachee" service
+// "AdminLogin" endpoint HTTP response body for the "validation" error.
+type AdminLoginValidationResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// AdminLoginUnauthorizedResponseBody is the type of the "coachee" service
+// "AdminLogin" endpoint HTTP response body for the "unauthorized" error.
+type AdminLoginUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
 // CoachResponse is used to define fields on response body types.
 type CoachResponse struct {
 	ID             *uint                    `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
@@ -2473,6 +2577,16 @@ func NewCreateOrderRequestBody(p *coachee.CreateOrderPayload) *CreateOrderReques
 func NewRegisterStripeExpressRequestBody(p *coachee.RegisterStripeExpressPayload) *RegisterStripeExpressRequestBody {
 	body := &RegisterStripeExpressRequestBody{
 		AuthorizationCode: p.AuthorizationCode,
+	}
+	return body
+}
+
+// NewAdminLoginRequestBody builds the HTTP request body from the payload of
+// the "AdminLogin" endpoint of the "coachee" service.
+func NewAdminLoginRequestBody(p *coachee.AdminLoginPayload) *AdminLoginRequestBody {
+	body := &AdminLoginRequestBody{
+		Email:    p.Email,
+		Password: p.Password,
 	}
 	return body
 }
@@ -4129,6 +4243,86 @@ func NewRegisterStripeExpressUnauthorized(body *RegisterStripeExpressUnauthorize
 	return v
 }
 
+// NewAdminLoginResultOK builds a "coachee" service "AdminLogin" endpoint
+// result from a HTTP "OK" response.
+func NewAdminLoginResultOK(body *AdminLoginResponseBody) *coachee.AdminLoginResult {
+	v := &coachee.AdminLoginResult{
+		Token:  *body.Token,
+		Expiry: *body.Expiry,
+	}
+	return v
+}
+
+// NewAdminLoginInternal builds a coachee service AdminLogin endpoint internal
+// error.
+func NewAdminLoginInternal(body *AdminLoginInternalResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewAdminLoginTransient builds a coachee service AdminLogin endpoint
+// transient error.
+func NewAdminLoginTransient(body *AdminLoginTransientResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewAdminLoginNotFound builds a coachee service AdminLogin endpoint notFound
+// error.
+func NewAdminLoginNotFound(body *AdminLoginNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewAdminLoginValidation builds a coachee service AdminLogin endpoint
+// validation error.
+func NewAdminLoginValidation(body *AdminLoginValidationResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewAdminLoginUnauthorized builds a coachee service AdminLogin endpoint
+// unauthorized error.
+func NewAdminLoginUnauthorized(body *AdminLoginUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
 // ValidateGetCoachResponseBody runs the validations defined on
 // GetCoachResponseBody
 func ValidateGetCoachResponseBody(body *GetCoachResponseBody) (err error) {
@@ -4237,6 +4431,18 @@ func ValidateCreateOrderResponseBody(body *CreateOrderResponseBody) (err error) 
 	}
 	if body.PublishingKey == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("publishingKey", "body"))
+	}
+	return
+}
+
+// ValidateAdminLoginResponseBody runs the validations defined on
+// AdminLoginResponseBody
+func ValidateAdminLoginResponseBody(body *AdminLoginResponseBody) (err error) {
+	if body.Token == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("token", "body"))
+	}
+	if body.Expiry == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("expiry", "body"))
 	}
 	return
 }
@@ -6871,6 +7077,126 @@ func ValidateRegisterStripeExpressValidationResponseBody(body *RegisterStripeExp
 // ValidateRegisterStripeExpressUnauthorizedResponseBody runs the validations
 // defined on RegisterStripeExpress_unauthorized_Response_Body
 func ValidateRegisterStripeExpressUnauthorizedResponseBody(body *RegisterStripeExpressUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateAdminLoginInternalResponseBody runs the validations defined on
+// AdminLogin_internal_Response_Body
+func ValidateAdminLoginInternalResponseBody(body *AdminLoginInternalResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateAdminLoginTransientResponseBody runs the validations defined on
+// AdminLogin_transient_Response_Body
+func ValidateAdminLoginTransientResponseBody(body *AdminLoginTransientResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateAdminLoginNotFoundResponseBody runs the validations defined on
+// AdminLogin_notFound_Response_Body
+func ValidateAdminLoginNotFoundResponseBody(body *AdminLoginNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateAdminLoginValidationResponseBody runs the validations defined on
+// AdminLogin_validation_Response_Body
+func ValidateAdminLoginValidationResponseBody(body *AdminLoginValidationResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateAdminLoginUnauthorizedResponseBody runs the validations defined on
+// AdminLogin_unauthorized_Response_Body
+func ValidateAdminLoginUnauthorizedResponseBody(body *AdminLoginUnauthorizedResponseBody) (err error) {
 	if body.Name == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
 	}

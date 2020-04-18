@@ -53,6 +53,9 @@ func EncodeGetCoachesRequest(encoder func(*http.Request) goahttp.Encoder) func(*
 		if p.Page != nil {
 			values.Add("page", fmt.Sprintf("%v", *p.Page))
 		}
+		if p.ShowAll != nil {
+			values.Add("show_all", fmt.Sprintf("%v", *p.ShowAll))
+		}
 		req.URL.RawQuery = values.Encode()
 		return nil
 	}
@@ -1256,6 +1259,7 @@ func EncodeUpdateCoachRequest(encoder func(*http.Request) goahttp.Encoder) func(
 		if !ok {
 			return goahttp.ErrInvalidType("coachee", "UpdateCoach", "*coachee.UpdateCoachPayload", v)
 		}
+		req.Header.Set("Authorization", p.Token)
 		body := NewUpdateCoachRequestBody(p)
 		if err := encoder(req).Encode(&body); err != nil {
 			return goahttp.ErrEncodingError("coachee", "UpdateCoach", err)
@@ -1409,6 +1413,7 @@ func EncodeCreateCertificationRequest(encoder func(*http.Request) goahttp.Encode
 		if !ok {
 			return goahttp.ErrInvalidType("coachee", "CreateCertification", "*coachee.CreateCertificationPayload", v)
 		}
+		req.Header.Set("Authorization", p.Token)
 		body := NewCreateCertificationRequestBody(p)
 		if err := encoder(req).Encode(&body); err != nil {
 			return goahttp.ErrEncodingError("coachee", "CreateCertification", err)
@@ -1556,6 +1561,19 @@ func (c *Client) BuildDeleteCertificationRequest(ctx context.Context, v interfac
 	return req, nil
 }
 
+// EncodeDeleteCertificationRequest returns an encoder for requests sent to the
+// coachee DeleteCertification server.
+func EncodeDeleteCertificationRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*coachee.DeleteCertificationPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("coachee", "DeleteCertification", "*coachee.DeleteCertificationPayload", v)
+		}
+		req.Header.Set("Authorization", p.Token)
+		return nil
+	}
+}
+
 // DecodeDeleteCertificationResponse returns a decoder for responses returned
 // by the coachee DeleteCertification endpoint. restoreBody controls whether
 // the response body should be restored after having been read.
@@ -1700,6 +1718,7 @@ func EncodeCreateProgramRequest(encoder func(*http.Request) goahttp.Encoder) fun
 		if !ok {
 			return goahttp.ErrInvalidType("coachee", "CreateProgram", "*coachee.CreateProgramPayload", v)
 		}
+		req.Header.Set("Authorization", p.Token)
 		body := NewCreateProgramRequestBody(p)
 		if err := encoder(req).Encode(&body); err != nil {
 			return goahttp.ErrEncodingError("coachee", "CreateProgram", err)
@@ -1844,6 +1863,19 @@ func (c *Client) BuildDeleteProgramRequest(ctx context.Context, v interface{}) (
 	}
 
 	return req, nil
+}
+
+// EncodeDeleteProgramRequest returns an encoder for requests sent to the
+// coachee DeleteProgram server.
+func EncodeDeleteProgramRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*coachee.DeleteProgramPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("coachee", "DeleteProgram", "*coachee.DeleteProgramPayload", v)
+		}
+		req.Header.Set("Authorization", p.Token)
+		return nil
+	}
 }
 
 // DecodeDeleteProgramResponse returns a decoder for responses returned by the
@@ -1991,6 +2023,7 @@ func EncodeCreateAvailabilityRequest(encoder func(*http.Request) goahttp.Encoder
 		if !ok {
 			return goahttp.ErrInvalidType("coachee", "CreateAvailability", "*coachee.CreateAvailabilityPayload", v)
 		}
+		req.Header.Set("Authorization", p.Token)
 		body := NewCreateAvailabilityRequestBody(p)
 		if err := encoder(req).Encode(&body); err != nil {
 			return goahttp.ErrEncodingError("coachee", "CreateAvailability", err)
@@ -2136,6 +2169,19 @@ func (c *Client) BuildDeleteAvailabilityRequest(ctx context.Context, v interface
 	}
 
 	return req, nil
+}
+
+// EncodeDeleteAvailabilityRequest returns an encoder for requests sent to the
+// coachee DeleteAvailability server.
+func EncodeDeleteAvailabilityRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*coachee.DeleteAvailabilityPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("coachee", "DeleteAvailability", "*coachee.DeleteAvailabilityPayload", v)
+		}
+		req.Header.Set("Authorization", p.Token)
+		return nil
+	}
 }
 
 // DecodeDeleteAvailabilityResponse returns a decoder for responses returned by
@@ -3297,6 +3343,161 @@ func DecodeRegisterStripeExpressResponse(decoder func(*http.Response) goahttp.De
 		default:
 			body, _ := ioutil.ReadAll(resp.Body)
 			return nil, goahttp.ErrInvalidResponse("coachee", "RegisterStripeExpress", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// BuildAdminLoginRequest instantiates a HTTP request object with method and
+// path set to call the "coachee" service "AdminLogin" endpoint
+func (c *Client) BuildAdminLoginRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: AdminLoginCoacheePath()}
+	req, err := http.NewRequest("POST", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("coachee", "AdminLogin", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeAdminLoginRequest returns an encoder for requests sent to the coachee
+// AdminLogin server.
+func EncodeAdminLoginRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*coachee.AdminLoginPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("coachee", "AdminLogin", "*coachee.AdminLoginPayload", v)
+		}
+		body := NewAdminLoginRequestBody(p)
+		if err := encoder(req).Encode(&body); err != nil {
+			return goahttp.ErrEncodingError("coachee", "AdminLogin", err)
+		}
+		return nil
+	}
+}
+
+// DecodeAdminLoginResponse returns a decoder for responses returned by the
+// coachee AdminLogin endpoint. restoreBody controls whether the response body
+// should be restored after having been read.
+// DecodeAdminLoginResponse may return the following errors:
+//	- "internal" (type *goa.ServiceError): http.StatusInternalServerError
+//	- "transient" (type *goa.ServiceError): http.StatusInternalServerError
+//	- "notFound" (type *goa.ServiceError): http.StatusNotFound
+//	- "validation" (type *goa.ServiceError): http.StatusBadRequest
+//	- "unauthorized" (type *goa.ServiceError): http.StatusUnauthorized
+//	- error: internal error
+func DecodeAdminLoginResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body AdminLoginResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("coachee", "AdminLogin", err)
+			}
+			err = ValidateAdminLoginResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("coachee", "AdminLogin", err)
+			}
+			res := NewAdminLoginResultOK(&body)
+			return res, nil
+		case http.StatusInternalServerError:
+			en := resp.Header.Get("goa-error")
+			switch en {
+			case "internal":
+				var (
+					body AdminLoginInternalResponseBody
+					err  error
+				)
+				err = decoder(resp).Decode(&body)
+				if err != nil {
+					return nil, goahttp.ErrDecodingError("coachee", "AdminLogin", err)
+				}
+				err = ValidateAdminLoginInternalResponseBody(&body)
+				if err != nil {
+					return nil, goahttp.ErrValidationError("coachee", "AdminLogin", err)
+				}
+				return nil, NewAdminLoginInternal(&body)
+			case "transient":
+				var (
+					body AdminLoginTransientResponseBody
+					err  error
+				)
+				err = decoder(resp).Decode(&body)
+				if err != nil {
+					return nil, goahttp.ErrDecodingError("coachee", "AdminLogin", err)
+				}
+				err = ValidateAdminLoginTransientResponseBody(&body)
+				if err != nil {
+					return nil, goahttp.ErrValidationError("coachee", "AdminLogin", err)
+				}
+				return nil, NewAdminLoginTransient(&body)
+			default:
+				body, _ := ioutil.ReadAll(resp.Body)
+				return nil, goahttp.ErrInvalidResponse("coachee", "AdminLogin", resp.StatusCode, string(body))
+			}
+		case http.StatusNotFound:
+			var (
+				body AdminLoginNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("coachee", "AdminLogin", err)
+			}
+			err = ValidateAdminLoginNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("coachee", "AdminLogin", err)
+			}
+			return nil, NewAdminLoginNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body AdminLoginValidationResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("coachee", "AdminLogin", err)
+			}
+			err = ValidateAdminLoginValidationResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("coachee", "AdminLogin", err)
+			}
+			return nil, NewAdminLoginValidation(&body)
+		case http.StatusUnauthorized:
+			var (
+				body AdminLoginUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("coachee", "AdminLogin", err)
+			}
+			err = ValidateAdminLoginUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("coachee", "AdminLogin", err)
+			}
+			return nil, NewAdminLoginUnauthorized(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("coachee", "AdminLogin", resp.StatusCode, string(body))
 		}
 	}
 }

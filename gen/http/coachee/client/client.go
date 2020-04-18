@@ -105,6 +105,10 @@ type Client struct {
 	// RegisterStripeExpress endpoint.
 	RegisterStripeExpressDoer goahttp.Doer
 
+	// AdminLogin Doer is the HTTP client used to make requests to the AdminLogin
+	// endpoint.
+	AdminLoginDoer goahttp.Doer
+
 	// RestoreResponseBody controls whether the response bodies are reset after
 	// decoding so they can be read again.
 	RestoreResponseBody bool
@@ -147,6 +151,7 @@ func NewClient(
 		FinalizePasswordRecoveryFlowDoer:      doer,
 		CreateOrderDoer:                       doer,
 		RegisterStripeExpressDoer:             doer,
+		AdminLoginDoer:                        doer,
 		RestoreResponseBody:                   restoreBody,
 		scheme:                                scheme,
 		host:                                  host,
@@ -394,10 +399,15 @@ func (c *Client) CreateCertification() goa.Endpoint {
 // coachee service DeleteCertification server.
 func (c *Client) DeleteCertification() goa.Endpoint {
 	var (
+		encodeRequest  = EncodeDeleteCertificationRequest(c.encoder)
 		decodeResponse = DecodeDeleteCertificationResponse(c.decoder, c.RestoreResponseBody)
 	)
 	return func(ctx context.Context, v interface{}) (interface{}, error) {
 		req, err := c.BuildDeleteCertificationRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
 		if err != nil {
 			return nil, err
 		}
@@ -439,10 +449,15 @@ func (c *Client) CreateProgram() goa.Endpoint {
 // service DeleteProgram server.
 func (c *Client) DeleteProgram() goa.Endpoint {
 	var (
+		encodeRequest  = EncodeDeleteProgramRequest(c.encoder)
 		decodeResponse = DecodeDeleteProgramResponse(c.decoder, c.RestoreResponseBody)
 	)
 	return func(ctx context.Context, v interface{}) (interface{}, error) {
 		req, err := c.BuildDeleteProgramRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
 		if err != nil {
 			return nil, err
 		}
@@ -484,10 +499,15 @@ func (c *Client) CreateAvailability() goa.Endpoint {
 // coachee service DeleteAvailability server.
 func (c *Client) DeleteAvailability() goa.Endpoint {
 	var (
+		encodeRequest  = EncodeDeleteAvailabilityRequest(c.encoder)
 		decodeResponse = DecodeDeleteAvailabilityResponse(c.decoder, c.RestoreResponseBody)
 	)
 	return func(ctx context.Context, v interface{}) (interface{}, error) {
 		req, err := c.BuildDeleteAvailabilityRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
 		if err != nil {
 			return nil, err
 		}
@@ -665,6 +685,31 @@ func (c *Client) RegisterStripeExpress() goa.Endpoint {
 
 		if err != nil {
 			return nil, goahttp.ErrRequestError("coachee", "RegisterStripeExpress", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// AdminLogin returns an endpoint that makes HTTP requests to the coachee
+// service AdminLogin server.
+func (c *Client) AdminLogin() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeAdminLoginRequest(c.encoder)
+		decodeResponse = DecodeAdminLoginResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildAdminLoginRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.AdminLoginDoer.Do(req)
+
+		if err != nil {
+			return nil, goahttp.ErrRequestError("coachee", "AdminLogin", err)
 		}
 		return decodeResponse(resp)
 	}
