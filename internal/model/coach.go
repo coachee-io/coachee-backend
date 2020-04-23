@@ -166,7 +166,7 @@ func (Certification) New(c *coachee.Certification) *Certification {
 		Title:        c.Title,
 		Description:  c.Description,
 		Institution:  c.Institution,
-		DateAcquired: time.Date(int(c.Year), time.Month(c.Month), 0, 0, 0, 0, 0, time.UTC),
+		DateAcquired: time.Date(int(c.Year), time.Month(c.Month), 1, 0, 0, 0, 0, time.UTC),
 	}
 }
 
