@@ -349,7 +349,7 @@ var _ = Service("coachee", func() {
 		})
 
 		HTTP(func() {
-			PUT("/coaches/{id}")
+			PUT("/admin/coaches/{id}")
 			Response(StatusAccepted)
 		})
 	})
@@ -369,7 +369,7 @@ var _ = Service("coachee", func() {
 		})
 
 		HTTP(func() {
-			POST("/coaches/{id}/certifications")
+			POST("/admin/coaches/{id}/certifications")
 			Response(StatusAccepted)
 		})
 	})
@@ -389,7 +389,7 @@ var _ = Service("coachee", func() {
 		})
 
 		HTTP(func() {
-			DELETE("/coaches/{id}/certifications/{certID}")
+			DELETE("/admin/coaches/{id}/certifications/{certID}")
 			Response(StatusOK)
 		})
 	})
@@ -409,7 +409,7 @@ var _ = Service("coachee", func() {
 		})
 
 		HTTP(func() {
-			POST("/coaches/{id}/programs")
+			POST("/admin/coaches/{id}/programs")
 			Response(StatusAccepted)
 		})
 	})
@@ -429,7 +429,7 @@ var _ = Service("coachee", func() {
 		})
 
 		HTTP(func() {
-			DELETE("/coaches/{id}/programs/{programID}")
+			DELETE("/admin/coaches/{id}/programs/{programID}")
 			Response(StatusOK)
 		})
 	})
@@ -449,7 +449,7 @@ var _ = Service("coachee", func() {
 		})
 
 		HTTP(func() {
-			POST("/coaches/{id}/availability")
+			POST("/admin/coaches/{id}/availability")
 			Response(StatusAccepted)
 		})
 	})
@@ -469,7 +469,7 @@ var _ = Service("coachee", func() {
 		})
 
 		HTTP(func() {
-			DELETE("/coaches/{id}/availability/{avID}")
+			DELETE("/admin/coaches/{id}/availability/{avID}")
 			Response(StatusOK)
 		})
 	})

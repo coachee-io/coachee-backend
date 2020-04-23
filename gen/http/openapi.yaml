@@ -73,6 +73,351 @@ paths:
       - http
       security:
       - jwt_header_Authorization: []
+    put:
+      tags:
+      - coachee
+      summary: UpdateCoach coachee
+      description: |-
+        UpdateCoaches updates a coach
+
+        **Required security scopes for jwt**:
+          * `admin`
+      operationId: coachee#UpdateCoach
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - name: Authorization
+        in: header
+        description: JWT token used to perform authorization
+        required: true
+        type: string
+      - name: UpdateCoachRequestBody
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/CoacheeUpdateCoachRequestBody'
+      responses:
+        "202":
+          description: Accepted response.
+        "400":
+          description: Bad Request response.
+          schema:
+            $ref: '#/definitions/CoacheeUpdateCoachValidationResponseBody'
+        "401":
+          description: Unauthorized response.
+          schema:
+            $ref: '#/definitions/CoacheeUpdateCoachUnauthorizedResponseBody'
+        "404":
+          description: Not Found response.
+          schema:
+            $ref: '#/definitions/CoacheeUpdateCoachNotFoundResponseBody'
+        "500":
+          description: Internal Server Error response.
+          schema:
+            $ref: '#/definitions/CoacheeUpdateCoachTransientResponseBody'
+      schemes:
+      - http
+      security:
+      - jwt_header_Authorization: []
+  /admin/coaches/{id}/availability:
+    post:
+      tags:
+      - coachee
+      summary: CreateAvailability coachee
+      description: |-
+        creates an availability for a coach
+
+        **Required security scopes for jwt**:
+          * `admin`
+      operationId: coachee#CreateAvailability
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - name: Authorization
+        in: header
+        description: JWT token used to perform authorization
+        required: true
+        type: string
+      - name: CreateAvailabilityRequestBody
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/CoacheeCreateAvailabilityRequestBody'
+          required:
+          - availability
+      responses:
+        "202":
+          description: Accepted response.
+        "400":
+          description: Bad Request response.
+          schema:
+            $ref: '#/definitions/CoacheeCreateAvailabilityValidationResponseBody'
+        "401":
+          description: Unauthorized response.
+          schema:
+            $ref: '#/definitions/CoacheeCreateAvailabilityUnauthorizedResponseBody'
+        "404":
+          description: Not Found response.
+          schema:
+            $ref: '#/definitions/CoacheeCreateAvailabilityNotFoundResponseBody'
+        "500":
+          description: Internal Server Error response.
+          schema:
+            $ref: '#/definitions/CoacheeCreateAvailabilityTransientResponseBody'
+      schemes:
+      - http
+      security:
+      - jwt_header_Authorization: []
+  /admin/coaches/{id}/availability/{avID}:
+    delete:
+      tags:
+      - coachee
+      summary: DeleteAvailability coachee
+      description: |-
+        deletes an availability for a coach
+
+        **Required security scopes for jwt**:
+          * `admin`
+      operationId: coachee#DeleteAvailability
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - name: avID
+        in: path
+        required: true
+        type: string
+      - name: Authorization
+        in: header
+        description: JWT token used to perform authorization
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK response.
+        "400":
+          description: Bad Request response.
+          schema:
+            $ref: '#/definitions/CoacheeDeleteAvailabilityValidationResponseBody'
+        "401":
+          description: Unauthorized response.
+          schema:
+            $ref: '#/definitions/CoacheeDeleteAvailabilityUnauthorizedResponseBody'
+        "404":
+          description: Not Found response.
+          schema:
+            $ref: '#/definitions/CoacheeDeleteAvailabilityNotFoundResponseBody'
+        "500":
+          description: Internal Server Error response.
+          schema:
+            $ref: '#/definitions/CoacheeDeleteAvailabilityTransientResponseBody'
+      schemes:
+      - http
+      security:
+      - jwt_header_Authorization: []
+  /admin/coaches/{id}/certifications:
+    post:
+      tags:
+      - coachee
+      summary: CreateCertification coachee
+      description: |-
+        creates a certification for a coach
+
+        **Required security scopes for jwt**:
+          * `admin`
+      operationId: coachee#CreateCertification
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - name: Authorization
+        in: header
+        description: JWT token used to perform authorization
+        required: true
+        type: string
+      - name: CreateCertificationRequestBody
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/CoacheeCreateCertificationRequestBody'
+          required:
+          - certification
+      responses:
+        "202":
+          description: Accepted response.
+        "400":
+          description: Bad Request response.
+          schema:
+            $ref: '#/definitions/CoacheeCreateCertificationValidationResponseBody'
+        "401":
+          description: Unauthorized response.
+          schema:
+            $ref: '#/definitions/CoacheeCreateCertificationUnauthorizedResponseBody'
+        "404":
+          description: Not Found response.
+          schema:
+            $ref: '#/definitions/CoacheeCreateCertificationNotFoundResponseBody'
+        "500":
+          description: Internal Server Error response.
+          schema:
+            $ref: '#/definitions/CoacheeCreateCertificationTransientResponseBody'
+      schemes:
+      - http
+      security:
+      - jwt_header_Authorization: []
+  /admin/coaches/{id}/certifications/{certID}:
+    delete:
+      tags:
+      - coachee
+      summary: DeleteCertification coachee
+      description: |-
+        deletes a certification for a coach
+
+        **Required security scopes for jwt**:
+          * `admin`
+      operationId: coachee#DeleteCertification
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - name: certID
+        in: path
+        required: true
+        type: string
+      - name: Authorization
+        in: header
+        description: JWT token used to perform authorization
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK response.
+        "400":
+          description: Bad Request response.
+          schema:
+            $ref: '#/definitions/CoacheeDeleteCertificationValidationResponseBody'
+        "401":
+          description: Unauthorized response.
+          schema:
+            $ref: '#/definitions/CoacheeDeleteCertificationUnauthorizedResponseBody'
+        "404":
+          description: Not Found response.
+          schema:
+            $ref: '#/definitions/CoacheeDeleteCertificationNotFoundResponseBody'
+        "500":
+          description: Internal Server Error response.
+          schema:
+            $ref: '#/definitions/CoacheeDeleteCertificationTransientResponseBody'
+      schemes:
+      - http
+      security:
+      - jwt_header_Authorization: []
+  /admin/coaches/{id}/programs:
+    post:
+      tags:
+      - coachee
+      summary: CreateProgram coachee
+      description: |-
+        creates a program for a coach
+
+        **Required security scopes for jwt**:
+          * `admin`
+      operationId: coachee#CreateProgram
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - name: Authorization
+        in: header
+        description: JWT token used to perform authorization
+        required: true
+        type: string
+      - name: CreateProgramRequestBody
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/CoacheeCreateProgramRequestBody'
+          required:
+          - program
+      responses:
+        "202":
+          description: Accepted response.
+        "400":
+          description: Bad Request response.
+          schema:
+            $ref: '#/definitions/CoacheeCreateProgramValidationResponseBody'
+        "401":
+          description: Unauthorized response.
+          schema:
+            $ref: '#/definitions/CoacheeCreateProgramUnauthorizedResponseBody'
+        "404":
+          description: Not Found response.
+          schema:
+            $ref: '#/definitions/CoacheeCreateProgramNotFoundResponseBody'
+        "500":
+          description: Internal Server Error response.
+          schema:
+            $ref: '#/definitions/CoacheeCreateProgramTransientResponseBody'
+      schemes:
+      - http
+      security:
+      - jwt_header_Authorization: []
+  /admin/coaches/{id}/programs/{programID}:
+    delete:
+      tags:
+      - coachee
+      summary: DeleteProgram coachee
+      description: |-
+        deletes a program for a coach
+
+        **Required security scopes for jwt**:
+          * `admin`
+      operationId: coachee#DeleteProgram
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - name: programID
+        in: path
+        required: true
+        type: string
+      - name: Authorization
+        in: header
+        description: JWT token used to perform authorization
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK response.
+        "400":
+          description: Bad Request response.
+          schema:
+            $ref: '#/definitions/CoacheeDeleteProgramValidationResponseBody'
+        "401":
+          description: Unauthorized response.
+          schema:
+            $ref: '#/definitions/CoacheeDeleteProgramUnauthorizedResponseBody'
+        "404":
+          description: Not Found response.
+          schema:
+            $ref: '#/definitions/CoacheeDeleteProgramNotFoundResponseBody'
+        "500":
+          description: Internal Server Error response.
+          schema:
+            $ref: '#/definitions/CoacheeDeleteProgramTransientResponseBody'
+      schemes:
+      - http
+      security:
+      - jwt_header_Authorization: []
   /admin/login:
     post:
       tags:
@@ -344,351 +689,6 @@ paths:
             $ref: '#/definitions/CoacheeGetCoachTransientResponseBody'
       schemes:
       - http
-    put:
-      tags:
-      - coachee
-      summary: UpdateCoach coachee
-      description: |-
-        UpdateCoaches updates a coach
-
-        **Required security scopes for jwt**:
-          * `admin`
-      operationId: coachee#UpdateCoach
-      parameters:
-      - name: id
-        in: path
-        required: true
-        type: integer
-      - name: Authorization
-        in: header
-        description: JWT token used to perform authorization
-        required: true
-        type: string
-      - name: UpdateCoachRequestBody
-        in: body
-        required: true
-        schema:
-          $ref: '#/definitions/CoacheeUpdateCoachRequestBody'
-      responses:
-        "202":
-          description: Accepted response.
-        "400":
-          description: Bad Request response.
-          schema:
-            $ref: '#/definitions/CoacheeUpdateCoachValidationResponseBody'
-        "401":
-          description: Unauthorized response.
-          schema:
-            $ref: '#/definitions/CoacheeUpdateCoachUnauthorizedResponseBody'
-        "404":
-          description: Not Found response.
-          schema:
-            $ref: '#/definitions/CoacheeUpdateCoachNotFoundResponseBody'
-        "500":
-          description: Internal Server Error response.
-          schema:
-            $ref: '#/definitions/CoacheeUpdateCoachTransientResponseBody'
-      schemes:
-      - http
-      security:
-      - jwt_header_Authorization: []
-  /coaches/{id}/availability:
-    post:
-      tags:
-      - coachee
-      summary: CreateAvailability coachee
-      description: |-
-        creates an availability for a coach
-
-        **Required security scopes for jwt**:
-          * `admin`
-      operationId: coachee#CreateAvailability
-      parameters:
-      - name: id
-        in: path
-        required: true
-        type: integer
-      - name: Authorization
-        in: header
-        description: JWT token used to perform authorization
-        required: true
-        type: string
-      - name: CreateAvailabilityRequestBody
-        in: body
-        required: true
-        schema:
-          $ref: '#/definitions/CoacheeCreateAvailabilityRequestBody'
-          required:
-          - availability
-      responses:
-        "202":
-          description: Accepted response.
-        "400":
-          description: Bad Request response.
-          schema:
-            $ref: '#/definitions/CoacheeCreateAvailabilityValidationResponseBody'
-        "401":
-          description: Unauthorized response.
-          schema:
-            $ref: '#/definitions/CoacheeCreateAvailabilityUnauthorizedResponseBody'
-        "404":
-          description: Not Found response.
-          schema:
-            $ref: '#/definitions/CoacheeCreateAvailabilityNotFoundResponseBody'
-        "500":
-          description: Internal Server Error response.
-          schema:
-            $ref: '#/definitions/CoacheeCreateAvailabilityTransientResponseBody'
-      schemes:
-      - http
-      security:
-      - jwt_header_Authorization: []
-  /coaches/{id}/availability/{avID}:
-    delete:
-      tags:
-      - coachee
-      summary: DeleteAvailability coachee
-      description: |-
-        deletes an availability for a coach
-
-        **Required security scopes for jwt**:
-          * `admin`
-      operationId: coachee#DeleteAvailability
-      parameters:
-      - name: id
-        in: path
-        required: true
-        type: integer
-      - name: avID
-        in: path
-        required: true
-        type: string
-      - name: Authorization
-        in: header
-        description: JWT token used to perform authorization
-        required: true
-        type: string
-      responses:
-        "200":
-          description: OK response.
-        "400":
-          description: Bad Request response.
-          schema:
-            $ref: '#/definitions/CoacheeDeleteAvailabilityValidationResponseBody'
-        "401":
-          description: Unauthorized response.
-          schema:
-            $ref: '#/definitions/CoacheeDeleteAvailabilityUnauthorizedResponseBody'
-        "404":
-          description: Not Found response.
-          schema:
-            $ref: '#/definitions/CoacheeDeleteAvailabilityNotFoundResponseBody'
-        "500":
-          description: Internal Server Error response.
-          schema:
-            $ref: '#/definitions/CoacheeDeleteAvailabilityTransientResponseBody'
-      schemes:
-      - http
-      security:
-      - jwt_header_Authorization: []
-  /coaches/{id}/certifications:
-    post:
-      tags:
-      - coachee
-      summary: CreateCertification coachee
-      description: |-
-        creates a certification for a coach
-
-        **Required security scopes for jwt**:
-          * `admin`
-      operationId: coachee#CreateCertification
-      parameters:
-      - name: id
-        in: path
-        required: true
-        type: integer
-      - name: Authorization
-        in: header
-        description: JWT token used to perform authorization
-        required: true
-        type: string
-      - name: CreateCertificationRequestBody
-        in: body
-        required: true
-        schema:
-          $ref: '#/definitions/CoacheeCreateCertificationRequestBody'
-          required:
-          - certification
-      responses:
-        "202":
-          description: Accepted response.
-        "400":
-          description: Bad Request response.
-          schema:
-            $ref: '#/definitions/CoacheeCreateCertificationValidationResponseBody'
-        "401":
-          description: Unauthorized response.
-          schema:
-            $ref: '#/definitions/CoacheeCreateCertificationUnauthorizedResponseBody'
-        "404":
-          description: Not Found response.
-          schema:
-            $ref: '#/definitions/CoacheeCreateCertificationNotFoundResponseBody'
-        "500":
-          description: Internal Server Error response.
-          schema:
-            $ref: '#/definitions/CoacheeCreateCertificationTransientResponseBody'
-      schemes:
-      - http
-      security:
-      - jwt_header_Authorization: []
-  /coaches/{id}/certifications/{certID}:
-    delete:
-      tags:
-      - coachee
-      summary: DeleteCertification coachee
-      description: |-
-        deletes a certification for a coach
-
-        **Required security scopes for jwt**:
-          * `admin`
-      operationId: coachee#DeleteCertification
-      parameters:
-      - name: id
-        in: path
-        required: true
-        type: integer
-      - name: certID
-        in: path
-        required: true
-        type: string
-      - name: Authorization
-        in: header
-        description: JWT token used to perform authorization
-        required: true
-        type: string
-      responses:
-        "200":
-          description: OK response.
-        "400":
-          description: Bad Request response.
-          schema:
-            $ref: '#/definitions/CoacheeDeleteCertificationValidationResponseBody'
-        "401":
-          description: Unauthorized response.
-          schema:
-            $ref: '#/definitions/CoacheeDeleteCertificationUnauthorizedResponseBody'
-        "404":
-          description: Not Found response.
-          schema:
-            $ref: '#/definitions/CoacheeDeleteCertificationNotFoundResponseBody'
-        "500":
-          description: Internal Server Error response.
-          schema:
-            $ref: '#/definitions/CoacheeDeleteCertificationTransientResponseBody'
-      schemes:
-      - http
-      security:
-      - jwt_header_Authorization: []
-  /coaches/{id}/programs:
-    post:
-      tags:
-      - coachee
-      summary: CreateProgram coachee
-      description: |-
-        creates a program for a coach
-
-        **Required security scopes for jwt**:
-          * `admin`
-      operationId: coachee#CreateProgram
-      parameters:
-      - name: id
-        in: path
-        required: true
-        type: integer
-      - name: Authorization
-        in: header
-        description: JWT token used to perform authorization
-        required: true
-        type: string
-      - name: CreateProgramRequestBody
-        in: body
-        required: true
-        schema:
-          $ref: '#/definitions/CoacheeCreateProgramRequestBody'
-          required:
-          - program
-      responses:
-        "202":
-          description: Accepted response.
-        "400":
-          description: Bad Request response.
-          schema:
-            $ref: '#/definitions/CoacheeCreateProgramValidationResponseBody'
-        "401":
-          description: Unauthorized response.
-          schema:
-            $ref: '#/definitions/CoacheeCreateProgramUnauthorizedResponseBody'
-        "404":
-          description: Not Found response.
-          schema:
-            $ref: '#/definitions/CoacheeCreateProgramNotFoundResponseBody'
-        "500":
-          description: Internal Server Error response.
-          schema:
-            $ref: '#/definitions/CoacheeCreateProgramTransientResponseBody'
-      schemes:
-      - http
-      security:
-      - jwt_header_Authorization: []
-  /coaches/{id}/programs/{programID}:
-    delete:
-      tags:
-      - coachee
-      summary: DeleteProgram coachee
-      description: |-
-        deletes a program for a coach
-
-        **Required security scopes for jwt**:
-          * `admin`
-      operationId: coachee#DeleteProgram
-      parameters:
-      - name: id
-        in: path
-        required: true
-        type: integer
-      - name: programID
-        in: path
-        required: true
-        type: string
-      - name: Authorization
-        in: header
-        description: JWT token used to perform authorization
-        required: true
-        type: string
-      responses:
-        "200":
-          description: OK response.
-        "400":
-          description: Bad Request response.
-          schema:
-            $ref: '#/definitions/CoacheeDeleteProgramValidationResponseBody'
-        "401":
-          description: Unauthorized response.
-          schema:
-            $ref: '#/definitions/CoacheeDeleteProgramUnauthorizedResponseBody'
-        "404":
-          description: Not Found response.
-          schema:
-            $ref: '#/definitions/CoacheeDeleteProgramNotFoundResponseBody'
-        "500":
-          description: Internal Server Error response.
-          schema:
-            $ref: '#/definitions/CoacheeDeleteProgramTransientResponseBody'
-      schemes:
-      - http
-      security:
-      - jwt_header_Authorization: []
   /coaches/{id}/stripe:
     post:
       tags:

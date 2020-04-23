@@ -87,13 +87,13 @@ func New(
 			{"StartCoachPasswordRecoveryFlow", "POST", "/coaches/recovery"},
 			{"CheckCoachPasswordRecoveryToken", "GET", "/coaches/recovery/{token}"},
 			{"FinalizeCoachPasswordRecoveryFlow", "POST", "/coaches/recovery/{token}"},
-			{"UpdateCoach", "PUT", "/coaches/{id}"},
-			{"CreateCertification", "POST", "/coaches/{id}/certifications"},
-			{"DeleteCertification", "DELETE", "/coaches/{id}/certifications/{certID}"},
-			{"CreateProgram", "POST", "/coaches/{id}/programs"},
-			{"DeleteProgram", "DELETE", "/coaches/{id}/programs/{programID}"},
-			{"CreateAvailability", "POST", "/coaches/{id}/availability"},
-			{"DeleteAvailability", "DELETE", "/coaches/{id}/availability/{avID}"},
+			{"UpdateCoach", "PUT", "/admin/coaches/{id}"},
+			{"CreateCertification", "POST", "/admin/coaches/{id}/certifications"},
+			{"DeleteCertification", "DELETE", "/admin/coaches/{id}/certifications/{certID}"},
+			{"CreateProgram", "POST", "/admin/coaches/{id}/programs"},
+			{"DeleteProgram", "DELETE", "/admin/coaches/{id}/programs/{programID}"},
+			{"CreateAvailability", "POST", "/admin/coaches/{id}/availability"},
+			{"DeleteAvailability", "DELETE", "/admin/coaches/{id}/availability/{avID}"},
 			{"CreateCustomer", "POST", "/clients"},
 			{"CustomerLogin", "POST", "/clients/login"},
 			{"StartPasswordRecoveryFlow", "POST", "/recovery"},
@@ -678,7 +678,7 @@ func MountUpdateCoachHandler(mux goahttp.Muxer, h http.Handler) {
 			h.ServeHTTP(w, r)
 		}
 	}
-	mux.Handle("PUT", "/coaches/{id}", f)
+	mux.Handle("PUT", "/admin/coaches/{id}", f)
 }
 
 // NewUpdateCoachHandler creates a HTTP handler which loads the HTTP request
@@ -731,7 +731,7 @@ func MountCreateCertificationHandler(mux goahttp.Muxer, h http.Handler) {
 			h.ServeHTTP(w, r)
 		}
 	}
-	mux.Handle("POST", "/coaches/{id}/certifications", f)
+	mux.Handle("POST", "/admin/coaches/{id}/certifications", f)
 }
 
 // NewCreateCertificationHandler creates a HTTP handler which loads the HTTP
@@ -784,7 +784,7 @@ func MountDeleteCertificationHandler(mux goahttp.Muxer, h http.Handler) {
 			h.ServeHTTP(w, r)
 		}
 	}
-	mux.Handle("DELETE", "/coaches/{id}/certifications/{certID}", f)
+	mux.Handle("DELETE", "/admin/coaches/{id}/certifications/{certID}", f)
 }
 
 // NewDeleteCertificationHandler creates a HTTP handler which loads the HTTP
@@ -837,7 +837,7 @@ func MountCreateProgramHandler(mux goahttp.Muxer, h http.Handler) {
 			h.ServeHTTP(w, r)
 		}
 	}
-	mux.Handle("POST", "/coaches/{id}/programs", f)
+	mux.Handle("POST", "/admin/coaches/{id}/programs", f)
 }
 
 // NewCreateProgramHandler creates a HTTP handler which loads the HTTP request
@@ -890,7 +890,7 @@ func MountDeleteProgramHandler(mux goahttp.Muxer, h http.Handler) {
 			h.ServeHTTP(w, r)
 		}
 	}
-	mux.Handle("DELETE", "/coaches/{id}/programs/{programID}", f)
+	mux.Handle("DELETE", "/admin/coaches/{id}/programs/{programID}", f)
 }
 
 // NewDeleteProgramHandler creates a HTTP handler which loads the HTTP request
@@ -943,7 +943,7 @@ func MountCreateAvailabilityHandler(mux goahttp.Muxer, h http.Handler) {
 			h.ServeHTTP(w, r)
 		}
 	}
-	mux.Handle("POST", "/coaches/{id}/availability", f)
+	mux.Handle("POST", "/admin/coaches/{id}/availability", f)
 }
 
 // NewCreateAvailabilityHandler creates a HTTP handler which loads the HTTP
@@ -996,7 +996,7 @@ func MountDeleteAvailabilityHandler(mux goahttp.Muxer, h http.Handler) {
 			h.ServeHTTP(w, r)
 		}
 	}
-	mux.Handle("DELETE", "/coaches/{id}/availability/{avID}", f)
+	mux.Handle("DELETE", "/admin/coaches/{id}/availability/{avID}", f)
 }
 
 // NewDeleteAvailabilityHandler creates a HTTP handler which loads the HTTP
