@@ -80,7 +80,7 @@ func New(
 		Mounts: []*MountPoint{
 			{"GetCoaches", "GET", "/coaches"},
 			{"GetCoach", "GET", "/coaches/{id}"},
-			{"AdminGetCoach", "GET", "/coaches/{id}"},
+			{"AdminGetCoach", "GET", "/admin/coaches/{id}"},
 			{"LenCoaches", "GET", "/coaches/{tag}/length"},
 			{"CreateCoach", "POST", "/coaches"},
 			{"LoginCoach", "POST", "/coaches/login"},
@@ -304,7 +304,7 @@ func MountAdminGetCoachHandler(mux goahttp.Muxer, h http.Handler) {
 			h.ServeHTTP(w, r)
 		}
 	}
-	mux.Handle("GET", "/coaches/{id}", f)
+	mux.Handle("GET", "/admin/coaches/{id}", f)
 }
 
 // NewAdminGetCoachHandler creates a HTTP handler which loads the HTTP request

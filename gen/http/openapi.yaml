@@ -9,6 +9,70 @@ consumes:
 produces:
 - application/json
 paths:
+  /admin/coaches/{id}:
+    get:
+      tags:
+      - coachee
+      summary: AdminGetCoach coachee
+      description: |-
+        AdminGetCoach returns all coach info according to the id
+
+        **Required security scopes for jwt**:
+          * `admin`
+      operationId: coachee#AdminGetCoach
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - name: Authorization
+        in: header
+        description: JWT token used to perform authorization
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK response.
+          schema:
+            $ref: '#/definitions/CoacheeAdminGetCoachResponseBody'
+            required:
+            - id
+            - firstName
+            - lastName
+            - email
+            - phone
+            - stripeID
+            - tags
+            - description
+            - city
+            - country
+            - pictureURL
+            - status
+            - vat
+            - introCall
+            - availability
+            - certifications
+            - programs
+        "400":
+          description: Bad Request response.
+          schema:
+            $ref: '#/definitions/CoacheeAdminGetCoachValidationResponseBody'
+        "401":
+          description: Unauthorized response.
+          schema:
+            $ref: '#/definitions/CoacheeAdminGetCoachUnauthorizedResponseBody'
+        "404":
+          description: Not Found response.
+          schema:
+            $ref: '#/definitions/CoacheeAdminGetCoachNotFoundResponseBody'
+        "500":
+          description: Internal Server Error response.
+          schema:
+            $ref: '#/definitions/CoacheeAdminGetCoachTransientResponseBody'
+      schemes:
+      - http
+      security:
+      - jwt_header_Authorization: []
   /admin/login:
     post:
       tags:
@@ -240,66 +304,46 @@ paths:
     get:
       tags:
       - coachee
-      summary: AdminGetCoach coachee
-      description: |-
-        AdminGetCoach returns all coach info according to the id
-
-        **Required security scopes for jwt**:
-          * `admin`
-      operationId: coachee#AdminGetCoach
+      summary: GetCoach coachee
+      description: GetCoach returns one coach according to the id
+      operationId: coachee#GetCoach
       parameters:
       - name: id
         in: path
         required: true
         type: integer
-      - name: Authorization
-        in: header
-        description: JWT token used to perform authorization
-        required: true
-        type: string
       responses:
         "200":
           description: OK response.
           schema:
-            $ref: '#/definitions/CoacheeAdminGetCoachResponseBody'
+            $ref: '#/definitions/CoacheeGetCoachResponseBody'
             required:
             - id
             - firstName
             - lastName
-            - email
-            - phone
-            - stripeID
             - tags
             - description
             - city
             - country
             - pictureURL
-            - status
-            - vat
-            - introCall
-            - availability
-            - certifications
-            - programs
         "400":
           description: Bad Request response.
           schema:
-            $ref: '#/definitions/CoacheeAdminGetCoachValidationResponseBody'
+            $ref: '#/definitions/CoacheeGetCoachValidationResponseBody'
         "401":
           description: Unauthorized response.
           schema:
-            $ref: '#/definitions/CoacheeAdminGetCoachUnauthorizedResponseBody'
+            $ref: '#/definitions/CoacheeGetCoachUnauthorizedResponseBody'
         "404":
           description: Not Found response.
           schema:
-            $ref: '#/definitions/CoacheeAdminGetCoachNotFoundResponseBody'
+            $ref: '#/definitions/CoacheeGetCoachNotFoundResponseBody'
         "500":
           description: Internal Server Error response.
           schema:
-            $ref: '#/definitions/CoacheeAdminGetCoachTransientResponseBody'
+            $ref: '#/definitions/CoacheeGetCoachTransientResponseBody'
       schemes:
       - http
-      security:
-      - jwt_header_Authorization: []
     put:
       tags:
       - coachee

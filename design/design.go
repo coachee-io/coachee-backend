@@ -208,7 +208,7 @@ var _ = Service("coachee", func() {
 		Result(fullCoach)
 
 		HTTP(func() {
-			GET("/coaches/{id}")
+			GET("/admin/coaches/{id}")
 			Response(StatusOK)
 		})
 	})
