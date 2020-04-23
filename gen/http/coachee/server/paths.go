@@ -21,6 +21,11 @@ func GetCoachCoacheePath(id uint) string {
 	return fmt.Sprintf("/coaches/%v", id)
 }
 
+// AdminGetCoachCoacheePath returns the URL path to the coachee service AdminGetCoach HTTP endpoint.
+func AdminGetCoachCoacheePath(id uint) string {
+	return fmt.Sprintf("/coaches/%v", id)
+}
+
 // LenCoachesCoacheePath returns the URL path to the coachee service LenCoaches HTTP endpoint.
 func LenCoachesCoacheePath(tag string) string {
 	return fmt.Sprintf("/coaches/%v/length", tag)

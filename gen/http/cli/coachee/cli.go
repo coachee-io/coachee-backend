@@ -23,13 +23,13 @@ import (
 //    command (subcommand1|subcommand2|...)
 //
 func UsageCommands() string {
-	return `coachee (get-coaches|get-coach|len-coaches|create-coach|login-coach|start-coach-password-recovery-flow|check-coach-password-recovery-token|finalize-coach-password-recovery-flow|update-coach|create-certification|delete-certification|create-program|delete-program|create-availability|delete-availability|create-customer|customer-login|start-password-recovery-flow|check-password-recovery-token|finalize-password-recovery-flow|create-order|register-stripe-express|admin-login)
+	return `coachee (get-coaches|get-coach|admin-get-coach|len-coaches|create-coach|login-coach|start-coach-password-recovery-flow|check-coach-password-recovery-token|finalize-coach-password-recovery-flow|update-coach|create-certification|delete-certification|create-program|delete-program|create-availability|delete-availability|create-customer|customer-login|start-password-recovery-flow|check-password-recovery-token|finalize-password-recovery-flow|create-order|register-stripe-express|admin-login)
 `
 }
 
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
-	return os.Args[0] + ` coachee get-coaches --tag "Illum veritatis nemo." --limit 9218027441373059103 --page 591557662460167685 --show-all true` + "\n" +
+	return os.Args[0] + ` coachee get-coaches --tag "Libero officiis in quidem." --limit 3000056767393239932 --page 5861647410684178278 --show-all false` + "\n" +
 		""
 }
 
@@ -53,6 +53,10 @@ func ParseEndpoint(
 
 		coacheeGetCoachFlags  = flag.NewFlagSet("get-coach", flag.ExitOnError)
 		coacheeGetCoachIDFlag = coacheeGetCoachFlags.String("id", "REQUIRED", "")
+
+		coacheeAdminGetCoachFlags     = flag.NewFlagSet("admin-get-coach", flag.ExitOnError)
+		coacheeAdminGetCoachIDFlag    = coacheeAdminGetCoachFlags.String("id", "REQUIRED", "")
+		coacheeAdminGetCoachTokenFlag = coacheeAdminGetCoachFlags.String("token", "REQUIRED", "")
 
 		coacheeLenCoachesFlags   = flag.NewFlagSet("len-coaches", flag.ExitOnError)
 		coacheeLenCoachesTagFlag = coacheeLenCoachesFlags.String("tag", "REQUIRED", "")
@@ -138,6 +142,7 @@ func ParseEndpoint(
 	coacheeFlags.Usage = coacheeUsage
 	coacheeGetCoachesFlags.Usage = coacheeGetCoachesUsage
 	coacheeGetCoachFlags.Usage = coacheeGetCoachUsage
+	coacheeAdminGetCoachFlags.Usage = coacheeAdminGetCoachUsage
 	coacheeLenCoachesFlags.Usage = coacheeLenCoachesUsage
 	coacheeCreateCoachFlags.Usage = coacheeCreateCoachUsage
 	coacheeLoginCoachFlags.Usage = coacheeLoginCoachUsage
@@ -199,6 +204,9 @@ func ParseEndpoint(
 
 			case "get-coach":
 				epf = coacheeGetCoachFlags
+
+			case "admin-get-coach":
+				epf = coacheeAdminGetCoachFlags
 
 			case "len-coaches":
 				epf = coacheeLenCoachesFlags
@@ -294,6 +302,9 @@ func ParseEndpoint(
 			case "get-coach":
 				endpoint = c.GetCoach()
 				data, err = coacheec.BuildGetCoachPayload(*coacheeGetCoachIDFlag)
+			case "admin-get-coach":
+				endpoint = c.AdminGetCoach()
+				data, err = coacheec.BuildAdminGetCoachPayload(*coacheeAdminGetCoachIDFlag, *coacheeAdminGetCoachTokenFlag)
 			case "len-coaches":
 				endpoint = c.LenCoaches()
 				data, err = coacheec.BuildLenCoachesPayload(*coacheeLenCoachesTagFlag)
@@ -376,6 +387,7 @@ Usage:
 COMMAND:
     get-coaches: GetCoaches returns an array of coaches according to a tag and pagination
     get-coach: GetCoach returns one coach according to the id
+    admin-get-coach: AdminGetCoach returns all coach info according to the id
     len-coaches: LenCoaches returns the amount of coaches with a given tag
     create-coach: CreateCoaches creates a base coach
     login-coach: Logs in a coach to stripe express
@@ -412,7 +424,7 @@ GetCoaches returns an array of coaches according to a tag and pagination
     -show-all BOOL: 
 
 Example:
-    `+os.Args[0]+` coachee get-coaches --tag "Illum veritatis nemo." --limit 9218027441373059103 --page 591557662460167685 --show-all true
+    `+os.Args[0]+` coachee get-coaches --tag "Libero officiis in quidem." --limit 3000056767393239932 --page 5861647410684178278 --show-all false
 `, os.Args[0])
 }
 
@@ -423,7 +435,19 @@ GetCoach returns one coach according to the id
     -id UINT: 
 
 Example:
-    `+os.Args[0]+` coachee get-coach --id 5533606029577546225
+    `+os.Args[0]+` coachee get-coach --id 10288492933501593900
+`, os.Args[0])
+}
+
+func coacheeAdminGetCoachUsage() {
+	fmt.Fprintf(os.Stderr, `%s [flags] coachee admin-get-coach -id UINT -token STRING
+
+AdminGetCoach returns all coach info according to the id
+    -id UINT: 
+    -token STRING: 
+
+Example:
+    `+os.Args[0]+` coachee admin-get-coach --id 8139492073317246383 --token "Autem autem quo sit sit."
 `, os.Args[0])
 }
 
@@ -434,7 +458,7 @@ LenCoaches returns the amount of coaches with a given tag
     -tag STRING: 
 
 Example:
-    `+os.Args[0]+` coachee len-coaches --tag "Corporis quia voluptatem repellat."
+    `+os.Args[0]+` coachee len-coaches --tag "Soluta aliquid saepe."
 `, os.Args[0])
 }
 
@@ -446,20 +470,20 @@ CreateCoaches creates a base coach
 
 Example:
     `+os.Args[0]+` coachee create-coach --body '{
-      "city": "Repellat id aperiam fugit facere repellat.",
-      "country": "Architecto amet sint facere est incidunt rerum.",
-      "description": "Autem harum aut beatae.",
-      "email": "Quo incidunt ad recusandae quam.",
-      "firstName": "Esse molestiae eum et et.",
-      "introCall": 3032696638124261585,
-      "lastName": "Iusto incidunt odio.",
-      "password": "Sint facilis.",
-      "phone": "Rerum laborum.",
-      "tags": "Quae magnam ut vero autem magnam rerum.",
-      "textAvailability": "Iste assumenda.",
-      "textCertifications": "Praesentium accusamus autem autem.",
-      "textPrograms": "Sit sit accusantium neque ad enim.",
-      "vat": "Ut qui laboriosam id."
+      "city": "Voluptatem voluptates omnis cumque.",
+      "country": "Rerum rerum officiis quo nobis.",
+      "description": "Inventore voluptatibus odio minima.",
+      "email": "Dolores eius.",
+      "firstName": "Laudantium quae tenetur pariatur sunt.",
+      "introCall": 10832568379695083985,
+      "lastName": "Aut quasi.",
+      "password": "Officia et hic.",
+      "phone": "Fugit amet non asperiores quia non.",
+      "tags": "In qui excepturi vel ut.",
+      "textAvailability": "Consequuntur vitae id fugit.",
+      "textCertifications": "Aliquid consequatur velit voluptatem ab.",
+      "textPrograms": "Quaerat neque sunt.",
+      "vat": "Quia possimus."
    }'
 `, os.Args[0])
 }
@@ -472,8 +496,8 @@ Logs in a coach to stripe express
 
 Example:
     `+os.Args[0]+` coachee login-coach --body '{
-      "email": "Iste sint.",
-      "password": "Eum veritatis beatae et sit rerum quos."
+      "email": "Labore voluptatum.",
+      "password": "Assumenda distinctio."
    }'
 `, os.Args[0])
 }
@@ -486,7 +510,7 @@ starts the process of recovering a password
 
 Example:
     `+os.Args[0]+` coachee start-coach-password-recovery-flow --body '{
-      "email": "Error consectetur in consequatur."
+      "email": "Dolorem qui laboriosam."
    }'
 `, os.Args[0])
 }
@@ -498,7 +522,7 @@ verifies if a recovery token is still valid
     -token STRING: 
 
 Example:
-    `+os.Args[0]+` coachee check-coach-password-recovery-token --token "Suscipit delectus fugit fugit quia aliquid."
+    `+os.Args[0]+` coachee check-coach-password-recovery-token --token "Culpa quo repellat."
 `, os.Args[0])
 }
 
@@ -511,8 +535,8 @@ finalizes the password recovery flow by resetting a new password
 
 Example:
     `+os.Args[0]+` coachee finalize-coach-password-recovery-flow --body '{
-      "password": "Officia et hic."
-   }' --token "Fugit amet non asperiores quia non."
+      "password": "Aut libero rerum mollitia accusantium tempore fugit."
+   }' --token "Quod veritatis ad deleniti ut quisquam."
 `, os.Args[0])
 }
 
@@ -526,19 +550,20 @@ UpdateCoaches updates a coach
 
 Example:
     `+os.Args[0]+` coachee update-coach --body '{
-      "city": "Beatae non quia blanditiis similique.",
-      "country": "Sint qui odit quia voluptas labore voluptatum.",
-      "description": "Tempore accusantium porro nisi aut.",
-      "email": "Quaerat neque sunt.",
-      "firstName": "Rerum rerum officiis quo nobis.",
-      "introCall": 3187574953544294077,
-      "lastName": "Atque aliquid consequatur velit voluptatem ab.",
-      "phone": "Consequuntur vitae id fugit.",
-      "pictureURL": "Esse placeat consequatur cum dolorem quo.",
-      "stripeID": "Distinctio facere neque quis.",
-      "tags": "Quia possimus.",
-      "vat": "Dolorum reprehenderit exercitationem est dolores."
-   }' --id 4633399502815089578 --token "Corporis voluptas sapiente deserunt molestiae."
+      "city": "Quo sit sit et ad sapiente.",
+      "country": "Harum vitae iusto illo sit voluptatem.",
+      "description": "Accusamus est.",
+      "email": "Vitae sunt doloremque veritatis vel provident voluptas.",
+      "firstName": "Illum eos quam id sint.",
+      "introCall": 15893836315406574142,
+      "lastName": "Excepturi eum repudiandae ipsa neque provident nemo.",
+      "phone": "Nisi maxime.",
+      "pictureURL": "Ex quo laborum quod dolorem ut ut.",
+      "status": "Eos libero numquam sit aut optio sunt.",
+      "stripeID": "Omnis consequatur in omnis.",
+      "tags": "Sint soluta aut fugit.",
+      "vat": "Enim voluptas ad quia nulla."
+   }' --id 9352614106215646179 --token "In illo ipsa vel."
 `, os.Args[0])
 }
 
@@ -553,14 +578,14 @@ creates a certification for a coach
 Example:
     `+os.Args[0]+` coachee create-certification --body '{
       "certification": {
-         "description": "Quas assumenda ratione sit.",
-         "id": "Dolore amet fugiat ab.",
-         "institution": "Qui et sint sit.",
+         "description": "Accusamus labore.",
+         "id": "Eius sapiente molestiae.",
+         "institution": "Asperiores laudantium in id.",
          "month": 9,
-         "title": "Quas beatae quia exercitationem culpa quo.",
-         "year": 2096
+         "title": "Quia placeat adipisci error ipsa.",
+         "year": 2091
       }
-   }' --id 13466641166177143605 --token "Quos eum rerum architecto et facere."
+   }' --id 4351900086546248696 --token "Reiciendis voluptates et."
 `, os.Args[0])
 }
 
@@ -573,7 +598,7 @@ deletes a certification for a coach
     -token STRING: 
 
 Example:
-    `+os.Args[0]+` coachee delete-certification --id 6351686270455184110 --cert-id "Quia nihil tempora eos ut." --token "Nam earum."
+    `+os.Args[0]+` coachee delete-certification --id 1924320321770461511 --cert-id "Natus doloribus." --token "Magni odit et omnis incidunt facere."
 `, os.Args[0])
 }
 
@@ -588,15 +613,15 @@ creates a program for a coach
 Example:
     `+os.Args[0]+` coachee create-program --body '{
       "program": {
-         "description": "Soluta aut.",
-         "duration": 15114607970299711791,
-         "id": "Veritatis vel provident.",
-         "name": "Et nisi.",
-         "sessions": 13307923044606376,
-         "taxPercent": 13651844294565350471,
-         "totalPrice": 5153676287467924687
+         "description": "Et dolores et.",
+         "duration": 16239715134094687803,
+         "id": "Molestias optio commodi.",
+         "name": "Ea ut alias dicta dolorem omnis rerum.",
+         "sessions": 8130575779778925798,
+         "taxPercent": 5868420523772672001,
+         "totalPrice": 127439198434416692
       }
-   }' --id 10836590771505660290 --token "Nisi quo sit."
+   }' --id 17831032388205888362 --token "Veritatis ea natus non."
 `, os.Args[0])
 }
 
@@ -609,7 +634,7 @@ deletes a program for a coach
     -token STRING: 
 
 Example:
-    `+os.Args[0]+` coachee delete-program --id 3581867312120967611 --program-id "Enim voluptas ad quia nulla." --token "Eos libero numquam sit aut optio sunt."
+    `+os.Args[0]+` coachee delete-program --id 11738764075994764563 --program-id "Quisquam at quam doloribus." --token "Id ullam cum."
 `, os.Args[0])
 }
 
@@ -624,12 +649,12 @@ creates an availability for a coach
 Example:
     `+os.Args[0]+` coachee create-availability --body '{
       "availability": {
-         "end": 1408,
-         "id": "Ut magni et qui facere.",
-         "start": 161,
-         "weekDay": 0
+         "end": 1383,
+         "id": "Quo praesentium quis et id vel.",
+         "start": 1286,
+         "weekDay": 2
       }
-   }' --id 6393772440626229687 --token "Quia placeat adipisci error ipsa."
+   }' --id 12571222088019719260 --token "In aut illum."
 `, os.Args[0])
 }
 
@@ -642,7 +667,7 @@ deletes an availability for a coach
     -token STRING: 
 
 Example:
-    `+os.Args[0]+` coachee delete-availability --id 16790991959080839072 --av-id "Sit voluptatem dolorem." --token "Assumenda molestias doloribus nobis voluptatem delectus."
+    `+os.Args[0]+` coachee delete-availability --id 2524489794498421612 --av-id "Sed et nihil exercitationem est et ea." --token "Officiis dolorem voluptas."
 `, os.Args[0])
 }
 
@@ -654,11 +679,11 @@ creates a new customer
 
 Example:
     `+os.Args[0]+` coachee create-customer --body '{
-      "birthDate": 1698203543092410010,
-      "email": "Nemo quaerat quia voluptates aut aut ex.",
-      "firstName": "Aut provident qui et quibusdam quod molestias.",
-      "lastName": "Commodi deleniti ea ut.",
-      "password": "Dolorem omnis rerum dolorem id."
+      "birthDate": 8580233223360448486,
+      "email": "Reiciendis similique labore corrupti fugit exercitationem.",
+      "firstName": "Expedita molestiae.",
+      "lastName": "Voluptas architecto officiis et ad.",
+      "password": "Quod quis aut nostrum odio quia ea."
    }'
 `, os.Args[0])
 }
@@ -671,8 +696,8 @@ logs in a customer and returns a jwt
 
 Example:
     `+os.Args[0]+` coachee customer-login --body '{
-      "email": "Id ullam cum.",
-      "password": "Necessitatibus non."
+      "email": "Molestiae veritatis eum facere alias in.",
+      "password": "Rem et iure dignissimos."
    }'
 `, os.Args[0])
 }
@@ -685,7 +710,7 @@ starts the process of recovering a password
 
 Example:
     `+os.Args[0]+` coachee start-password-recovery-flow --body '{
-      "email": "Natus in aut illum."
+      "email": "Rerum fugiat quo inventore sint ea."
    }'
 `, os.Args[0])
 }
@@ -697,7 +722,7 @@ verifies if a recovery token is still valid
     -token STRING: 
 
 Example:
-    `+os.Args[0]+` coachee check-password-recovery-token --token "Natus ut."
+    `+os.Args[0]+` coachee check-password-recovery-token --token "Sunt labore corporis animi id nihil."
 `, os.Args[0])
 }
 
@@ -710,8 +735,8 @@ finalizes the password recovery flow by resetting a new password
 
 Example:
     `+os.Args[0]+` coachee finalize-password-recovery-flow --body '{
-      "password": "Qui et eligendi illum."
-   }' --token "Eveniet reiciendis similique labore corrupti."
+      "password": "Consequatur explicabo perspiciatis asperiores debitis quas aut."
+   }' --token "Nisi natus autem dignissimos."
 `, os.Args[0])
 }
 
@@ -724,10 +749,10 @@ creates a new order
 
 Example:
     `+os.Args[0]+` coachee create-order --body '{
-      "coachId": 14783857241464587954,
-      "introCall": 7335155683914690087,
-      "programId": "Odio quia."
-   }' --token "Aut qui est voluptatibus numquam."
+      "coachId": 13171303537761864193,
+      "introCall": 2401480714331769507,
+      "programId": "Et tempore."
+   }' --token "Et est nisi."
 `, os.Args[0])
 }
 
@@ -740,8 +765,8 @@ registers a stripe express account in stripe and associates it to a coach
 
 Example:
     `+os.Args[0]+` coachee register-stripe-express --body '{
-      "authorizationCode": "Molestiae veritatis eum facere alias in."
-   }' --id 18098937046746425210
+      "authorizationCode": "Culpa non quod perferendis commodi exercitationem explicabo."
+   }' --id 5663841983256699424
 `, os.Args[0])
 }
 
@@ -753,8 +778,8 @@ logs in a customer and returns a jwt
 
 Example:
     `+os.Args[0]+` coachee admin-login --body '{
-      "email": "Et deleniti repudiandae autem qui modi.",
-      "password": "Veniam rerum fugiat."
+      "email": "Expedita qui adipisci molestiae qui.",
+      "password": "Unde sit."
    }'
 `, os.Args[0])
 }

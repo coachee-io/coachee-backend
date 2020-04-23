@@ -7,6 +7,8 @@ import (
 	"errors"
 	"time"
 
+	validation "github.com/go-ozzo/ozzo-validation"
+
 	"github.com/pborman/uuid"
 )
 
@@ -50,6 +52,21 @@ type Coach struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt *time.Time `sql:"index"`
+}
+
+// Validate checks if the value is valid
+func (s CoachStatus) Validate() error {
+	// string casting is necessary to avoid validation recursion...
+	if err := validation.Validate(string(s),
+		validation.In(
+			string(StatusRegistered),
+			string(StatusRejected),
+			string(StatusInactive),
+			string(StatusActive),
+		)); err != nil {
+		return coachee.MakeValidation(err)
+	}
+	return nil
 }
 
 // Availabilities is an array of chunks of time

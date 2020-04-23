@@ -21,6 +21,7 @@ type Server struct {
 	Mounts                            []*MountPoint
 	GetCoaches                        http.Handler
 	GetCoach                          http.Handler
+	AdminGetCoach                     http.Handler
 	LenCoaches                        http.Handler
 	CreateCoach                       http.Handler
 	LoginCoach                        http.Handler
@@ -79,13 +80,14 @@ func New(
 		Mounts: []*MountPoint{
 			{"GetCoaches", "GET", "/coaches"},
 			{"GetCoach", "GET", "/coaches/{id}"},
+			{"AdminGetCoach", "GET", "/coaches/{id}"},
 			{"LenCoaches", "GET", "/coaches/{tag}/length"},
 			{"CreateCoach", "POST", "/coaches"},
 			{"LoginCoach", "POST", "/coaches/login"},
 			{"StartCoachPasswordRecoveryFlow", "POST", "/coaches/recovery"},
 			{"CheckCoachPasswordRecoveryToken", "GET", "/coaches/recovery/{token}"},
 			{"FinalizeCoachPasswordRecoveryFlow", "POST", "/coaches/recovery/{token}"},
-			{"UpdateCoach", "POST", "/coaches/{id}"},
+			{"UpdateCoach", "PUT", "/coaches/{id}"},
 			{"CreateCertification", "POST", "/coaches/{id}/certifications"},
 			{"DeleteCertification", "DELETE", "/coaches/{id}/certifications/{certID}"},
 			{"CreateProgram", "POST", "/coaches/{id}/programs"},
@@ -103,6 +105,7 @@ func New(
 		},
 		GetCoaches:                        NewGetCoachesHandler(e.GetCoaches, mux, decoder, encoder, errhandler, formatter),
 		GetCoach:                          NewGetCoachHandler(e.GetCoach, mux, decoder, encoder, errhandler, formatter),
+		AdminGetCoach:                     NewAdminGetCoachHandler(e.AdminGetCoach, mux, decoder, encoder, errhandler, formatter),
 		LenCoaches:                        NewLenCoachesHandler(e.LenCoaches, mux, decoder, encoder, errhandler, formatter),
 		CreateCoach:                       NewCreateCoachHandler(e.CreateCoach, mux, decoder, encoder, errhandler, formatter),
 		LoginCoach:                        NewLoginCoachHandler(e.LoginCoach, mux, decoder, encoder, errhandler, formatter),
@@ -134,6 +137,7 @@ func (s *Server) Service() string { return "coachee" }
 func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.GetCoaches = m(s.GetCoaches)
 	s.GetCoach = m(s.GetCoach)
+	s.AdminGetCoach = m(s.AdminGetCoach)
 	s.LenCoaches = m(s.LenCoaches)
 	s.CreateCoach = m(s.CreateCoach)
 	s.LoginCoach = m(s.LoginCoach)
@@ -161,6 +165,7 @@ func (s *Server) Use(m func(http.Handler) http.Handler) {
 func Mount(mux goahttp.Muxer, h *Server) {
 	MountGetCoachesHandler(mux, h.GetCoaches)
 	MountGetCoachHandler(mux, h.GetCoach)
+	MountAdminGetCoachHandler(mux, h.AdminGetCoach)
 	MountLenCoachesHandler(mux, h.LenCoaches)
 	MountCreateCoachHandler(mux, h.CreateCoach)
 	MountLoginCoachHandler(mux, h.LoginCoach)
@@ -267,6 +272,59 @@ func NewGetCoachHandler(
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "GetCoach")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "coachee")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+
+		res, err := endpoint(ctx, payload)
+
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountAdminGetCoachHandler configures the mux to serve the "coachee" service
+// "AdminGetCoach" endpoint.
+func MountAdminGetCoachHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("GET", "/coaches/{id}", f)
+}
+
+// NewAdminGetCoachHandler creates a HTTP handler which loads the HTTP request
+// and calls the "coachee" service "AdminGetCoach" endpoint.
+func NewAdminGetCoachHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeAdminGetCoachRequest(mux, decoder)
+		encodeResponse = EncodeAdminGetCoachResponse(encoder)
+		encodeError    = EncodeAdminGetCoachError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "AdminGetCoach")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "coachee")
 		payload, err := decodeRequest(r)
 		if err != nil {
@@ -620,7 +678,7 @@ func MountUpdateCoachHandler(mux goahttp.Muxer, h http.Handler) {
 			h.ServeHTTP(w, r)
 		}
 	}
-	mux.Handle("POST", "/coaches/{id}", f)
+	mux.Handle("PUT", "/coaches/{id}", f)
 }
 
 // NewUpdateCoachHandler creates a HTTP handler which loads the HTTP request

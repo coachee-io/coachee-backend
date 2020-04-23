@@ -340,6 +340,168 @@ func DecodeGetCoachResponse(decoder func(*http.Response) goahttp.Decoder, restor
 	}
 }
 
+// BuildAdminGetCoachRequest instantiates a HTTP request object with method and
+// path set to call the "coachee" service "AdminGetCoach" endpoint
+func (c *Client) BuildAdminGetCoachRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	var (
+		id uint
+	)
+	{
+		p, ok := v.(*coachee.AdminGetCoachPayload)
+		if !ok {
+			return nil, goahttp.ErrInvalidType("coachee", "AdminGetCoach", "*coachee.AdminGetCoachPayload", v)
+		}
+		id = p.ID
+	}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: AdminGetCoachCoacheePath(id)}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("coachee", "AdminGetCoach", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeAdminGetCoachRequest returns an encoder for requests sent to the
+// coachee AdminGetCoach server.
+func EncodeAdminGetCoachRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*coachee.AdminGetCoachPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("coachee", "AdminGetCoach", "*coachee.AdminGetCoachPayload", v)
+		}
+		req.Header.Set("Authorization", p.Token)
+		return nil
+	}
+}
+
+// DecodeAdminGetCoachResponse returns a decoder for responses returned by the
+// coachee AdminGetCoach endpoint. restoreBody controls whether the response
+// body should be restored after having been read.
+// DecodeAdminGetCoachResponse may return the following errors:
+//	- "internal" (type *goa.ServiceError): http.StatusInternalServerError
+//	- "transient" (type *goa.ServiceError): http.StatusInternalServerError
+//	- "notFound" (type *goa.ServiceError): http.StatusNotFound
+//	- "validation" (type *goa.ServiceError): http.StatusBadRequest
+//	- "unauthorized" (type *goa.ServiceError): http.StatusUnauthorized
+//	- error: internal error
+func DecodeAdminGetCoachResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body AdminGetCoachResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("coachee", "AdminGetCoach", err)
+			}
+			err = ValidateAdminGetCoachResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("coachee", "AdminGetCoach", err)
+			}
+			res := NewAdminGetCoachFullCoachOK(&body)
+			return res, nil
+		case http.StatusInternalServerError:
+			en := resp.Header.Get("goa-error")
+			switch en {
+			case "internal":
+				var (
+					body AdminGetCoachInternalResponseBody
+					err  error
+				)
+				err = decoder(resp).Decode(&body)
+				if err != nil {
+					return nil, goahttp.ErrDecodingError("coachee", "AdminGetCoach", err)
+				}
+				err = ValidateAdminGetCoachInternalResponseBody(&body)
+				if err != nil {
+					return nil, goahttp.ErrValidationError("coachee", "AdminGetCoach", err)
+				}
+				return nil, NewAdminGetCoachInternal(&body)
+			case "transient":
+				var (
+					body AdminGetCoachTransientResponseBody
+					err  error
+				)
+				err = decoder(resp).Decode(&body)
+				if err != nil {
+					return nil, goahttp.ErrDecodingError("coachee", "AdminGetCoach", err)
+				}
+				err = ValidateAdminGetCoachTransientResponseBody(&body)
+				if err != nil {
+					return nil, goahttp.ErrValidationError("coachee", "AdminGetCoach", err)
+				}
+				return nil, NewAdminGetCoachTransient(&body)
+			default:
+				body, _ := ioutil.ReadAll(resp.Body)
+				return nil, goahttp.ErrInvalidResponse("coachee", "AdminGetCoach", resp.StatusCode, string(body))
+			}
+		case http.StatusNotFound:
+			var (
+				body AdminGetCoachNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("coachee", "AdminGetCoach", err)
+			}
+			err = ValidateAdminGetCoachNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("coachee", "AdminGetCoach", err)
+			}
+			return nil, NewAdminGetCoachNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body AdminGetCoachValidationResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("coachee", "AdminGetCoach", err)
+			}
+			err = ValidateAdminGetCoachValidationResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("coachee", "AdminGetCoach", err)
+			}
+			return nil, NewAdminGetCoachValidation(&body)
+		case http.StatusUnauthorized:
+			var (
+				body AdminGetCoachUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("coachee", "AdminGetCoach", err)
+			}
+			err = ValidateAdminGetCoachUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("coachee", "AdminGetCoach", err)
+			}
+			return nil, NewAdminGetCoachUnauthorized(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("coachee", "AdminGetCoach", resp.StatusCode, string(body))
+		}
+	}
+}
+
 // BuildLenCoachesRequest instantiates a HTTP request object with method and
 // path set to call the "coachee" service "LenCoaches" endpoint
 func (c *Client) BuildLenCoachesRequest(ctx context.Context, v interface{}) (*http.Request, error) {
@@ -1240,7 +1402,7 @@ func (c *Client) BuildUpdateCoachRequest(ctx context.Context, v interface{}) (*h
 		id = p.ID
 	}
 	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: UpdateCoachCoacheePath(id)}
-	req, err := http.NewRequest("POST", u.String(), nil)
+	req, err := http.NewRequest("PUT", u.String(), nil)
 	if err != nil {
 		return nil, goahttp.ErrInvalidURL("coachee", "UpdateCoach", u.String(), err)
 	}

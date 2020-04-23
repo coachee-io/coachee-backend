@@ -66,6 +66,7 @@ type UpdateCoachRequestBody struct {
 	StripeID    *string `form:"stripeID,omitempty" json:"stripeID,omitempty" xml:"stripeID,omitempty"`
 	PictureURL  *string `form:"pictureURL,omitempty" json:"pictureURL,omitempty" xml:"pictureURL,omitempty"`
 	Vat         *string `form:"vat,omitempty" json:"vat,omitempty" xml:"vat,omitempty"`
+	Status      *string `form:"status,omitempty" json:"status,omitempty" xml:"status,omitempty"`
 }
 
 // CreateCertificationRequestBody is the type of the "coachee" service
@@ -154,6 +155,28 @@ type GetCoachResponseBody struct {
 	Certifications []*CertificationResponseBody `form:"certifications,omitempty" json:"certifications,omitempty" xml:"certifications,omitempty"`
 	Programs       []*ProgramResponseBody       `form:"programs,omitempty" json:"programs,omitempty" xml:"programs,omitempty"`
 	Availability   []*AvailabilityResponseBody  `form:"availability,omitempty" json:"availability,omitempty" xml:"availability,omitempty"`
+}
+
+// AdminGetCoachResponseBody is the type of the "coachee" service
+// "AdminGetCoach" endpoint HTTP response body.
+type AdminGetCoachResponseBody struct {
+	ID             uint                         `form:"id" json:"id" xml:"id"`
+	FirstName      string                       `form:"firstName" json:"firstName" xml:"firstName"`
+	LastName       string                       `form:"lastName" json:"lastName" xml:"lastName"`
+	Email          string                       `form:"email" json:"email" xml:"email"`
+	Phone          string                       `form:"phone" json:"phone" xml:"phone"`
+	StripeID       string                       `form:"stripeID" json:"stripeID" xml:"stripeID"`
+	Tags           string                       `form:"tags" json:"tags" xml:"tags"`
+	Description    string                       `form:"description" json:"description" xml:"description"`
+	City           string                       `form:"city" json:"city" xml:"city"`
+	Country        string                       `form:"country" json:"country" xml:"country"`
+	PictureURL     string                       `form:"pictureURL" json:"pictureURL" xml:"pictureURL"`
+	Status         string                       `form:"status" json:"status" xml:"status"`
+	Vat            string                       `form:"vat" json:"vat" xml:"vat"`
+	IntroCall      int                          `form:"introCall" json:"introCall" xml:"introCall"`
+	Availability   []*AvailabilityResponseBody  `form:"availability" json:"availability" xml:"availability"`
+	Certifications []*CertificationResponseBody `form:"certifications" json:"certifications" xml:"certifications"`
+	Programs       []*ProgramResponseBody       `form:"programs" json:"programs" xml:"programs"`
 }
 
 // LoginCoachResponseBody is the type of the "coachee" service "LoginCoach"
@@ -357,6 +380,96 @@ type GetCoachValidationResponseBody struct {
 // GetCoachUnauthorizedResponseBody is the type of the "coachee" service
 // "GetCoach" endpoint HTTP response body for the "unauthorized" error.
 type GetCoachUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// AdminGetCoachInternalResponseBody is the type of the "coachee" service
+// "AdminGetCoach" endpoint HTTP response body for the "internal" error.
+type AdminGetCoachInternalResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// AdminGetCoachTransientResponseBody is the type of the "coachee" service
+// "AdminGetCoach" endpoint HTTP response body for the "transient" error.
+type AdminGetCoachTransientResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// AdminGetCoachNotFoundResponseBody is the type of the "coachee" service
+// "AdminGetCoach" endpoint HTTP response body for the "notFound" error.
+type AdminGetCoachNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// AdminGetCoachValidationResponseBody is the type of the "coachee" service
+// "AdminGetCoach" endpoint HTTP response body for the "validation" error.
+type AdminGetCoachValidationResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// AdminGetCoachUnauthorizedResponseBody is the type of the "coachee" service
+// "AdminGetCoach" endpoint HTTP response body for the "unauthorized" error.
+type AdminGetCoachUnauthorizedResponseBody struct {
 	// Name is the name of this class of errors.
 	Name string `form:"name" json:"name" xml:"name"`
 	// ID is a unique identifier for this particular occurrence of the problem.
@@ -2487,6 +2600,46 @@ func NewGetCoachResponseBody(res *coachee.Coach) *GetCoachResponseBody {
 	return body
 }
 
+// NewAdminGetCoachResponseBody builds the HTTP response body from the result
+// of the "AdminGetCoach" endpoint of the "coachee" service.
+func NewAdminGetCoachResponseBody(res *coachee.FullCoach) *AdminGetCoachResponseBody {
+	body := &AdminGetCoachResponseBody{
+		ID:          res.ID,
+		FirstName:   res.FirstName,
+		LastName:    res.LastName,
+		Email:       res.Email,
+		Phone:       res.Phone,
+		StripeID:    res.StripeID,
+		Tags:        res.Tags,
+		Description: res.Description,
+		City:        res.City,
+		Country:     res.Country,
+		PictureURL:  res.PictureURL,
+		Status:      res.Status,
+		Vat:         res.Vat,
+		IntroCall:   res.IntroCall,
+	}
+	if res.Availability != nil {
+		body.Availability = make([]*AvailabilityResponseBody, len(res.Availability))
+		for i, val := range res.Availability {
+			body.Availability[i] = marshalCoacheeAvailabilityToAvailabilityResponseBody(val)
+		}
+	}
+	if res.Certifications != nil {
+		body.Certifications = make([]*CertificationResponseBody, len(res.Certifications))
+		for i, val := range res.Certifications {
+			body.Certifications[i] = marshalCoacheeCertificationToCertificationResponseBody(val)
+		}
+	}
+	if res.Programs != nil {
+		body.Programs = make([]*ProgramResponseBody, len(res.Programs))
+		for i, val := range res.Programs {
+			body.Programs[i] = marshalCoacheeProgramToProgramResponseBody(val)
+		}
+	}
+	return body
+}
+
 // NewLoginCoachResponseBody builds the HTTP response body from the result of
 // the "LoginCoach" endpoint of the "coachee" service.
 func NewLoginCoachResponseBody(res *coachee.LoginCoachResult) *LoginCoachResponseBody {
@@ -2672,6 +2825,76 @@ func NewGetCoachValidationResponseBody(res *goa.ServiceError) *GetCoachValidatio
 // result of the "GetCoach" endpoint of the "coachee" service.
 func NewGetCoachUnauthorizedResponseBody(res *goa.ServiceError) *GetCoachUnauthorizedResponseBody {
 	body := &GetCoachUnauthorizedResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewAdminGetCoachInternalResponseBody builds the HTTP response body from the
+// result of the "AdminGetCoach" endpoint of the "coachee" service.
+func NewAdminGetCoachInternalResponseBody(res *goa.ServiceError) *AdminGetCoachInternalResponseBody {
+	body := &AdminGetCoachInternalResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewAdminGetCoachTransientResponseBody builds the HTTP response body from the
+// result of the "AdminGetCoach" endpoint of the "coachee" service.
+func NewAdminGetCoachTransientResponseBody(res *goa.ServiceError) *AdminGetCoachTransientResponseBody {
+	body := &AdminGetCoachTransientResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewAdminGetCoachNotFoundResponseBody builds the HTTP response body from the
+// result of the "AdminGetCoach" endpoint of the "coachee" service.
+func NewAdminGetCoachNotFoundResponseBody(res *goa.ServiceError) *AdminGetCoachNotFoundResponseBody {
+	body := &AdminGetCoachNotFoundResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewAdminGetCoachValidationResponseBody builds the HTTP response body from
+// the result of the "AdminGetCoach" endpoint of the "coachee" service.
+func NewAdminGetCoachValidationResponseBody(res *goa.ServiceError) *AdminGetCoachValidationResponseBody {
+	body := &AdminGetCoachValidationResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewAdminGetCoachUnauthorizedResponseBody builds the HTTP response body from
+// the result of the "AdminGetCoach" endpoint of the "coachee" service.
+func NewAdminGetCoachUnauthorizedResponseBody(res *goa.ServiceError) *AdminGetCoachUnauthorizedResponseBody {
+	body := &AdminGetCoachUnauthorizedResponseBody{
 		Name:      res.Name,
 		ID:        res.ID,
 		Message:   res.Message,
@@ -4220,6 +4443,15 @@ func NewGetCoachPayload(id uint) *coachee.GetCoachPayload {
 	}
 }
 
+// NewAdminGetCoachPayload builds a coachee service AdminGetCoach endpoint
+// payload.
+func NewAdminGetCoachPayload(id uint, token string) *coachee.AdminGetCoachPayload {
+	return &coachee.AdminGetCoachPayload{
+		ID:    id,
+		Token: token,
+	}
+}
+
 // NewLenCoachesPayload builds a coachee service LenCoaches endpoint payload.
 func NewLenCoachesPayload(tag string) *coachee.LenCoachesPayload {
 	return &coachee.LenCoachesPayload{
@@ -4299,6 +4531,7 @@ func NewUpdateCoachPayload(body *UpdateCoachRequestBody, id uint, token string) 
 		StripeID:    body.StripeID,
 		PictureURL:  body.PictureURL,
 		Vat:         body.Vat,
+		Status:      body.Status,
 	}
 	v.ID = id
 	v.Token = token

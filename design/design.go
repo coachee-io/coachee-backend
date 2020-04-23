@@ -98,6 +98,30 @@ var coachResult = Type("coach", func() {
 	Required("id", "firstName", "lastName", "tags", "description", "city", "country", "pictureURL")
 })
 
+var fullCoach = Type("fullCoach", func() {
+	Attribute("id", UInt)
+	Attribute("firstName", String)
+	Attribute("lastName", String)
+	Attribute("email", String)
+	Attribute("phone", String)
+	Attribute("stripeID", String)
+	Attribute("tags", String)
+	Attribute("description", String)
+	Attribute("city", String)
+	Attribute("country", String)
+	Attribute("pictureURL", String)
+	Attribute("status", String)
+	Attribute("vat", String)
+	Attribute("introCall", Int)
+
+	Attribute("availability", ArrayOf(availability))
+	Attribute("certifications", ArrayOf(certification))
+	Attribute("programs", ArrayOf(program))
+
+	Required("id", "firstName", "lastName", "email", "phone", "stripeID", "tags", "description", "city",
+		"country", "pictureURL", "status", "vat", "introCall", "availability", "certifications", "programs")
+})
+
 var customer = Type("baseClient", func() {
 	Description("represents a client")
 
@@ -161,6 +185,27 @@ var _ = Service("coachee", func() {
 		})
 
 		Result(coachResult)
+
+		HTTP(func() {
+			GET("/coaches/{id}")
+			Response(StatusOK)
+		})
+	})
+
+	Method("AdminGetCoach", func() {
+		Description("AdminGetCoach returns all coach info according to the id")
+		Security(JWT, func() {
+			Scope("admin")
+		})
+
+		Payload(func() {
+			Token("token", String, "JWT token used to perform authorization")
+			Attribute("id", UInt)
+
+			Required("id", "token")
+		})
+
+		Result(fullCoach)
 
 		HTTP(func() {
 			GET("/coaches/{id}")
@@ -298,12 +343,13 @@ var _ = Service("coachee", func() {
 			Attribute("stripeID", String)
 			Attribute("pictureURL", String)
 			Attribute("vat", String)
+			Attribute("status", String)
 
 			Required("token", "id")
 		})
 
 		HTTP(func() {
-			POST("/coaches/{id}")
+			PUT("/coaches/{id}")
 			Response(StatusAccepted)
 		})
 	})

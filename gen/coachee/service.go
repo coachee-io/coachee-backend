@@ -20,6 +20,8 @@ type Service interface {
 	GetCoaches(context.Context, *GetCoachesPayload) (res []*Coach, err error)
 	// GetCoach returns one coach according to the id
 	GetCoach(context.Context, *GetCoachPayload) (res *Coach, err error)
+	// AdminGetCoach returns all coach info according to the id
+	AdminGetCoach(context.Context, *AdminGetCoachPayload) (res *FullCoach, err error)
 	// LenCoaches returns the amount of coaches with a given tag
 	LenCoaches(context.Context, *LenCoachesPayload) (res uint, err error)
 	// CreateCoaches creates a base coach
@@ -78,7 +80,7 @@ const ServiceName = "coachee"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [23]string{"GetCoaches", "GetCoach", "LenCoaches", "CreateCoach", "LoginCoach", "StartCoachPasswordRecoveryFlow", "CheckCoachPasswordRecoveryToken", "FinalizeCoachPasswordRecoveryFlow", "UpdateCoach", "CreateCertification", "DeleteCertification", "CreateProgram", "DeleteProgram", "CreateAvailability", "DeleteAvailability", "CreateCustomer", "CustomerLogin", "StartPasswordRecoveryFlow", "CheckPasswordRecoveryToken", "FinalizePasswordRecoveryFlow", "CreateOrder", "RegisterStripeExpress", "AdminLogin"}
+var MethodNames = [24]string{"GetCoaches", "GetCoach", "AdminGetCoach", "LenCoaches", "CreateCoach", "LoginCoach", "StartCoachPasswordRecoveryFlow", "CheckCoachPasswordRecoveryToken", "FinalizeCoachPasswordRecoveryFlow", "UpdateCoach", "CreateCertification", "DeleteCertification", "CreateProgram", "DeleteProgram", "CreateAvailability", "DeleteAvailability", "CreateCustomer", "CustomerLogin", "StartPasswordRecoveryFlow", "CheckPasswordRecoveryToken", "FinalizePasswordRecoveryFlow", "CreateOrder", "RegisterStripeExpress", "AdminLogin"}
 
 // GetCoachesPayload is the payload type of the coachee service GetCoaches
 // method.
@@ -107,6 +109,35 @@ type Coach struct {
 	Certifications []*Certification
 	Programs       []*Program
 	Availability   []*Availability
+}
+
+// AdminGetCoachPayload is the payload type of the coachee service
+// AdminGetCoach method.
+type AdminGetCoachPayload struct {
+	// JWT token used to perform authorization
+	Token string
+	ID    uint
+}
+
+// FullCoach is the result type of the coachee service AdminGetCoach method.
+type FullCoach struct {
+	ID             uint
+	FirstName      string
+	LastName       string
+	Email          string
+	Phone          string
+	StripeID       string
+	Tags           string
+	Description    string
+	City           string
+	Country        string
+	PictureURL     string
+	Status         string
+	Vat            string
+	IntroCall      int
+	Availability   []*Availability
+	Certifications []*Certification
+	Programs       []*Program
 }
 
 // LenCoachesPayload is the payload type of the coachee service LenCoaches
@@ -183,6 +214,7 @@ type UpdateCoachPayload struct {
 	StripeID    *string
 	PictureURL  *string
 	Vat         *string
+	Status      *string
 }
 
 // CreateCertificationPayload is the payload type of the coachee service

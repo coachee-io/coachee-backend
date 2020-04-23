@@ -17,6 +17,7 @@ import (
 type Client struct {
 	GetCoachesEndpoint                        goa.Endpoint
 	GetCoachEndpoint                          goa.Endpoint
+	AdminGetCoachEndpoint                     goa.Endpoint
 	LenCoachesEndpoint                        goa.Endpoint
 	CreateCoachEndpoint                       goa.Endpoint
 	LoginCoachEndpoint                        goa.Endpoint
@@ -41,10 +42,11 @@ type Client struct {
 }
 
 // NewClient initializes a "coachee" service client given the endpoints.
-func NewClient(getCoaches, getCoach, lenCoaches, createCoach, loginCoach, startCoachPasswordRecoveryFlow, checkCoachPasswordRecoveryToken, finalizeCoachPasswordRecoveryFlow, updateCoach, createCertification, deleteCertification, createProgram, deleteProgram, createAvailability, deleteAvailability, createCustomer, customerLogin, startPasswordRecoveryFlow, checkPasswordRecoveryToken, finalizePasswordRecoveryFlow, createOrder, registerStripeExpress, adminLogin goa.Endpoint) *Client {
+func NewClient(getCoaches, getCoach, adminGetCoach, lenCoaches, createCoach, loginCoach, startCoachPasswordRecoveryFlow, checkCoachPasswordRecoveryToken, finalizeCoachPasswordRecoveryFlow, updateCoach, createCertification, deleteCertification, createProgram, deleteProgram, createAvailability, deleteAvailability, createCustomer, customerLogin, startPasswordRecoveryFlow, checkPasswordRecoveryToken, finalizePasswordRecoveryFlow, createOrder, registerStripeExpress, adminLogin goa.Endpoint) *Client {
 	return &Client{
 		GetCoachesEndpoint:                        getCoaches,
 		GetCoachEndpoint:                          getCoach,
+		AdminGetCoachEndpoint:                     adminGetCoach,
 		LenCoachesEndpoint:                        lenCoaches,
 		CreateCoachEndpoint:                       createCoach,
 		LoginCoachEndpoint:                        loginCoach,
@@ -87,6 +89,16 @@ func (c *Client) GetCoach(ctx context.Context, p *GetCoachPayload) (res *Coach, 
 		return
 	}
 	return ires.(*Coach), nil
+}
+
+// AdminGetCoach calls the "AdminGetCoach" endpoint of the "coachee" service.
+func (c *Client) AdminGetCoach(ctx context.Context, p *AdminGetCoachPayload) (res *FullCoach, err error) {
+	var ires interface{}
+	ires, err = c.AdminGetCoachEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.(*FullCoach), nil
 }
 
 // LenCoaches calls the "LenCoaches" endpoint of the "coachee" service.

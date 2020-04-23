@@ -50,6 +50,16 @@ func (s *Service) GetCoach(ctx context.Context, p *coachee.GetCoachPayload) (*co
 	return CoachToPayload(coach), nil
 }
 
+// AdminGetCoach returns a coach according to the id. it will return most coach info
+func (s *Service) AdminGetCoach(ctx context.Context, p *coachee.AdminGetCoachPayload) (*coachee.FullCoach, error) {
+	coach, err := s.coachRepository.GetByID(repository.DefaultNoTransaction, p.ID)
+	if err != nil {
+		s.logger.Error().Err(err).Uint("id", p.ID).Msg("failed to retrieve coach")
+		return nil, err
+	}
+	return FullCoachToPayload(coach), nil
+}
+
 // LenCoaches gives the number of coaches with a given tag
 func (s *Service) LenCoaches(ctx context.Context, p *coachee.LenCoachesPayload) (uint, error) {
 	count, err := s.coachRepository.Length(repository.DefaultNoTransaction, p.Tag)
@@ -159,6 +169,12 @@ func (s *Service) UpdateCoach(ctx context.Context, p *coachee.UpdateCoachPayload
 	}
 	if p.Vat != nil {
 		coach.Vat = *p.Vat
+	}
+	if p.Status != nil {
+		coach.Status = model.CoachStatus(*p.Status)
+		if err := coach.Status.Validate(); err != nil {
+			return err
+		}
 	}
 
 	err := s.coachRepository.Update(repository.DefaultNoTransaction, coach)

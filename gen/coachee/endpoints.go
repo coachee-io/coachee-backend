@@ -18,6 +18,7 @@ import (
 type Endpoints struct {
 	GetCoaches                        goa.Endpoint
 	GetCoach                          goa.Endpoint
+	AdminGetCoach                     goa.Endpoint
 	LenCoaches                        goa.Endpoint
 	CreateCoach                       goa.Endpoint
 	LoginCoach                        goa.Endpoint
@@ -48,6 +49,7 @@ func NewEndpoints(s Service) *Endpoints {
 	return &Endpoints{
 		GetCoaches:                        NewGetCoachesEndpoint(s),
 		GetCoach:                          NewGetCoachEndpoint(s),
+		AdminGetCoach:                     NewAdminGetCoachEndpoint(s, a.JWTAuth),
 		LenCoaches:                        NewLenCoachesEndpoint(s),
 		CreateCoach:                       NewCreateCoachEndpoint(s),
 		LoginCoach:                        NewLoginCoachEndpoint(s),
@@ -76,6 +78,7 @@ func NewEndpoints(s Service) *Endpoints {
 func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.GetCoaches = m(e.GetCoaches)
 	e.GetCoach = m(e.GetCoach)
+	e.AdminGetCoach = m(e.AdminGetCoach)
 	e.LenCoaches = m(e.LenCoaches)
 	e.CreateCoach = m(e.CreateCoach)
 	e.LoginCoach = m(e.LoginCoach)
@@ -114,6 +117,25 @@ func NewGetCoachEndpoint(s Service) goa.Endpoint {
 	return func(ctx context.Context, req interface{}) (interface{}, error) {
 		p := req.(*GetCoachPayload)
 		return s.GetCoach(ctx, p)
+	}
+}
+
+// NewAdminGetCoachEndpoint returns an endpoint function that calls the method
+// "AdminGetCoach" of service "coachee".
+func NewAdminGetCoachEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*AdminGetCoachPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{"client", "admin"},
+			RequiredScopes: []string{"admin"},
+		}
+		ctx, err = authJWTFn(ctx, p.Token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		return s.AdminGetCoach(ctx, p)
 	}
 }
 

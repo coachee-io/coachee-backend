@@ -33,6 +33,32 @@ func CoachToPayload(c *model.Coach) *coachee.Coach {
 	}
 }
 
+func FullCoachToPayload(c *model.Coach) *coachee.FullCoach {
+	if c == nil {
+		return nil
+	}
+
+	return &coachee.FullCoach{
+		ID:             c.ID,
+		FirstName:      c.FirstName,
+		LastName:       c.LastName,
+		Email:          c.Email,
+		Phone:          c.Phone,
+		StripeID:       c.StripeID,
+		Tags:           c.Tags,
+		Description:    c.Description,
+		City:           c.City,
+		Country:        c.Country,
+		PictureURL:     c.PictureUrl,
+		Status:         string(c.Status),
+		Vat:            c.Vat,
+		IntroCall:      int(c.IntroCall.Unix()),
+		Certifications: CertificationsToPayload(c.Certifications),
+		Programs:       ProgramsToPayload(c.Programs),
+		Availability:   AvailabilitiesToPayload(c.Availability),
+	}
+}
+
 func CertificationsToPayload(c model.Certifications) []*coachee.Certification {
 	if c == nil {
 		return nil
