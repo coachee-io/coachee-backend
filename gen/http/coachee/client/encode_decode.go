@@ -3708,7 +3708,7 @@ func unmarshalAvailabilityResponseToCoacheeAvailability(v *AvailabilityResponse)
 		return nil
 	}
 	res := &coachee.Availability{
-		ID:      v.ID,
+		ID:      *v.ID,
 		WeekDay: *v.WeekDay,
 		Start:   *v.Start,
 		End:     *v.End,
@@ -3761,7 +3761,7 @@ func unmarshalAvailabilityResponseBodyToCoacheeAvailability(v *AvailabilityRespo
 		return nil
 	}
 	res := &coachee.Availability{
-		ID:      v.ID,
+		ID:      *v.ID,
 		WeekDay: *v.WeekDay,
 		Start:   *v.Start,
 		End:     *v.End,
@@ -3827,32 +3827,6 @@ func marshalProgramRequestBodyToCoacheeProgram(v *ProgramRequestBody) *coachee.P
 		Description: v.Description,
 		TotalPrice:  v.TotalPrice,
 		TaxPercent:  v.TaxPercent,
-	}
-
-	return res
-}
-
-// marshalCoacheeAvailabilityToAvailabilityRequestBody builds a value of type
-// *AvailabilityRequestBody from a value of type *coachee.Availability.
-func marshalCoacheeAvailabilityToAvailabilityRequestBody(v *coachee.Availability) *AvailabilityRequestBody {
-	res := &AvailabilityRequestBody{
-		ID:      v.ID,
-		WeekDay: v.WeekDay,
-		Start:   v.Start,
-		End:     v.End,
-	}
-
-	return res
-}
-
-// marshalAvailabilityRequestBodyToCoacheeAvailability builds a value of type
-// *coachee.Availability from a value of type *AvailabilityRequestBody.
-func marshalAvailabilityRequestBodyToCoacheeAvailability(v *AvailabilityRequestBody) *coachee.Availability {
-	res := &coachee.Availability{
-		ID:      v.ID,
-		WeekDay: v.WeekDay,
-		Start:   v.Start,
-		End:     v.End,
 	}
 
 	return res

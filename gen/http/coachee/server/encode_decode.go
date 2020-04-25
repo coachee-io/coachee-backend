@@ -3037,19 +3037,6 @@ func unmarshalProgramRequestBodyToCoacheeProgram(v *ProgramRequestBody) *coachee
 	return res
 }
 
-// unmarshalAvailabilityRequestBodyToCoacheeAvailability builds a value of type
-// *coachee.Availability from a value of type *AvailabilityRequestBody.
-func unmarshalAvailabilityRequestBodyToCoacheeAvailability(v *AvailabilityRequestBody) *coachee.Availability {
-	res := &coachee.Availability{
-		ID:      v.ID,
-		WeekDay: *v.WeekDay,
-		Start:   *v.Start,
-		End:     *v.End,
-	}
-
-	return res
-}
-
 // marshalCoacheeBaseClientToBaseClientResponseBody builds a value of type
 // *BaseClientResponseBody from a value of type *coachee.BaseClient.
 func marshalCoacheeBaseClientToBaseClientResponseBody(v *coachee.BaseClient) *BaseClientResponseBody {

@@ -648,13 +648,10 @@ creates an availability for a coach
 
 Example:
     `+os.Args[0]+` coachee create-availability --body '{
-      "availability": {
-         "end": 1383,
-         "id": "Quo praesentium quis et id vel.",
-         "start": 1286,
-         "weekDay": 2
-      }
-   }' --id 12571222088019719260 --token "In aut illum."
+      "end": 1078,
+      "start": 937,
+      "weekDay": 4
+   }' --id 2712188117503976699 --token "Id vel totam ipsam est."
 `, os.Args[0])
 }
 
@@ -667,7 +664,7 @@ deletes an availability for a coach
     -token STRING: 
 
 Example:
-    `+os.Args[0]+` coachee delete-availability --id 2524489794498421612 --av-id "Sed et nihil exercitationem est et ea." --token "Officiis dolorem voluptas."
+    `+os.Args[0]+` coachee delete-availability --id 14472914179625208762 --av-id "Natus ut." --token "Et nihil exercitationem est et ea."
 `, os.Args[0])
 }
 
@@ -679,11 +676,11 @@ creates a new customer
 
 Example:
     `+os.Args[0]+` coachee create-customer --body '{
-      "birthDate": 8580233223360448486,
-      "email": "Reiciendis similique labore corrupti fugit exercitationem.",
-      "firstName": "Expedita molestiae.",
-      "lastName": "Voluptas architecto officiis et ad.",
-      "password": "Quod quis aut nostrum odio quia ea."
+      "birthDate": 4632215028976669113,
+      "email": "Eligendi illum dolores eveniet reiciendis similique.",
+      "firstName": "Corrupti fugit exercitationem rerum.",
+      "lastName": "Molestiae iure voluptas.",
+      "password": "Et ad consequuntur."
    }'
 `, os.Args[0])
 }
@@ -696,8 +693,8 @@ logs in a customer and returns a jwt
 
 Example:
     `+os.Args[0]+` coachee customer-login --body '{
-      "email": "Molestiae veritatis eum facere alias in.",
-      "password": "Rem et iure dignissimos."
+      "email": "Aut voluptatem veritatis qui optio repellat.",
+      "password": "Molestiae veritatis eum facere alias in."
    }'
 `, os.Args[0])
 }
@@ -710,7 +707,7 @@ starts the process of recovering a password
 
 Example:
     `+os.Args[0]+` coachee start-password-recovery-flow --body '{
-      "email": "Rerum fugiat quo inventore sint ea."
+      "email": "Modi odio veniam rerum fugiat quo inventore."
    }'
 `, os.Args[0])
 }
@@ -722,7 +719,7 @@ verifies if a recovery token is still valid
     -token STRING: 
 
 Example:
-    `+os.Args[0]+` coachee check-password-recovery-token --token "Sunt labore corporis animi id nihil."
+    `+os.Args[0]+` coachee check-password-recovery-token --token "Reiciendis soluta sunt labore corporis animi id."
 `, os.Args[0])
 }
 
@@ -735,8 +732,8 @@ finalizes the password recovery flow by resetting a new password
 
 Example:
     `+os.Args[0]+` coachee finalize-password-recovery-flow --body '{
-      "password": "Consequatur explicabo perspiciatis asperiores debitis quas aut."
-   }' --token "Nisi natus autem dignissimos."
+      "password": "Ut iure totam veniam repellat assumenda."
+   }' --token "Explicabo perspiciatis asperiores debitis quas aut."
 `, os.Args[0])
 }
 
@@ -749,10 +746,10 @@ creates a new order
 
 Example:
     `+os.Args[0]+` coachee create-order --body '{
-      "coachId": 13171303537761864193,
-      "introCall": 2401480714331769507,
-      "programId": "Et tempore."
-   }' --token "Et est nisi."
+      "coachId": 12332187260267685693,
+      "introCall": 3947931500907088385,
+      "programId": "Et eum qui."
+   }' --token "Et tempore."
 `, os.Args[0])
 }
 
@@ -765,8 +762,8 @@ registers a stripe express account in stripe and associates it to a coach
 
 Example:
     `+os.Args[0]+` coachee register-stripe-express --body '{
-      "authorizationCode": "Culpa non quod perferendis commodi exercitationem explicabo."
-   }' --id 5663841983256699424
+      "authorizationCode": "Eius ducimus omnis deleniti praesentium."
+   }' --id 11701814969897821272
 `, os.Args[0])
 }
 
@@ -778,8 +775,8 @@ logs in a customer and returns a jwt
 
 Example:
     `+os.Args[0]+` coachee admin-login --body '{
-      "email": "Expedita qui adipisci molestiae qui.",
-      "password": "Unde sit."
+      "email": "Et at corrupti eveniet officia.",
+      "password": "Voluptatem atque expedita qui."
    }'
 `, os.Args[0])
 }

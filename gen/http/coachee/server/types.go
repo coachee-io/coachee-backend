@@ -84,7 +84,9 @@ type CreateProgramRequestBody struct {
 // CreateAvailabilityRequestBody is the type of the "coachee" service
 // "CreateAvailability" endpoint HTTP request body.
 type CreateAvailabilityRequestBody struct {
-	Availability *AvailabilityRequestBody `form:"availability,omitempty" json:"availability,omitempty" xml:"availability,omitempty"`
+	WeekDay *uint `form:"weekDay,omitempty" json:"weekDay,omitempty" xml:"weekDay,omitempty"`
+	Start   *uint `form:"start,omitempty" json:"start,omitempty" xml:"start,omitempty"`
+	End     *uint `form:"end,omitempty" json:"end,omitempty" xml:"end,omitempty"`
 }
 
 // CreateCustomerRequestBody is the type of the "coachee" service
@@ -2458,10 +2460,10 @@ type ProgramResponse struct {
 
 // AvailabilityResponse is used to define fields on response body types.
 type AvailabilityResponse struct {
-	ID      *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	ID      string  `form:"id" json:"id" xml:"id"`
 	WeekDay uint    `form:"weekDay" json:"weekDay" xml:"weekDay"`
-	Start   uint    `form:"start" json:"start" xml:"start"`
-	End     uint    `form:"end" json:"end" xml:"end"`
+	Start   float64 `form:"start" json:"start" xml:"start"`
+	End     float64 `form:"end" json:"end" xml:"end"`
 }
 
 // CertificationResponseBody is used to define fields on response body types.
@@ -2487,10 +2489,10 @@ type ProgramResponseBody struct {
 
 // AvailabilityResponseBody is used to define fields on response body types.
 type AvailabilityResponseBody struct {
-	ID      *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	ID      string  `form:"id" json:"id" xml:"id"`
 	WeekDay uint    `form:"weekDay" json:"weekDay" xml:"weekDay"`
-	Start   uint    `form:"start" json:"start" xml:"start"`
-	End     uint    `form:"end" json:"end" xml:"end"`
+	Start   float64 `form:"start" json:"start" xml:"start"`
+	End     float64 `form:"end" json:"end" xml:"end"`
 }
 
 // BaseClientResponseBody is used to define fields on response body types.
@@ -2519,14 +2521,6 @@ type ProgramRequestBody struct {
 	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
 	TotalPrice  *uint   `form:"totalPrice,omitempty" json:"totalPrice,omitempty" xml:"totalPrice,omitempty"`
 	TaxPercent  *uint   `form:"taxPercent,omitempty" json:"taxPercent,omitempty" xml:"taxPercent,omitempty"`
-}
-
-// AvailabilityRequestBody is used to define fields on request body types.
-type AvailabilityRequestBody struct {
-	ID      *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
-	WeekDay *uint   `form:"weekDay,omitempty" json:"weekDay,omitempty" xml:"weekDay,omitempty"`
-	Start   *uint   `form:"start,omitempty" json:"start,omitempty" xml:"start,omitempty"`
-	End     *uint   `form:"end,omitempty" json:"end,omitempty" xml:"end,omitempty"`
 }
 
 // NewGetCoachesResponseBody builds the HTTP response body from the result of
@@ -4581,8 +4575,11 @@ func NewDeleteProgramPayload(id uint, programID string, token string) *coachee.D
 // NewCreateAvailabilityPayload builds a coachee service CreateAvailability
 // endpoint payload.
 func NewCreateAvailabilityPayload(body *CreateAvailabilityRequestBody, id uint, token string) *coachee.CreateAvailabilityPayload {
-	v := &coachee.CreateAvailabilityPayload{}
-	v.Availability = unmarshalAvailabilityRequestBodyToCoacheeAvailability(body.Availability)
+	v := &coachee.CreateAvailabilityPayload{
+		WeekDay: *body.WeekDay,
+		Start:   *body.Start,
+		End:     *body.End,
+	}
 	v.ID = id
 	v.Token = token
 	return v
@@ -4775,12 +4772,43 @@ func ValidateCreateProgramRequestBody(body *CreateProgramRequestBody) (err error
 // ValidateCreateAvailabilityRequestBody runs the validations defined on
 // CreateAvailabilityRequestBody
 func ValidateCreateAvailabilityRequestBody(body *CreateAvailabilityRequestBody) (err error) {
-	if body.Availability == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("availability", "body"))
+	if body.WeekDay == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("weekDay", "body"))
 	}
-	if body.Availability != nil {
-		if err2 := ValidateAvailabilityRequestBody(body.Availability); err2 != nil {
-			err = goa.MergeErrors(err, err2)
+	if body.Start == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("start", "body"))
+	}
+	if body.End == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("end", "body"))
+	}
+	if body.WeekDay != nil {
+		if *body.WeekDay < 0 {
+			err = goa.MergeErrors(err, goa.InvalidRangeError("body.weekDay", *body.WeekDay, 0, true))
+		}
+	}
+	if body.WeekDay != nil {
+		if *body.WeekDay > 6 {
+			err = goa.MergeErrors(err, goa.InvalidRangeError("body.weekDay", *body.WeekDay, 6, false))
+		}
+	}
+	if body.Start != nil {
+		if *body.Start < 0 {
+			err = goa.MergeErrors(err, goa.InvalidRangeError("body.start", *body.Start, 0, true))
+		}
+	}
+	if body.Start != nil {
+		if *body.Start > 1440 {
+			err = goa.MergeErrors(err, goa.InvalidRangeError("body.start", *body.Start, 1440, false))
+		}
+	}
+	if body.End != nil {
+		if *body.End < 0 {
+			err = goa.MergeErrors(err, goa.InvalidRangeError("body.end", *body.End, 0, true))
+		}
+	}
+	if body.End != nil {
+		if *body.End > 1440 {
+			err = goa.MergeErrors(err, goa.InvalidRangeError("body.end", *body.End, 1440, false))
 		}
 	}
 	return
@@ -4919,18 +4947,6 @@ func ValidateAvailabilityResponse(body *AvailabilityResponse) (err error) {
 	if body.WeekDay > 6 {
 		err = goa.MergeErrors(err, goa.InvalidRangeError("body.weekDay", body.WeekDay, 6, false))
 	}
-	if body.Start < 0 {
-		err = goa.MergeErrors(err, goa.InvalidRangeError("body.start", body.Start, 0, true))
-	}
-	if body.Start > 1440 {
-		err = goa.MergeErrors(err, goa.InvalidRangeError("body.start", body.Start, 1440, false))
-	}
-	if body.End < 0 {
-		err = goa.MergeErrors(err, goa.InvalidRangeError("body.end", body.End, 0, true))
-	}
-	if body.End > 1440 {
-		err = goa.MergeErrors(err, goa.InvalidRangeError("body.end", body.End, 1440, false))
-	}
 	return
 }
 
@@ -4960,18 +4976,6 @@ func ValidateAvailabilityResponseBody(body *AvailabilityResponseBody) (err error
 	}
 	if body.WeekDay > 6 {
 		err = goa.MergeErrors(err, goa.InvalidRangeError("body.weekDay", body.WeekDay, 6, false))
-	}
-	if body.Start < 0 {
-		err = goa.MergeErrors(err, goa.InvalidRangeError("body.start", body.Start, 0, true))
-	}
-	if body.Start > 1440 {
-		err = goa.MergeErrors(err, goa.InvalidRangeError("body.start", body.Start, 1440, false))
-	}
-	if body.End < 0 {
-		err = goa.MergeErrors(err, goa.InvalidRangeError("body.end", body.End, 0, true))
-	}
-	if body.End > 1440 {
-		err = goa.MergeErrors(err, goa.InvalidRangeError("body.end", body.End, 1440, false))
 	}
 	return
 }
@@ -5036,51 +5040,6 @@ func ValidateProgramRequestBody(body *ProgramRequestBody) (err error) {
 	}
 	if body.TaxPercent == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("taxPercent", "body"))
-	}
-	return
-}
-
-// ValidateAvailabilityRequestBody runs the validations defined on
-// availabilityRequestBody
-func ValidateAvailabilityRequestBody(body *AvailabilityRequestBody) (err error) {
-	if body.WeekDay == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("weekDay", "body"))
-	}
-	if body.Start == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("start", "body"))
-	}
-	if body.End == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("end", "body"))
-	}
-	if body.WeekDay != nil {
-		if *body.WeekDay < 0 {
-			err = goa.MergeErrors(err, goa.InvalidRangeError("body.weekDay", *body.WeekDay, 0, true))
-		}
-	}
-	if body.WeekDay != nil {
-		if *body.WeekDay > 6 {
-			err = goa.MergeErrors(err, goa.InvalidRangeError("body.weekDay", *body.WeekDay, 6, false))
-		}
-	}
-	if body.Start != nil {
-		if *body.Start < 0 {
-			err = goa.MergeErrors(err, goa.InvalidRangeError("body.start", *body.Start, 0, true))
-		}
-	}
-	if body.Start != nil {
-		if *body.Start > 1440 {
-			err = goa.MergeErrors(err, goa.InvalidRangeError("body.start", *body.Start, 1440, false))
-		}
-	}
-	if body.End != nil {
-		if *body.End < 0 {
-			err = goa.MergeErrors(err, goa.InvalidRangeError("body.end", *body.End, 0, true))
-		}
-	}
-	if body.End != nil {
-		if *body.End > 1440 {
-			err = goa.MergeErrors(err, goa.InvalidRangeError("body.end", *body.End, 1440, false))
-		}
 	}
 	return
 }

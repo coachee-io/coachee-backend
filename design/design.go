@@ -54,16 +54,10 @@ var availability = Type("availability", func() {
 		Minimum(0)
 		Maximum(6)
 	})
-	Attribute("start", UInt, func() {
-		Minimum(0)
-		Maximum(1440)
-	})
-	Attribute("end", UInt, func() {
-		Minimum(0)
-		Maximum(1440)
-	})
+	Attribute("start", Float64)
+	Attribute("end", Float64)
 
-	Required("weekDay", "start", "end")
+	Required("id", "weekDay", "start", "end")
 })
 
 var program = Type("program", func() {
@@ -441,11 +435,23 @@ var _ = Service("coachee", func() {
 		})
 
 		Payload(func() {
+			Description("represents a coach availability")
 			Token("token", String, "JWT token used to perform authorization")
 			Attribute("id", UInt)
-			Attribute("availability", availability)
+			Attribute("weekDay", UInt, func() {
+				Minimum(0)
+				Maximum(6)
+			})
+			Attribute("start", UInt, func() {
+				Minimum(0)
+				Maximum(1440)
+			})
+			Attribute("end", UInt, func() {
+				Minimum(0)
+				Maximum(1440)
+			})
 
-			Required("token", "id", "availability")
+			Required("id", "token", "weekDay", "start", "end")
 		})
 
 		HTTP(func() {

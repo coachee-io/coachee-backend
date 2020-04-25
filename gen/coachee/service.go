@@ -253,13 +253,14 @@ type DeleteProgramPayload struct {
 	ProgramID string
 }
 
-// CreateAvailabilityPayload is the payload type of the coachee service
-// CreateAvailability method.
+// represents a coach availability
 type CreateAvailabilityPayload struct {
 	// JWT token used to perform authorization
-	Token        string
-	ID           uint
-	Availability *Availability
+	Token   string
+	ID      uint
+	WeekDay uint
+	Start   uint
+	End     uint
 }
 
 // DeleteAvailabilityPayload is the payload type of the coachee service
@@ -383,10 +384,10 @@ type Program struct {
 
 // represents a coach availability
 type Availability struct {
-	ID      *string
+	ID      string
 	WeekDay uint
-	Start   uint
-	End     uint
+	Start   float64
+	End     float64
 }
 
 // represents a client

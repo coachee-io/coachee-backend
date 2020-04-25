@@ -18,7 +18,7 @@ func (s *Service) CreateAvailability(ctx context.Context, p *coachee.CreateAvail
 		return err
 	}
 
-	a := model.Availability{}.New(p.Availability)
+	a := model.Availability{}.New(p)
 	coach.Availability = append(coach.Availability, a)
 
 	err = s.coachRepository.Update(repository.DefaultNoTransaction, coach)

@@ -142,7 +142,7 @@ type Certification struct {
 }
 
 // New creates a new Availability from the payload
-func (Availability) New(a *coachee.Availability) *Availability {
+func (Availability) New(a *coachee.CreateAvailabilityPayload) *Availability {
 	if a == nil {
 		return nil
 	}
