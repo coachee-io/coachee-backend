@@ -3,7 +3,6 @@ package service
 import (
 	"coachee-backend/gen/coachee"
 	"coachee-backend/internal/model"
-	"math"
 )
 
 func CoachesToPayload(coaches []*model.Coach) []*coachee.Coach {
@@ -138,7 +137,7 @@ func AvailabilityToPAyload(a *model.Availability) *coachee.Availability {
 	return &coachee.Availability{
 		ID:      a.ID,
 		WeekDay: a.Day,
-		Start:   math.Round(float64(a.Start) / 60),
-		End:     math.Round(float64(a.End) / 60),
+		Start:   float64(a.Start) / 60,
+		End:     float64(a.End) / 60,
 	}
 }
