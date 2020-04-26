@@ -50,7 +50,7 @@ jobs:
       - run:
           name: Deploy Over SSH
           command: |
-            ssh -v -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST 'cd coachee/coachee-backend/ && git pull && make refresh'
+            ssh -vvv -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST 'cd coachee/coachee-backend/ && git pull && make refresh'
 
 workflows:
   version: 2
