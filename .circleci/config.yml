@@ -46,15 +46,9 @@ jobs:
           name: fix host authenticity for production server
           command: ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts
       - run:
-          name: debug
-          command: printenv
-      - run: echo 'THE FINGERPRINT' >> ~/.ssh/known_hosts
-      - run: pwd
-      - run: ls -al
-      - run:
           name: Deploy Over SSH
           command: |
-            ssh $SSH_USER@$SSH_HOST "cd coachee/coachee-backend/ && git pull && make refresh"
+            ssh $SSH_USER@$SSH_HOST 'cd coachee/coachee-backend/ && git pull && make refresh'
 
 workflows:
   version: 2
