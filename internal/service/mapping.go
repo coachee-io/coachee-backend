@@ -3,6 +3,9 @@ package service
 import (
 	"coachee-backend/gen/coachee"
 	"coachee-backend/internal/model"
+	"fmt"
+	"sort"
+	"time"
 )
 
 func CoachesToPayload(coaches []*model.Coach) []*coachee.Coach {
@@ -123,21 +126,35 @@ func AvailabilitiesToPayload(a model.Availabilities) []*coachee.Availability {
 
 	var availabilities []*coachee.Availability
 	for _, availability := range a {
-		availabilities = append(availabilities, AvailabilityToPAyload(availability))
+		availabilities = append(availabilities, AvailabilityToPayload(availability))
 	}
+	sort.Slice(availabilities, func(i, j int) bool {
+		if availabilities[i].WeekDay == availabilities[j].WeekDay {
+			return availabilities[i].Start < availabilities[j].End
+		}
+		return availabilities[i].WeekDay < availabilities[j].WeekDay
+	})
 
 	return availabilities
 }
 
-func AvailabilityToPAyload(a *model.Availability) *coachee.Availability {
+func AvailabilityToPayload(a *model.Availability) *coachee.Availability {
 	if a == nil {
 		return nil
 	}
 
+	startHour := a.Start / 60
+	startMinutes := a.Start % 60
+	endHour := a.End / 60
+	endMinutes := a.End % 60
+	weekDay := time.Weekday(a.Day).String()[:3]
+	dateText := fmt.Sprintf("%s %d:%d-%d:%d", weekDay, startHour, startMinutes, endHour, endMinutes)
+
 	return &coachee.Availability{
-		ID:      a.ID,
-		WeekDay: a.Day,
-		Start:   float64(a.Start) / 60,
-		End:     float64(a.End) / 60,
+		ID:       a.ID,
+		WeekDay:  a.Day,
+		Start:    a.Start,
+		End:      a.End,
+		DateText: dateText,
 	}
 }

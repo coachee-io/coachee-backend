@@ -384,10 +384,11 @@ type Program struct {
 
 // represents a coach availability
 type Availability struct {
-	ID      string
-	WeekDay uint
-	Start   float64
-	End     float64
+	ID       string
+	WeekDay  uint
+	Start    uint
+	End      uint
+	DateText string
 }
 
 // represents a client

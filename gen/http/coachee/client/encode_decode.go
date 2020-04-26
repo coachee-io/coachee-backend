@@ -3708,10 +3708,11 @@ func unmarshalAvailabilityResponseToCoacheeAvailability(v *AvailabilityResponse)
 		return nil
 	}
 	res := &coachee.Availability{
-		ID:      *v.ID,
-		WeekDay: *v.WeekDay,
-		Start:   *v.Start,
-		End:     *v.End,
+		ID:       *v.ID,
+		WeekDay:  *v.WeekDay,
+		Start:    *v.Start,
+		End:      *v.End,
+		DateText: *v.DateText,
 	}
 
 	return res
@@ -3761,10 +3762,11 @@ func unmarshalAvailabilityResponseBodyToCoacheeAvailability(v *AvailabilityRespo
 		return nil
 	}
 	res := &coachee.Availability{
-		ID:      *v.ID,
-		WeekDay: *v.WeekDay,
-		Start:   *v.Start,
-		End:     *v.End,
+		ID:       *v.ID,
+		WeekDay:  *v.WeekDay,
+		Start:    *v.Start,
+		End:      *v.End,
+		DateText: *v.DateText,
 	}
 
 	return res

@@ -2460,10 +2460,11 @@ type ProgramResponse struct {
 
 // AvailabilityResponse is used to define fields on response body types.
 type AvailabilityResponse struct {
-	ID      *string  `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
-	WeekDay *uint    `form:"weekDay,omitempty" json:"weekDay,omitempty" xml:"weekDay,omitempty"`
-	Start   *float64 `form:"start,omitempty" json:"start,omitempty" xml:"start,omitempty"`
-	End     *float64 `form:"end,omitempty" json:"end,omitempty" xml:"end,omitempty"`
+	ID       *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	WeekDay  *uint   `form:"weekDay,omitempty" json:"weekDay,omitempty" xml:"weekDay,omitempty"`
+	Start    *uint   `form:"start,omitempty" json:"start,omitempty" xml:"start,omitempty"`
+	End      *uint   `form:"end,omitempty" json:"end,omitempty" xml:"end,omitempty"`
+	DateText *string `form:"dateText,omitempty" json:"dateText,omitempty" xml:"dateText,omitempty"`
 }
 
 // CertificationResponseBody is used to define fields on response body types.
@@ -2489,10 +2490,11 @@ type ProgramResponseBody struct {
 
 // AvailabilityResponseBody is used to define fields on response body types.
 type AvailabilityResponseBody struct {
-	ID      *string  `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
-	WeekDay *uint    `form:"weekDay,omitempty" json:"weekDay,omitempty" xml:"weekDay,omitempty"`
-	Start   *float64 `form:"start,omitempty" json:"start,omitempty" xml:"start,omitempty"`
-	End     *float64 `form:"end,omitempty" json:"end,omitempty" xml:"end,omitempty"`
+	ID       *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	WeekDay  *uint   `form:"weekDay,omitempty" json:"weekDay,omitempty" xml:"weekDay,omitempty"`
+	Start    *uint   `form:"start,omitempty" json:"start,omitempty" xml:"start,omitempty"`
+	End      *uint   `form:"end,omitempty" json:"end,omitempty" xml:"end,omitempty"`
+	DateText *string `form:"dateText,omitempty" json:"dateText,omitempty" xml:"dateText,omitempty"`
 }
 
 // CertificationRequestBody is used to define fields on request body types.
@@ -7758,6 +7760,9 @@ func ValidateAvailabilityResponse(body *AvailabilityResponse) (err error) {
 	if body.End == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("end", "body"))
 	}
+	if body.DateText == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("dateText", "body"))
+	}
 	if body.WeekDay != nil {
 		if *body.WeekDay < 0 {
 			err = goa.MergeErrors(err, goa.InvalidRangeError("body.weekDay", *body.WeekDay, 0, true))
@@ -7850,6 +7855,9 @@ func ValidateAvailabilityResponseBody(body *AvailabilityResponseBody) (err error
 	}
 	if body.End == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("end", "body"))
+	}
+	if body.DateText == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("dateText", "body"))
 	}
 	if body.WeekDay != nil {
 		if *body.WeekDay < 0 {
