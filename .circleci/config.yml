@@ -1,7 +1,7 @@
 # Golang CircleCI 2.0 configuration file
 #
 # Check https://circleci.com/docs/2.0/language-go/ for more details
-version: 2.1
+version: 2
 jobs:
   build:
     docker:
@@ -47,6 +47,9 @@ jobs:
       - run:
           name: fix host authenticity for production server
           command: ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts
+      - run:
+          name: debug
+          command: printenv
       - run:
           name: Deploy Over SSH
           command: |
