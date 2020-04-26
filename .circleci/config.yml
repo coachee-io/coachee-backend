@@ -38,8 +38,9 @@ jobs:
       - run: go get -v -t -d ./...
       - run: go test -v ./...
   deploy:
-    machine:
-      enabled: true
+    docker:
+      # specify the version
+      - image: circleci/golang:1.13
     steps:
       - add_ssh_keys
       - run:
