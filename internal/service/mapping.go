@@ -151,10 +151,10 @@ func AvailabilityToPayload(a *model.Availability) *coachee.Availability {
 	dateText := fmt.Sprintf("%s %d:%d-%d:%d", weekDay, startHour, startMinutes, endHour, endMinutes)
 
 	return &coachee.Availability{
-		ID:       a.ID,
-		WeekDay:  a.Day,
-		Start:    a.Start,
-		End:      a.End,
-		DateText: dateText,
+		ID:        a.ID,
+		WeekDay:   a.Day,
+		Start:     float64(a.Start) / 60,
+		End:       float64(a.End) / 60,
+		DateLabel: dateText,
 	}
 }

@@ -2460,11 +2460,11 @@ type ProgramResponse struct {
 
 // AvailabilityResponse is used to define fields on response body types.
 type AvailabilityResponse struct {
-	ID       string `form:"id" json:"id" xml:"id"`
-	WeekDay  uint   `form:"weekDay" json:"weekDay" xml:"weekDay"`
-	Start    uint   `form:"start" json:"start" xml:"start"`
-	End      uint   `form:"end" json:"end" xml:"end"`
-	DateText string `form:"dateText" json:"dateText" xml:"dateText"`
+	ID        string  `form:"id" json:"id" xml:"id"`
+	WeekDay   uint    `form:"weekDay" json:"weekDay" xml:"weekDay"`
+	Start     float64 `form:"start" json:"start" xml:"start"`
+	End       float64 `form:"end" json:"end" xml:"end"`
+	DateLabel string  `form:"dateLabel" json:"dateLabel" xml:"dateLabel"`
 }
 
 // CertificationResponseBody is used to define fields on response body types.
@@ -2490,11 +2490,11 @@ type ProgramResponseBody struct {
 
 // AvailabilityResponseBody is used to define fields on response body types.
 type AvailabilityResponseBody struct {
-	ID       string `form:"id" json:"id" xml:"id"`
-	WeekDay  uint   `form:"weekDay" json:"weekDay" xml:"weekDay"`
-	Start    uint   `form:"start" json:"start" xml:"start"`
-	End      uint   `form:"end" json:"end" xml:"end"`
-	DateText string `form:"dateText" json:"dateText" xml:"dateText"`
+	ID        string  `form:"id" json:"id" xml:"id"`
+	WeekDay   uint    `form:"weekDay" json:"weekDay" xml:"weekDay"`
+	Start     float64 `form:"start" json:"start" xml:"start"`
+	End       float64 `form:"end" json:"end" xml:"end"`
+	DateLabel string  `form:"dateLabel" json:"dateLabel" xml:"dateLabel"`
 }
 
 // BaseClientResponseBody is used to define fields on response body types.

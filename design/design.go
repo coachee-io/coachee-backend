@@ -54,11 +54,11 @@ var availability = Type("availability", func() {
 		Minimum(0)
 		Maximum(6)
 	})
-	Attribute("start", UInt)
-	Attribute("end", UInt)
-	Attribute("dateText", String)
+	Attribute("start", Float64)
+	Attribute("end", Float64)
+	Attribute("dateLabel", String)
 
-	Required("id", "weekDay", "start", "end", "dateText")
+	Required("id", "weekDay", "start", "end", "dateLabel")
 })
 
 var program = Type("program", func() {

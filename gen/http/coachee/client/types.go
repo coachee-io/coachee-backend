@@ -2460,11 +2460,11 @@ type ProgramResponse struct {
 
 // AvailabilityResponse is used to define fields on response body types.
 type AvailabilityResponse struct {
-	ID       *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
-	WeekDay  *uint   `form:"weekDay,omitempty" json:"weekDay,omitempty" xml:"weekDay,omitempty"`
-	Start    *uint   `form:"start,omitempty" json:"start,omitempty" xml:"start,omitempty"`
-	End      *uint   `form:"end,omitempty" json:"end,omitempty" xml:"end,omitempty"`
-	DateText *string `form:"dateText,omitempty" json:"dateText,omitempty" xml:"dateText,omitempty"`
+	ID        *string  `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	WeekDay   *uint    `form:"weekDay,omitempty" json:"weekDay,omitempty" xml:"weekDay,omitempty"`
+	Start     *float64 `form:"start,omitempty" json:"start,omitempty" xml:"start,omitempty"`
+	End       *float64 `form:"end,omitempty" json:"end,omitempty" xml:"end,omitempty"`
+	DateLabel *string  `form:"dateLabel,omitempty" json:"dateLabel,omitempty" xml:"dateLabel,omitempty"`
 }
 
 // CertificationResponseBody is used to define fields on response body types.
@@ -2490,11 +2490,11 @@ type ProgramResponseBody struct {
 
 // AvailabilityResponseBody is used to define fields on response body types.
 type AvailabilityResponseBody struct {
-	ID       *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
-	WeekDay  *uint   `form:"weekDay,omitempty" json:"weekDay,omitempty" xml:"weekDay,omitempty"`
-	Start    *uint   `form:"start,omitempty" json:"start,omitempty" xml:"start,omitempty"`
-	End      *uint   `form:"end,omitempty" json:"end,omitempty" xml:"end,omitempty"`
-	DateText *string `form:"dateText,omitempty" json:"dateText,omitempty" xml:"dateText,omitempty"`
+	ID        *string  `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	WeekDay   *uint    `form:"weekDay,omitempty" json:"weekDay,omitempty" xml:"weekDay,omitempty"`
+	Start     *float64 `form:"start,omitempty" json:"start,omitempty" xml:"start,omitempty"`
+	End       *float64 `form:"end,omitempty" json:"end,omitempty" xml:"end,omitempty"`
+	DateLabel *string  `form:"dateLabel,omitempty" json:"dateLabel,omitempty" xml:"dateLabel,omitempty"`
 }
 
 // CertificationRequestBody is used to define fields on request body types.
@@ -7760,8 +7760,8 @@ func ValidateAvailabilityResponse(body *AvailabilityResponse) (err error) {
 	if body.End == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("end", "body"))
 	}
-	if body.DateText == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("dateText", "body"))
+	if body.DateLabel == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("dateLabel", "body"))
 	}
 	if body.WeekDay != nil {
 		if *body.WeekDay < 0 {
@@ -7856,8 +7856,8 @@ func ValidateAvailabilityResponseBody(body *AvailabilityResponseBody) (err error
 	if body.End == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("end", "body"))
 	}
-	if body.DateText == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("dateText", "body"))
+	if body.DateLabel == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("dateLabel", "body"))
 	}
 	if body.WeekDay != nil {
 		if *body.WeekDay < 0 {

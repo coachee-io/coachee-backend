@@ -1179,20 +1179,20 @@ definitions:
         items:
           $ref: '#/definitions/availabilityResponseBody'
         example:
-        - dateText: Sint facere est.
-          end: 14748742021765505467
+        - dateLabel: Sint facere est.
+          end: 0.5990618141426411
           id: Vel repellat id aperiam fugit facere.
-          start: 14766402428615039322
+          start: 0.6009765592899654
           weekDay: 1
-        - dateText: Sint facere est.
-          end: 14748742021765505467
+        - dateLabel: Sint facere est.
+          end: 0.5990618141426411
           id: Vel repellat id aperiam fugit facere.
-          start: 14766402428615039322
+          start: 0.6009765592899654
           weekDay: 1
-        - dateText: Sint facere est.
-          end: 14748742021765505467
+        - dateLabel: Sint facere est.
+          end: 0.5990618141426411
           id: Vel repellat id aperiam fugit facere.
-          start: 14766402428615039322
+          start: 0.6009765592899654
           weekDay: 1
       certifications:
         type: array
@@ -1288,25 +1288,25 @@ definitions:
         example: Fuga provident et dolorum aut labore.
     example:
       availability:
-      - dateText: Sint facere est.
-        end: 14748742021765505467
+      - dateLabel: Sint facere est.
+        end: 0.5990618141426411
         id: Vel repellat id aperiam fugit facere.
-        start: 14766402428615039322
+        start: 0.6009765592899654
         weekDay: 1
-      - dateText: Sint facere est.
-        end: 14748742021765505467
+      - dateLabel: Sint facere est.
+        end: 0.5990618141426411
         id: Vel repellat id aperiam fugit facere.
-        start: 14766402428615039322
+        start: 0.6009765592899654
         weekDay: 1
-      - dateText: Sint facere est.
-        end: 14748742021765505467
+      - dateLabel: Sint facere est.
+        end: 0.5990618141426411
         id: Vel repellat id aperiam fugit facere.
-        start: 14766402428615039322
+        start: 0.6009765592899654
         weekDay: 1
-      - dateText: Sint facere est.
-        end: 14748742021765505467
+      - dateLabel: Sint facere est.
+        end: 0.5990618141426411
         id: Vel repellat id aperiam fugit facere.
-        start: 14766402428615039322
+        start: 0.6009765592899654
         weekDay: 1
       certifications:
       - description: Esse molestiae eum et et.
@@ -5338,20 +5338,20 @@ definitions:
         items:
           $ref: '#/definitions/availabilityResponseBody'
         example:
-        - dateText: Sint facere est.
-          end: 14748742021765505467
+        - dateLabel: Sint facere est.
+          end: 0.5990618141426411
           id: Vel repellat id aperiam fugit facere.
-          start: 14766402428615039322
+          start: 0.6009765592899654
           weekDay: 1
-        - dateText: Sint facere est.
-          end: 14748742021765505467
+        - dateLabel: Sint facere est.
+          end: 0.5990618141426411
           id: Vel repellat id aperiam fugit facere.
-          start: 14766402428615039322
+          start: 0.6009765592899654
           weekDay: 1
-        - dateText: Sint facere est.
-          end: 14748742021765505467
+        - dateLabel: Sint facere est.
+          end: 0.5990618141426411
           id: Vel repellat id aperiam fugit facere.
-          start: 14766402428615039322
+          start: 0.6009765592899654
           weekDay: 1
       certifications:
         type: array
@@ -5436,25 +5436,25 @@ definitions:
         example: Commodi excepturi dolorem laboriosam nihil eius.
     example:
       availability:
-      - dateText: Sint facere est.
-        end: 14748742021765505467
+      - dateLabel: Sint facere est.
+        end: 0.5990618141426411
         id: Vel repellat id aperiam fugit facere.
-        start: 14766402428615039322
+        start: 0.6009765592899654
         weekDay: 1
-      - dateText: Sint facere est.
-        end: 14748742021765505467
+      - dateLabel: Sint facere est.
+        end: 0.5990618141426411
         id: Vel repellat id aperiam fugit facere.
-        start: 14766402428615039322
+        start: 0.6009765592899654
         weekDay: 1
-      - dateText: Sint facere est.
-        end: 14748742021765505467
+      - dateLabel: Sint facere est.
+        end: 0.5990618141426411
         id: Vel repellat id aperiam fugit facere.
-        start: 14766402428615039322
+        start: 0.6009765592899654
         weekDay: 1
-      - dateText: Sint facere est.
-        end: 14748742021765505467
+      - dateLabel: Sint facere est.
+        end: 0.5990618141426411
         id: Vel repellat id aperiam fugit facere.
-        start: 14766402428615039322
+        start: 0.6009765592899654
         weekDay: 1
       certifications:
       - description: Esse molestiae eum et et.
@@ -7362,20 +7362,20 @@ definitions:
     title: availabilityResponse
     type: object
     properties:
-      dateText:
+      dateLabel:
         type: string
         example: Et qui reiciendis reprehenderit repellat.
       end:
-        type: integer
-        example: 8742689837840549293
-        format: int64
+        type: number
+        example: 0.9478843315553666
+        format: double
       id:
         type: string
         example: Facilis beatae ullam molestiae exercitationem rerum.
       start:
-        type: integer
-        example: 1615950451921654816
-        format: int64
+        type: number
+        example: 0.17520169906023908
+        format: double
       weekDay:
         type: integer
         example: 0
@@ -7383,35 +7383,35 @@ definitions:
         maximum: 6
     description: represents a coach availability
     example:
-      dateText: Aut dolore debitis pariatur sit veritatis rerum.
-      end: 14610319604433047900
+      dateLabel: Aut dolore debitis pariatur sit veritatis rerum.
+      end: 0.5840540255833866
       id: Omnis quisquam eos.
-      start: 16131745558542910939
+      start: 0.7490073580555611
       weekDay: 0
     required:
     - id
     - weekDay
     - start
     - end
-    - dateText
+    - dateLabel
   availabilityResponseBody:
     title: availabilityResponseBody
     type: object
     properties:
-      dateText:
+      dateLabel:
         type: string
         example: Eaque explicabo iure.
       end:
-        type: integer
-        example: 5325274541462118741
-        format: int64
+        type: number
+        example: 0.5773674226934977
+        format: double
       id:
         type: string
         example: Repellendus accusamus quibusdam dolores cupiditate esse.
       start:
-        type: integer
-        example: 7690895078396913153
-        format: int64
+        type: number
+        example: 0.8338485152356008
+        format: double
       weekDay:
         type: integer
         example: 3
@@ -7419,17 +7419,17 @@ definitions:
         maximum: 6
     description: represents a coach availability
     example:
-      dateText: Placeat itaque est.
-      end: 13937575188113073141
+      dateLabel: Placeat itaque est.
+      end: 0.5111149298132257
       id: Dolores maiores sed voluptas.
-      start: 10854919396553821311
+      start: 0.17689271918986937
       weekDay: 4
     required:
     - id
     - weekDay
     - start
     - end
-    - dateText
+    - dateLabel
   baseClientResponseBody:
     title: baseClientResponseBody
     type: object
@@ -7582,25 +7582,25 @@ definitions:
         items:
           $ref: '#/definitions/availabilityResponse'
         example:
-        - dateText: Facere ipsa voluptate.
-          end: 17672271791382494863
+        - dateLabel: Facere ipsa voluptate.
+          end: 0.9160315468971199
           id: Qui accusamus mollitia reiciendis tenetur rerum nulla.
-          start: 7033531370616248077
+          start: 0.7625769992267084
           weekDay: 1
-        - dateText: Facere ipsa voluptate.
-          end: 17672271791382494863
+        - dateLabel: Facere ipsa voluptate.
+          end: 0.9160315468971199
           id: Qui accusamus mollitia reiciendis tenetur rerum nulla.
-          start: 7033531370616248077
+          start: 0.7625769992267084
           weekDay: 1
-        - dateText: Facere ipsa voluptate.
-          end: 17672271791382494863
+        - dateLabel: Facere ipsa voluptate.
+          end: 0.9160315468971199
           id: Qui accusamus mollitia reiciendis tenetur rerum nulla.
-          start: 7033531370616248077
+          start: 0.7625769992267084
           weekDay: 1
-        - dateText: Facere ipsa voluptate.
-          end: 17672271791382494863
+        - dateLabel: Facere ipsa voluptate.
+          end: 0.9160315468971199
           id: Qui accusamus mollitia reiciendis tenetur rerum nulla.
-          start: 7033531370616248077
+          start: 0.7625769992267084
           weekDay: 1
       certifications:
         type: array
@@ -7666,25 +7666,25 @@ definitions:
     description: represents a coach and all his relevant info
     example:
       availability:
-      - dateText: Facere ipsa voluptate.
-        end: 17672271791382494863
+      - dateLabel: Facere ipsa voluptate.
+        end: 0.9160315468971199
         id: Qui accusamus mollitia reiciendis tenetur rerum nulla.
-        start: 7033531370616248077
+        start: 0.7625769992267084
         weekDay: 1
-      - dateText: Facere ipsa voluptate.
-        end: 17672271791382494863
+      - dateLabel: Facere ipsa voluptate.
+        end: 0.9160315468971199
         id: Qui accusamus mollitia reiciendis tenetur rerum nulla.
-        start: 7033531370616248077
+        start: 0.7625769992267084
         weekDay: 1
-      - dateText: Facere ipsa voluptate.
-        end: 17672271791382494863
+      - dateLabel: Facere ipsa voluptate.
+        end: 0.9160315468971199
         id: Qui accusamus mollitia reiciendis tenetur rerum nulla.
-        start: 7033531370616248077
+        start: 0.7625769992267084
         weekDay: 1
-      - dateText: Facere ipsa voluptate.
-        end: 17672271791382494863
+      - dateLabel: Facere ipsa voluptate.
+        end: 0.9160315468971199
         id: Qui accusamus mollitia reiciendis tenetur rerum nulla.
-        start: 7033531370616248077
+        start: 0.7625769992267084
         weekDay: 1
       certifications:
       - description: Quia blanditiis doloribus nam facilis.
