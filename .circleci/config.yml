@@ -42,10 +42,10 @@ jobs:
       # specify the version
       - image: cimg/base:2020.01
     steps:
-      - add_ssh_keys
-      - run:
-          name: fix host authenticity for production server
-          command: ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts
+#      - add_ssh_keys
+#      - run:
+#          name: fix host authenticity for production server
+#          command: ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts
       - run:
           name: Deploy Over SSH
           command: |
