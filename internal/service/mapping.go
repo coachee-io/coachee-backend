@@ -148,7 +148,7 @@ func AvailabilityToPayload(a *model.Availability) *coachee.Availability {
 	endHour := a.End / 60
 	endMinutes := a.End % 60
 	weekDay := time.Weekday(a.Day).String()[:3]
-	dateText := fmt.Sprintf("%s %d:%d-%d:%d", weekDay, startHour, startMinutes, endHour, endMinutes)
+	dateText := fmt.Sprintf("%s %d:%02d-%d:%02d", weekDay, startHour, startMinutes, endHour, endMinutes)
 
 	return &coachee.Availability{
 		ID:        a.ID,
