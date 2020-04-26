@@ -38,12 +38,9 @@ jobs:
       - run: go get -v -t -d ./...
       - run: go test -v ./...
   deploy:
-    docker:
-      # specify the version
-      - image: alpine:3.11
+    machine:
+      enabled: true
     steps:
-      - run: apk update
-      - run: apk add --no-cache openssh
       - add_ssh_keys
       - run:
           name: fix host authenticity for production server
