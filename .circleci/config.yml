@@ -42,13 +42,12 @@ jobs:
       # specify the version
       - image: alpine:3.11
     steps:
-      - add_ssh_keys
-#      - run:
-#          name: fix host authenticity for production server
-#          command: ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts
       - run: apk update
       - run: apk add --no-cache openssh
-      - run: ssh git@github.com
+      - add_ssh_keys
+      - run:
+          name: fix host authenticity for production server
+          command: ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts
       - run:
           name: Deploy Over SSH
           command: |
