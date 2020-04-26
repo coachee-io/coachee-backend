@@ -41,14 +41,22 @@ jobs:
     machine:
       enabled: true
     steps:
-      - add_ssh_keys
-      - run:
-          name: fix host authenticity for production server
-          command: ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts
       - run:
           name: Deploy Over SSH
           command: |
             ssh -vvv -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST 'cd coachee/coachee-backend/ && git pull && make refresh'
+#  deploy:
+#    machine:
+#      enabled: true
+#    steps:
+#      - add_ssh_keys
+#      - run:
+#          name: fix host authenticity for production server
+#          command: ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts
+#      - run:
+#          name: Deploy Over SSH
+#          command: |
+#            ssh -vvv -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST 'cd coachee/coachee-backend/ && git pull && make refresh'
 
 workflows:
   version: 2
