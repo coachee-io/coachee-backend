@@ -46,7 +46,8 @@ jobs:
 #      - run:
 #          name: fix host authenticity for production server
 #          command: ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts
-      - run: ls -al ~/.ssh
+      - run: apk update
+      - run: apk add --no-cache openssh
       - run: ssh git@github.com
       - run:
           name: Deploy Over SSH
