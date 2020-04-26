@@ -40,13 +40,14 @@ jobs:
   deploy:
     docker:
       # specify the version
-      - image: cimg/base:2020.01
+      - image: alpine:3.11
     steps:
       - add_ssh_keys
 #      - run:
 #          name: fix host authenticity for production server
 #          command: ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts
       - run: ls -al ~/.ssh
+      - run: ssh git@github.com
       - run:
           name: Deploy Over SSH
           command: |
