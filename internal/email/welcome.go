@@ -2,22 +2,17 @@ package email
 
 import (
 	"bytes"
-	"strings"
 )
 
 const (
-	confirmPath = "/fakepath/{id}/fake"
-	welcomeSub  = "Welcome to coachee.io!"
+	welcomeSub = "Welcome to coachee.io!"
 )
 
 // SendWelcomeEmail sends the welcome email to new clients
 func (c *Client) SendWelcomeEmail(to, token string) error {
-	url := strings.Replace(c.hostname+confirmPath, "{id}", token, 1)
 	templateData := struct {
-		PrimaryURL   string
 		SecondaryURL string
 	}{
-		PrimaryURL:   url,
 		SecondaryURL: c.hostname,
 	}
 
