@@ -43,7 +43,7 @@ func LoginCoachCoacheePath() string {
 
 // StartCoachPasswordRecoveryFlowCoacheePath returns the URL path to the coachee service StartCoachPasswordRecoveryFlow HTTP endpoint.
 func StartCoachPasswordRecoveryFlowCoacheePath() string {
-	return "/coaches/recovery_email"
+	return "/coaches/recovery"
 }
 
 // CheckCoachPasswordRecoveryTokenCoacheePath returns the URL path to the coachee service CheckCoachPasswordRecoveryToken HTTP endpoint.
@@ -103,7 +103,7 @@ func CustomerLoginCoacheePath() string {
 
 // StartPasswordRecoveryFlowCoacheePath returns the URL path to the coachee service StartPasswordRecoveryFlow HTTP endpoint.
 func StartPasswordRecoveryFlowCoacheePath() string {
-	return "/recovery_email"
+	return "/recovery"
 }
 
 // CheckPasswordRecoveryTokenCoacheePath returns the URL path to the coachee service CheckPasswordRecoveryToken HTTP endpoint.

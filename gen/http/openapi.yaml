@@ -809,6 +809,42 @@ paths:
             $ref: '#/definitions/CoacheeLoginCoachTransientResponseBody'
       schemes:
       - http
+  /coaches/recovery:
+    post:
+      tags:
+      - coachee
+      summary: StartCoachPasswordRecoveryFlow coachee
+      description: starts the process of recovering a password
+      operationId: coachee#StartCoachPasswordRecoveryFlow
+      parameters:
+      - name: StartCoachPasswordRecoveryFlowRequestBody
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/CoacheeStartCoachPasswordRecoveryFlowRequestBody'
+          required:
+          - email
+      responses:
+        "200":
+          description: OK response.
+        "400":
+          description: Bad Request response.
+          schema:
+            $ref: '#/definitions/CoacheeStartCoachPasswordRecoveryFlowValidationResponseBody'
+        "401":
+          description: Unauthorized response.
+          schema:
+            $ref: '#/definitions/CoacheeStartCoachPasswordRecoveryFlowUnauthorizedResponseBody'
+        "404":
+          description: Not Found response.
+          schema:
+            $ref: '#/definitions/CoacheeStartCoachPasswordRecoveryFlowNotFoundResponseBody'
+        "500":
+          description: Internal Server Error response.
+          schema:
+            $ref: '#/definitions/CoacheeStartCoachPasswordRecoveryFlowTransientResponseBody'
+      schemes:
+      - http
   /coaches/recovery/{token}:
     get:
       tags:
@@ -881,42 +917,6 @@ paths:
             $ref: '#/definitions/CoacheeFinalizeCoachPasswordRecoveryFlowTransientResponseBody'
       schemes:
       - http
-  /coaches/recovery_email:
-    post:
-      tags:
-      - coachee
-      summary: StartCoachPasswordRecoveryFlow coachee
-      description: starts the process of recovering a password
-      operationId: coachee#StartCoachPasswordRecoveryFlow
-      parameters:
-      - name: StartCoachPasswordRecoveryFlowRequestBody
-        in: body
-        required: true
-        schema:
-          $ref: '#/definitions/CoacheeStartCoachPasswordRecoveryFlowRequestBody'
-          required:
-          - email
-      responses:
-        "200":
-          description: OK response.
-        "400":
-          description: Bad Request response.
-          schema:
-            $ref: '#/definitions/CoacheeStartCoachPasswordRecoveryFlowValidationResponseBody'
-        "401":
-          description: Unauthorized response.
-          schema:
-            $ref: '#/definitions/CoacheeStartCoachPasswordRecoveryFlowUnauthorizedResponseBody'
-        "404":
-          description: Not Found response.
-          schema:
-            $ref: '#/definitions/CoacheeStartCoachPasswordRecoveryFlowNotFoundResponseBody'
-        "500":
-          description: Internal Server Error response.
-          schema:
-            $ref: '#/definitions/CoacheeStartCoachPasswordRecoveryFlowTransientResponseBody'
-      schemes:
-      - http
   /orders:
     post:
       tags:
@@ -971,6 +971,42 @@ paths:
       - http
       security:
       - jwt_header_Authorization: []
+  /recovery:
+    post:
+      tags:
+      - coachee
+      summary: StartPasswordRecoveryFlow coachee
+      description: starts the process of recovering a password
+      operationId: coachee#StartPasswordRecoveryFlow
+      parameters:
+      - name: StartPasswordRecoveryFlowRequestBody
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/CoacheeStartPasswordRecoveryFlowRequestBody'
+          required:
+          - email
+      responses:
+        "200":
+          description: OK response.
+        "400":
+          description: Bad Request response.
+          schema:
+            $ref: '#/definitions/CoacheeStartPasswordRecoveryFlowValidationResponseBody'
+        "401":
+          description: Unauthorized response.
+          schema:
+            $ref: '#/definitions/CoacheeStartPasswordRecoveryFlowUnauthorizedResponseBody'
+        "404":
+          description: Not Found response.
+          schema:
+            $ref: '#/definitions/CoacheeStartPasswordRecoveryFlowNotFoundResponseBody'
+        "500":
+          description: Internal Server Error response.
+          schema:
+            $ref: '#/definitions/CoacheeStartPasswordRecoveryFlowTransientResponseBody'
+      schemes:
+      - http
   /recovery/{token}:
     get:
       tags:
@@ -1041,42 +1077,6 @@ paths:
           description: Internal Server Error response.
           schema:
             $ref: '#/definitions/CoacheeFinalizePasswordRecoveryFlowTransientResponseBody'
-      schemes:
-      - http
-  /recovery_email:
-    post:
-      tags:
-      - coachee
-      summary: StartPasswordRecoveryFlow coachee
-      description: starts the process of recovering a password
-      operationId: coachee#StartPasswordRecoveryFlow
-      parameters:
-      - name: StartPasswordRecoveryFlowRequestBody
-        in: body
-        required: true
-        schema:
-          $ref: '#/definitions/CoacheeStartPasswordRecoveryFlowRequestBody'
-          required:
-          - email
-      responses:
-        "200":
-          description: OK response.
-        "400":
-          description: Bad Request response.
-          schema:
-            $ref: '#/definitions/CoacheeStartPasswordRecoveryFlowValidationResponseBody'
-        "401":
-          description: Unauthorized response.
-          schema:
-            $ref: '#/definitions/CoacheeStartPasswordRecoveryFlowUnauthorizedResponseBody'
-        "404":
-          description: Not Found response.
-          schema:
-            $ref: '#/definitions/CoacheeStartPasswordRecoveryFlowNotFoundResponseBody'
-        "500":
-          description: Internal Server Error response.
-          schema:
-            $ref: '#/definitions/CoacheeStartPasswordRecoveryFlowTransientResponseBody'
       schemes:
       - http
 definitions:
