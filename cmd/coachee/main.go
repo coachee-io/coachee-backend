@@ -62,6 +62,7 @@ func main() {
 		model.Customer{},
 		model.Order{},
 		model.Recovery{},
+		model.CoachRecovery{},
 	)
 
 	// Initialize repositories
