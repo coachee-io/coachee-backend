@@ -98,13 +98,13 @@ func (s *Service) CustomerLogin(ctx context.Context, p *coachee.CustomerLoginPay
 	client, err := s.customerRepository.GetByEmail(repository.DefaultNoTransaction, p.Email)
 	if err != nil {
 		l.Debug().Err(err).Msg("failed to retrieve client")
-		return nil, err
+		return nil, coachee.MakeValidation(errors.New("your email or password is wrong"))
 	}
 
 	err = auth.VerifyPassword(client.Password, p.Password)
 	if err != nil {
 		l.Debug().Err(err).Msg("failed to authenticate")
-		return nil, coachee.MakeValidation(errors.New("wrong password"))
+		return nil, coachee.MakeValidation(errors.New("your email or password is wrong"))
 	}
 
 	createdAt := time.Now()

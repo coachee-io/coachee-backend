@@ -283,7 +283,7 @@ var _ = Service("coachee", func() {
 		})
 
 		HTTP(func() {
-			POST("/coaches/recovery")
+			POST("/coaches/recovery_email")
 			Response(StatusOK)
 		})
 	})
@@ -539,7 +539,7 @@ var _ = Service("coachee", func() {
 		})
 
 		HTTP(func() {
-			POST("/recovery")
+			POST("/recovery_email")
 			Response(StatusOK)
 		})
 	})

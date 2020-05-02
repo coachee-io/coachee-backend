@@ -217,13 +217,13 @@ func (s *Service) LoginCoach(ctx context.Context, p *coachee.LoginCoachPayload) 
 	coach, err := s.coachRepository.GetByEmail(repository.DefaultNoTransaction, p.Email)
 	if err != nil {
 		l.Error().Err(err).Msg("failed to retrieve coach")
-		return nil, err
+		return nil, coachee.MakeValidation(errors.New("your email or password is wrong"))
 	}
 
 	err = auth.VerifyPassword(coach.Password, p.Password)
 	if err != nil {
 		l.Debug().Err(err).Msg("failed to authenticate")
-		return nil, coachee.MakeValidation(errors.New("wrong password"))
+		return nil, coachee.MakeValidation(errors.New("your email or password is wrong"))
 	}
 
 	if coach.StripeID == "" {

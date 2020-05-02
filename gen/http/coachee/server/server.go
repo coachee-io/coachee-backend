@@ -84,7 +84,7 @@ func New(
 			{"LenCoaches", "GET", "/coaches/{tag}/length"},
 			{"CreateCoach", "POST", "/coaches"},
 			{"LoginCoach", "POST", "/coaches/login"},
-			{"StartCoachPasswordRecoveryFlow", "POST", "/coaches/recovery"},
+			{"StartCoachPasswordRecoveryFlow", "POST", "/coaches/recovery_email"},
 			{"CheckCoachPasswordRecoveryToken", "GET", "/coaches/recovery/{token}"},
 			{"FinalizeCoachPasswordRecoveryFlow", "POST", "/coaches/recovery/{token}"},
 			{"UpdateCoach", "PUT", "/admin/coaches/{id}"},
@@ -96,7 +96,7 @@ func New(
 			{"DeleteAvailability", "DELETE", "/admin/coaches/{id}/availability/{avID}"},
 			{"CreateCustomer", "POST", "/clients"},
 			{"CustomerLogin", "POST", "/clients/login"},
-			{"StartPasswordRecoveryFlow", "POST", "/recovery"},
+			{"StartPasswordRecoveryFlow", "POST", "/recovery_email"},
 			{"CheckPasswordRecoveryToken", "GET", "/recovery/{token}"},
 			{"FinalizePasswordRecoveryFlow", "POST", "/recovery/{token}"},
 			{"CreateOrder", "POST", "/orders"},
@@ -516,7 +516,7 @@ func MountStartCoachPasswordRecoveryFlowHandler(mux goahttp.Muxer, h http.Handle
 			h.ServeHTTP(w, r)
 		}
 	}
-	mux.Handle("POST", "/coaches/recovery", f)
+	mux.Handle("POST", "/coaches/recovery_email", f)
 }
 
 // NewStartCoachPasswordRecoveryFlowHandler creates a HTTP handler which loads
@@ -1155,7 +1155,7 @@ func MountStartPasswordRecoveryFlowHandler(mux goahttp.Muxer, h http.Handler) {
 			h.ServeHTTP(w, r)
 		}
 	}
-	mux.Handle("POST", "/recovery", f)
+	mux.Handle("POST", "/recovery_email", f)
 }
 
 // NewStartPasswordRecoveryFlowHandler creates a HTTP handler which loads the
