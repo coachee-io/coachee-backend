@@ -6,8 +6,8 @@ import (
 )
 
 const (
-	clientRecoveryPath = "/clientrecovery/{id}/recovery"
-	coachRecoveryPath  = "/coachrecovery/{id}/recovery"
+	clientRecoveryPath = "/confirm-password/{id}"
+	coachRecoveryPath  = "/coaches/confirm-password/{id}"
 	recoverySub        = "Password recovery for coachee.io"
 )
 

@@ -20,6 +20,148 @@ import (
 	goa "goa.design/goa/v3/pkg"
 )
 
+// BuildStripeWebhooksRequest instantiates a HTTP request object with method
+// and path set to call the "coachee" service "StripeWebhooks" endpoint
+func (c *Client) BuildStripeWebhooksRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: StripeWebhooksCoacheePath()}
+	req, err := http.NewRequest("POST", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("coachee", "StripeWebhooks", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeStripeWebhooksRequest returns an encoder for requests sent to the
+// coachee StripeWebhooks server.
+func EncodeStripeWebhooksRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.([]byte)
+		if !ok {
+			return goahttp.ErrInvalidType("coachee", "StripeWebhooks", "[]byte", v)
+		}
+		body := p
+		if err := encoder(req).Encode(&body); err != nil {
+			return goahttp.ErrEncodingError("coachee", "StripeWebhooks", err)
+		}
+		return nil
+	}
+}
+
+// DecodeStripeWebhooksResponse returns a decoder for responses returned by the
+// coachee StripeWebhooks endpoint. restoreBody controls whether the response
+// body should be restored after having been read.
+// DecodeStripeWebhooksResponse may return the following errors:
+//	- "internal" (type *goa.ServiceError): http.StatusInternalServerError
+//	- "transient" (type *goa.ServiceError): http.StatusInternalServerError
+//	- "notFound" (type *goa.ServiceError): http.StatusNotFound
+//	- "validation" (type *goa.ServiceError): http.StatusBadRequest
+//	- "unauthorized" (type *goa.ServiceError): http.StatusUnauthorized
+//	- error: internal error
+func DecodeStripeWebhooksResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			return nil, nil
+		case http.StatusInternalServerError:
+			en := resp.Header.Get("goa-error")
+			switch en {
+			case "internal":
+				var (
+					body StripeWebhooksInternalResponseBody
+					err  error
+				)
+				err = decoder(resp).Decode(&body)
+				if err != nil {
+					return nil, goahttp.ErrDecodingError("coachee", "StripeWebhooks", err)
+				}
+				err = ValidateStripeWebhooksInternalResponseBody(&body)
+				if err != nil {
+					return nil, goahttp.ErrValidationError("coachee", "StripeWebhooks", err)
+				}
+				return nil, NewStripeWebhooksInternal(&body)
+			case "transient":
+				var (
+					body StripeWebhooksTransientResponseBody
+					err  error
+				)
+				err = decoder(resp).Decode(&body)
+				if err != nil {
+					return nil, goahttp.ErrDecodingError("coachee", "StripeWebhooks", err)
+				}
+				err = ValidateStripeWebhooksTransientResponseBody(&body)
+				if err != nil {
+					return nil, goahttp.ErrValidationError("coachee", "StripeWebhooks", err)
+				}
+				return nil, NewStripeWebhooksTransient(&body)
+			default:
+				body, _ := ioutil.ReadAll(resp.Body)
+				return nil, goahttp.ErrInvalidResponse("coachee", "StripeWebhooks", resp.StatusCode, string(body))
+			}
+		case http.StatusNotFound:
+			var (
+				body StripeWebhooksNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("coachee", "StripeWebhooks", err)
+			}
+			err = ValidateStripeWebhooksNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("coachee", "StripeWebhooks", err)
+			}
+			return nil, NewStripeWebhooksNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body StripeWebhooksValidationResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("coachee", "StripeWebhooks", err)
+			}
+			err = ValidateStripeWebhooksValidationResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("coachee", "StripeWebhooks", err)
+			}
+			return nil, NewStripeWebhooksValidation(&body)
+		case http.StatusUnauthorized:
+			var (
+				body StripeWebhooksUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("coachee", "StripeWebhooks", err)
+			}
+			err = ValidateStripeWebhooksUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("coachee", "StripeWebhooks", err)
+			}
+			return nil, NewStripeWebhooksUnauthorized(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("coachee", "StripeWebhooks", resp.StatusCode, string(body))
+		}
+	}
+}
+
 // BuildGetCoachesRequest instantiates a HTTP request object with method and
 // path set to call the "coachee" service "GetCoaches" endpoint
 func (c *Client) BuildGetCoachesRequest(ctx context.Context, v interface{}) (*http.Request, error) {

@@ -151,6 +151,16 @@ var _ = Service("coachee", func() {
 		Response("unauthorized", StatusUnauthorized)
 	})
 
+	Method("StripeWebhooks", func() {
+		Description("Stripe webhook endpoint")
+		Payload(Bytes)
+
+		HTTP(func() {
+			POST("/webhooks")
+			Response(StatusOK)
+		})
+	})
+
 	Method("GetCoaches", func() {
 		Description("GetCoaches returns an array of coaches according to a tag and pagination")
 		Payload(func() {

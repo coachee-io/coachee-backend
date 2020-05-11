@@ -19,6 +19,112 @@ import (
 	goa "goa.design/goa/v3/pkg"
 )
 
+// EncodeStripeWebhooksResponse returns an encoder for responses returned by
+// the coachee StripeWebhooks endpoint.
+func EncodeStripeWebhooksResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		w.WriteHeader(http.StatusOK)
+		return nil
+	}
+}
+
+// DecodeStripeWebhooksRequest returns a decoder for requests sent to the
+// coachee StripeWebhooks endpoint.
+func DecodeStripeWebhooksRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			body []byte
+			err  error
+		)
+		err = decoder(r).Decode(&body)
+		if err != nil {
+			if err == io.EOF {
+				return nil, goa.MissingPayloadError()
+			}
+			return nil, goa.DecodePayloadError(err.Error())
+		}
+		payload := body
+
+		return payload, nil
+	}
+}
+
+// EncodeStripeWebhooksError returns an encoder for errors returned by the
+// StripeWebhooks coachee endpoint.
+func EncodeStripeWebhooksError(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder, formatter func(err error) goahttp.Statuser) func(context.Context, http.ResponseWriter, error) error {
+	encodeError := goahttp.ErrorEncoder(encoder, formatter)
+	return func(ctx context.Context, w http.ResponseWriter, v error) error {
+		en, ok := v.(ErrorNamer)
+		if !ok {
+			return encodeError(ctx, w, v)
+		}
+		switch en.ErrorName() {
+		case "internal":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewStripeWebhooksInternalResponseBody(res)
+			}
+			w.Header().Set("goa-error", "internal")
+			w.WriteHeader(http.StatusInternalServerError)
+			return enc.Encode(body)
+		case "transient":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewStripeWebhooksTransientResponseBody(res)
+			}
+			w.Header().Set("goa-error", "transient")
+			w.WriteHeader(http.StatusInternalServerError)
+			return enc.Encode(body)
+		case "notFound":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewStripeWebhooksNotFoundResponseBody(res)
+			}
+			w.Header().Set("goa-error", "notFound")
+			w.WriteHeader(http.StatusNotFound)
+			return enc.Encode(body)
+		case "validation":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewStripeWebhooksValidationResponseBody(res)
+			}
+			w.Header().Set("goa-error", "validation")
+			w.WriteHeader(http.StatusBadRequest)
+			return enc.Encode(body)
+		case "unauthorized":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewStripeWebhooksUnauthorizedResponseBody(res)
+			}
+			w.Header().Set("goa-error", "unauthorized")
+			w.WriteHeader(http.StatusUnauthorized)
+			return enc.Encode(body)
+		default:
+			return encodeError(ctx, w, v)
+		}
+	}
+}
+
 // EncodeGetCoachesResponse returns an encoder for responses returned by the
 // coachee GetCoaches endpoint.
 func EncodeGetCoachesResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {

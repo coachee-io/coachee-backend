@@ -17,6 +17,10 @@ import (
 
 // Client lists the coachee service endpoint HTTP clients.
 type Client struct {
+	// StripeWebhooks Doer is the HTTP client used to make requests to the
+	// StripeWebhooks endpoint.
+	StripeWebhooksDoer goahttp.Doer
+
 	// GetCoaches Doer is the HTTP client used to make requests to the GetCoaches
 	// endpoint.
 	GetCoachesDoer goahttp.Doer
@@ -133,6 +137,7 @@ func NewClient(
 	restoreBody bool,
 ) *Client {
 	return &Client{
+		StripeWebhooksDoer:                    doer,
 		GetCoachesDoer:                        doer,
 		GetCoachDoer:                          doer,
 		AdminGetCoachDoer:                     doer,
@@ -162,6 +167,31 @@ func NewClient(
 		host:                                  host,
 		decoder:                               dec,
 		encoder:                               enc,
+	}
+}
+
+// StripeWebhooks returns an endpoint that makes HTTP requests to the coachee
+// service StripeWebhooks server.
+func (c *Client) StripeWebhooks() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeStripeWebhooksRequest(c.encoder)
+		decodeResponse = DecodeStripeWebhooksResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildStripeWebhooksRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.StripeWebhooksDoer.Do(req)
+
+		if err != nil {
+			return nil, goahttp.ErrRequestError("coachee", "StripeWebhooks", err)
+		}
+		return decodeResponse(resp)
 	}
 }
 

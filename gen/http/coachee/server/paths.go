@@ -11,6 +11,11 @@ import (
 	"fmt"
 )
 
+// StripeWebhooksCoacheePath returns the URL path to the coachee service StripeWebhooks HTTP endpoint.
+func StripeWebhooksCoacheePath() string {
+	return "/webhooks"
+}
+
 // GetCoachesCoacheePath returns the URL path to the coachee service GetCoaches HTTP endpoint.
 func GetCoachesCoacheePath() string {
 	return "/coaches"

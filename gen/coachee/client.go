@@ -15,6 +15,7 @@ import (
 
 // Client is the "coachee" service client.
 type Client struct {
+	StripeWebhooksEndpoint                    goa.Endpoint
 	GetCoachesEndpoint                        goa.Endpoint
 	GetCoachEndpoint                          goa.Endpoint
 	AdminGetCoachEndpoint                     goa.Endpoint
@@ -42,8 +43,9 @@ type Client struct {
 }
 
 // NewClient initializes a "coachee" service client given the endpoints.
-func NewClient(getCoaches, getCoach, adminGetCoach, lenCoaches, createCoach, loginCoach, startCoachPasswordRecoveryFlow, checkCoachPasswordRecoveryToken, finalizeCoachPasswordRecoveryFlow, updateCoach, createCertification, deleteCertification, createProgram, deleteProgram, createAvailability, deleteAvailability, createCustomer, customerLogin, startPasswordRecoveryFlow, checkPasswordRecoveryToken, finalizePasswordRecoveryFlow, createOrder, registerStripeExpress, adminLogin goa.Endpoint) *Client {
+func NewClient(stripeWebhooks, getCoaches, getCoach, adminGetCoach, lenCoaches, createCoach, loginCoach, startCoachPasswordRecoveryFlow, checkCoachPasswordRecoveryToken, finalizeCoachPasswordRecoveryFlow, updateCoach, createCertification, deleteCertification, createProgram, deleteProgram, createAvailability, deleteAvailability, createCustomer, customerLogin, startPasswordRecoveryFlow, checkPasswordRecoveryToken, finalizePasswordRecoveryFlow, createOrder, registerStripeExpress, adminLogin goa.Endpoint) *Client {
 	return &Client{
+		StripeWebhooksEndpoint:                    stripeWebhooks,
 		GetCoachesEndpoint:                        getCoaches,
 		GetCoachEndpoint:                          getCoach,
 		AdminGetCoachEndpoint:                     adminGetCoach,
@@ -69,6 +71,12 @@ func NewClient(getCoaches, getCoach, adminGetCoach, lenCoaches, createCoach, log
 		RegisterStripeExpressEndpoint:             registerStripeExpress,
 		AdminLoginEndpoint:                        adminLogin,
 	}
+}
+
+// StripeWebhooks calls the "StripeWebhooks" endpoint of the "coachee" service.
+func (c *Client) StripeWebhooks(ctx context.Context, p []byte) (err error) {
+	_, err = c.StripeWebhooksEndpoint(ctx, p)
+	return
 }
 
 // GetCoaches calls the "GetCoaches" endpoint of the "coachee" service.

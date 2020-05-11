@@ -16,6 +16,8 @@ import (
 
 // The coachee service performs operations on coachees
 type Service interface {
+	// Stripe webhook endpoint
+	StripeWebhooks(context.Context, []byte) (err error)
 	// GetCoaches returns an array of coaches according to a tag and pagination
 	GetCoaches(context.Context, *GetCoachesPayload) (res []*Coach, err error)
 	// GetCoach returns one coach according to the id
@@ -80,7 +82,7 @@ const ServiceName = "coachee"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [24]string{"GetCoaches", "GetCoach", "AdminGetCoach", "LenCoaches", "CreateCoach", "LoginCoach", "StartCoachPasswordRecoveryFlow", "CheckCoachPasswordRecoveryToken", "FinalizeCoachPasswordRecoveryFlow", "UpdateCoach", "CreateCertification", "DeleteCertification", "CreateProgram", "DeleteProgram", "CreateAvailability", "DeleteAvailability", "CreateCustomer", "CustomerLogin", "StartPasswordRecoveryFlow", "CheckPasswordRecoveryToken", "FinalizePasswordRecoveryFlow", "CreateOrder", "RegisterStripeExpress", "AdminLogin"}
+var MethodNames = [25]string{"StripeWebhooks", "GetCoaches", "GetCoach", "AdminGetCoach", "LenCoaches", "CreateCoach", "LoginCoach", "StartCoachPasswordRecoveryFlow", "CheckCoachPasswordRecoveryToken", "FinalizeCoachPasswordRecoveryFlow", "UpdateCoach", "CreateCertification", "DeleteCertification", "CreateProgram", "DeleteProgram", "CreateAvailability", "DeleteAvailability", "CreateCustomer", "CustomerLogin", "StartPasswordRecoveryFlow", "CheckPasswordRecoveryToken", "FinalizePasswordRecoveryFlow", "CreateOrder", "RegisterStripeExpress", "AdminLogin"}
 
 // GetCoachesPayload is the payload type of the coachee service GetCoaches
 // method.

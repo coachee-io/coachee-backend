@@ -7,10 +7,10 @@ type OrderStatus string
 
 // Order status
 const (
-	OrderStatusCreated   OrderStatus = "created"
-	OrderStatusCaptured  OrderStatus = "captured"
-	OrderStatusConfirmed OrderStatus = "confirmed"
-	OrderStatusDeclined  OrderStatus = "declined"
+	OrderStatusCreated  OrderStatus = "created"
+	OrderStatusCaptured OrderStatus = "captured"
+	OrderStatusCharged  OrderStatus = "charged"
+	OrderStatusDeclined OrderStatus = "declined"
 )
 
 // Order defines a customers intent on buying a coach program

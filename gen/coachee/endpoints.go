@@ -16,6 +16,7 @@ import (
 
 // Endpoints wraps the "coachee" service endpoints.
 type Endpoints struct {
+	StripeWebhooks                    goa.Endpoint
 	GetCoaches                        goa.Endpoint
 	GetCoach                          goa.Endpoint
 	AdminGetCoach                     goa.Endpoint
@@ -47,6 +48,7 @@ func NewEndpoints(s Service) *Endpoints {
 	// Casting service to Auther interface
 	a := s.(Auther)
 	return &Endpoints{
+		StripeWebhooks:                    NewStripeWebhooksEndpoint(s),
 		GetCoaches:                        NewGetCoachesEndpoint(s),
 		GetCoach:                          NewGetCoachEndpoint(s),
 		AdminGetCoach:                     NewAdminGetCoachEndpoint(s, a.JWTAuth),
@@ -76,6 +78,7 @@ func NewEndpoints(s Service) *Endpoints {
 
 // Use applies the given middleware to all the "coachee" service endpoints.
 func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
+	e.StripeWebhooks = m(e.StripeWebhooks)
 	e.GetCoaches = m(e.GetCoaches)
 	e.GetCoach = m(e.GetCoach)
 	e.AdminGetCoach = m(e.AdminGetCoach)
@@ -100,6 +103,15 @@ func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.CreateOrder = m(e.CreateOrder)
 	e.RegisterStripeExpress = m(e.RegisterStripeExpress)
 	e.AdminLogin = m(e.AdminLogin)
+}
+
+// NewStripeWebhooksEndpoint returns an endpoint function that calls the method
+// "StripeWebhooks" of service "coachee".
+func NewStripeWebhooksEndpoint(s Service) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.([]byte)
+		return nil, s.StripeWebhooks(ctx, p)
+	}
 }
 
 // NewGetCoachesEndpoint returns an endpoint function that calls the method

@@ -217,6 +217,96 @@ type AdminLoginResponseBody struct {
 	Expiry int64  `form:"expiry" json:"expiry" xml:"expiry"`
 }
 
+// StripeWebhooksInternalResponseBody is the type of the "coachee" service
+// "StripeWebhooks" endpoint HTTP response body for the "internal" error.
+type StripeWebhooksInternalResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// StripeWebhooksTransientResponseBody is the type of the "coachee" service
+// "StripeWebhooks" endpoint HTTP response body for the "transient" error.
+type StripeWebhooksTransientResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// StripeWebhooksNotFoundResponseBody is the type of the "coachee" service
+// "StripeWebhooks" endpoint HTTP response body for the "notFound" error.
+type StripeWebhooksNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// StripeWebhooksValidationResponseBody is the type of the "coachee" service
+// "StripeWebhooks" endpoint HTTP response body for the "validation" error.
+type StripeWebhooksValidationResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// StripeWebhooksUnauthorizedResponseBody is the type of the "coachee" service
+// "StripeWebhooks" endpoint HTTP response body for the "unauthorized" error.
+type StripeWebhooksUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
 // GetCoachesInternalResponseBody is the type of the "coachee" service
 // "GetCoaches" endpoint HTTP response body for the "internal" error.
 type GetCoachesInternalResponseBody struct {
@@ -2687,6 +2777,76 @@ func NewAdminLoginResponseBody(res *coachee.AdminLoginResult) *AdminLoginRespons
 	body := &AdminLoginResponseBody{
 		Token:  res.Token,
 		Expiry: res.Expiry,
+	}
+	return body
+}
+
+// NewStripeWebhooksInternalResponseBody builds the HTTP response body from the
+// result of the "StripeWebhooks" endpoint of the "coachee" service.
+func NewStripeWebhooksInternalResponseBody(res *goa.ServiceError) *StripeWebhooksInternalResponseBody {
+	body := &StripeWebhooksInternalResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewStripeWebhooksTransientResponseBody builds the HTTP response body from
+// the result of the "StripeWebhooks" endpoint of the "coachee" service.
+func NewStripeWebhooksTransientResponseBody(res *goa.ServiceError) *StripeWebhooksTransientResponseBody {
+	body := &StripeWebhooksTransientResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewStripeWebhooksNotFoundResponseBody builds the HTTP response body from the
+// result of the "StripeWebhooks" endpoint of the "coachee" service.
+func NewStripeWebhooksNotFoundResponseBody(res *goa.ServiceError) *StripeWebhooksNotFoundResponseBody {
+	body := &StripeWebhooksNotFoundResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewStripeWebhooksValidationResponseBody builds the HTTP response body from
+// the result of the "StripeWebhooks" endpoint of the "coachee" service.
+func NewStripeWebhooksValidationResponseBody(res *goa.ServiceError) *StripeWebhooksValidationResponseBody {
+	body := &StripeWebhooksValidationResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewStripeWebhooksUnauthorizedResponseBody builds the HTTP response body from
+// the result of the "StripeWebhooks" endpoint of the "coachee" service.
+func NewStripeWebhooksUnauthorizedResponseBody(res *goa.ServiceError) *StripeWebhooksUnauthorizedResponseBody {
+	body := &StripeWebhooksUnauthorizedResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
 	}
 	return body
 }

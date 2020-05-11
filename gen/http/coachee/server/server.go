@@ -19,6 +19,7 @@ import (
 // Server lists the coachee service endpoint HTTP handlers.
 type Server struct {
 	Mounts                            []*MountPoint
+	StripeWebhooks                    http.Handler
 	GetCoaches                        http.Handler
 	GetCoach                          http.Handler
 	AdminGetCoach                     http.Handler
@@ -78,6 +79,7 @@ func New(
 ) *Server {
 	return &Server{
 		Mounts: []*MountPoint{
+			{"StripeWebhooks", "POST", "/webhooks"},
 			{"GetCoaches", "GET", "/coaches"},
 			{"GetCoach", "GET", "/coaches/{id}"},
 			{"AdminGetCoach", "GET", "/admin/coaches/{id}"},
@@ -103,6 +105,7 @@ func New(
 			{"RegisterStripeExpress", "POST", "/coaches/{id}/stripe"},
 			{"AdminLogin", "POST", "/admin/login"},
 		},
+		StripeWebhooks:                    NewStripeWebhooksHandler(e.StripeWebhooks, mux, decoder, encoder, errhandler, formatter),
 		GetCoaches:                        NewGetCoachesHandler(e.GetCoaches, mux, decoder, encoder, errhandler, formatter),
 		GetCoach:                          NewGetCoachHandler(e.GetCoach, mux, decoder, encoder, errhandler, formatter),
 		AdminGetCoach:                     NewAdminGetCoachHandler(e.AdminGetCoach, mux, decoder, encoder, errhandler, formatter),
@@ -135,6 +138,7 @@ func (s *Server) Service() string { return "coachee" }
 
 // Use wraps the server handlers with the given middleware.
 func (s *Server) Use(m func(http.Handler) http.Handler) {
+	s.StripeWebhooks = m(s.StripeWebhooks)
 	s.GetCoaches = m(s.GetCoaches)
 	s.GetCoach = m(s.GetCoach)
 	s.AdminGetCoach = m(s.AdminGetCoach)
@@ -163,6 +167,7 @@ func (s *Server) Use(m func(http.Handler) http.Handler) {
 
 // Mount configures the mux to serve the coachee endpoints.
 func Mount(mux goahttp.Muxer, h *Server) {
+	MountStripeWebhooksHandler(mux, h.StripeWebhooks)
 	MountGetCoachesHandler(mux, h.GetCoaches)
 	MountGetCoachHandler(mux, h.GetCoach)
 	MountAdminGetCoachHandler(mux, h.AdminGetCoach)
@@ -187,6 +192,59 @@ func Mount(mux goahttp.Muxer, h *Server) {
 	MountCreateOrderHandler(mux, h.CreateOrder)
 	MountRegisterStripeExpressHandler(mux, h.RegisterStripeExpress)
 	MountAdminLoginHandler(mux, h.AdminLogin)
+}
+
+// MountStripeWebhooksHandler configures the mux to serve the "coachee" service
+// "StripeWebhooks" endpoint.
+func MountStripeWebhooksHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("POST", "/webhooks", f)
+}
+
+// NewStripeWebhooksHandler creates a HTTP handler which loads the HTTP request
+// and calls the "coachee" service "StripeWebhooks" endpoint.
+func NewStripeWebhooksHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeStripeWebhooksRequest(mux, decoder)
+		encodeResponse = EncodeStripeWebhooksResponse(encoder)
+		encodeError    = EncodeStripeWebhooksError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "StripeWebhooks")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "coachee")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+
+		res, err := endpoint(ctx, payload)
+
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
 }
 
 // MountGetCoachesHandler configures the mux to serve the "coachee" service
