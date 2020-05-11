@@ -24,7 +24,7 @@ func (s *Service) StripeWebhooks(ctx context.Context, mapJSON map[string]interfa
 
 	event := stripe.Event{}
 
-	if err := json.Unmarshal(rawJSON, event); err != nil {
+	if err := json.Unmarshal(rawJSON, &event); err != nil {
 		l.Error().Err(err).Msg("failed to parse webhook body json")
 		return coachee.MakeInternal(err)
 	}
