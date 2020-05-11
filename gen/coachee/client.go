@@ -74,7 +74,7 @@ func NewClient(stripeWebhooks, getCoaches, getCoach, adminGetCoach, lenCoaches, 
 }
 
 // StripeWebhooks calls the "StripeWebhooks" endpoint of the "coachee" service.
-func (c *Client) StripeWebhooks(ctx context.Context, p string) (err error) {
+func (c *Client) StripeWebhooks(ctx context.Context, p map[string]interface{}) (err error) {
 	_, err = c.StripeWebhooksEndpoint(ctx, p)
 	return
 }

@@ -109,7 +109,7 @@ func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 // "StripeWebhooks" of service "coachee".
 func NewStripeWebhooksEndpoint(s Service) goa.Endpoint {
 	return func(ctx context.Context, req interface{}) (interface{}, error) {
-		p := req.(string)
+		p := req.(map[string]interface{})
 		return nil, s.StripeWebhooks(ctx, p)
 	}
 }

@@ -153,7 +153,7 @@ var _ = Service("coachee", func() {
 
 	Method("StripeWebhooks", func() {
 		Description("Stripe webhook endpoint")
-		Payload(String)
+		Payload(MapOf(String, Any))
 
 		HTTP(func() {
 			POST("/webhooks")
