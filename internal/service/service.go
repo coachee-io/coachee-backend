@@ -33,7 +33,7 @@ type Service struct {
 // Stripe is the interface for the stripe client
 type Stripe interface {
 	CreateCustomer(customer *model.Customer) error
-	CreatePaymentIntent(order *model.Order, customer *model.Customer) (string, error)
+	CreatePaymentIntent(order *model.Order, customer *model.Customer, coachID string) (string, error)
 	RegisterStripeExpress(authCode string) (string, error)
 	LoginStripeExpress(stripeID string) (string, error)
 }

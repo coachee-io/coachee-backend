@@ -7,7 +7,7 @@ import (
 	"github.com/stripe/stripe-go"
 )
 
-func (c *Client) CreatePaymentIntent(order *model.Order, customer *model.Customer) (string, error) {
+func (c *Client) CreatePaymentIntent(order *model.Order, customer *model.Customer, coachID string) (string, error) {
 	l := c.logger.With().Str("service", "CreatePaymentIntent").Logger()
 	l.Debug().Msg("stripe CreatePaymentIntent called")
 
@@ -16,6 +16,7 @@ func (c *Client) CreatePaymentIntent(order *model.Order, customer *model.Custome
 		CaptureMethod:       stripe.String("manual"),
 		Currency:            stripe.String("GBP"),
 		Customer:            &customer.StripeID,
+		OnBehalfOf:          &coachID,
 		ReceiptEmail:        &customer.Email,
 		StatementDescriptor: stripe.String("Coachee"),
 		PaymentMethodTypes: stripe.StringSlice([]string{

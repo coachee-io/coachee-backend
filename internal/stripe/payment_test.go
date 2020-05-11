@@ -31,7 +31,7 @@ func TestClient_CreateOrder(t *testing.T) {
 	require.Nil(t, err)
 	require.NotEmpty(t, customer.StripeID)
 
-	secret, err := cli.CreatePaymentIntent(order, customer)
+	secret, err := cli.CreatePaymentIntent(order, customer, "acct_1GeL6MG2xOmqkDCo")
 	require.Nil(t, err)
 	require.NotEmpty(t, order.PaymentIntentID)
 	require.NotEmpty(t, secret)

@@ -54,7 +54,7 @@ func (s *Service) CreateOrder(ctx context.Context, p *coachee.CreateOrderPayload
 		return nil, err
 	}
 
-	secret, err := s.stripe.CreatePaymentIntent(order, customer)
+	secret, err := s.stripe.CreatePaymentIntent(order, customer, coach.StripeID)
 	if err != nil {
 		l.Error().Err(err).Msg("failed to create payment intent")
 		_ = tx.Rollback()
