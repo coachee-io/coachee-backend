@@ -17,7 +17,7 @@ import (
 // The coachee service performs operations on coachees
 type Service interface {
 	// Stripe webhook endpoint
-	StripeWebhooks(context.Context, []byte) (err error)
+	StripeWebhooks(context.Context, string) (err error)
 	// GetCoaches returns an array of coaches according to a tag and pagination
 	GetCoaches(context.Context, *GetCoachesPayload) (res []*Coach, err error)
 	// GetCoach returns one coach according to the id

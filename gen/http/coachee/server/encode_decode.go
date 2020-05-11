@@ -33,7 +33,7 @@ func EncodeStripeWebhooksResponse(encoder func(context.Context, http.ResponseWri
 func DecodeStripeWebhooksRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
 	return func(r *http.Request) (interface{}, error) {
 		var (
-			body []byte
+			body string
 			err  error
 		)
 		err = decoder(r).Decode(&body)

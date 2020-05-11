@@ -29,7 +29,7 @@ func UsageCommands() string {
 
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
-	return os.Args[0] + ` coachee stripe-webhooks --p "RmFjaWxpcyBzdW50IG1vbGVzdGlhZSBjb25zZWN0ZXR1ciBpdXN0byBhcGVyaWFtLg=="` + "\n" +
+	return os.Args[0] + ` coachee stripe-webhooks --p "Facilis sunt molestiae consectetur iusto aperiam."` + "\n" +
 		""
 }
 
@@ -46,7 +46,7 @@ func ParseEndpoint(
 		coacheeFlags = flag.NewFlagSet("coachee", flag.ContinueOnError)
 
 		coacheeStripeWebhooksFlags = flag.NewFlagSet("stripe-webhooks", flag.ExitOnError)
-		coacheeStripeWebhooksPFlag = coacheeStripeWebhooksFlags.String("p", "REQUIRED", "[]byte is the payload type of the coachee service StripeWebhooks method.")
+		coacheeStripeWebhooksPFlag = coacheeStripeWebhooksFlags.String("p", "REQUIRED", "string is the payload type of the coachee service StripeWebhooks method.")
 
 		coacheeGetCoachesFlags       = flag.NewFlagSet("get-coaches", flag.ExitOnError)
 		coacheeGetCoachesTagFlag     = coacheeGetCoachesFlags.String("tag", "", "")
@@ -305,7 +305,7 @@ func ParseEndpoint(
 			switch epn {
 			case "stripe-webhooks":
 				endpoint = c.StripeWebhooks()
-				data = []byte(*coacheeStripeWebhooksPFlag)
+				data = *coacheeStripeWebhooksPFlag
 			case "get-coaches":
 				endpoint = c.GetCoaches()
 				data, err = coacheec.BuildGetCoachesPayload(*coacheeGetCoachesTagFlag, *coacheeGetCoachesLimitFlag, *coacheeGetCoachesPageFlag, *coacheeGetCoachesShowAllFlag)
@@ -429,10 +429,10 @@ func coacheeStripeWebhooksUsage() {
 	fmt.Fprintf(os.Stderr, `%s [flags] coachee stripe-webhooks -p STRING
 
 Stripe webhook endpoint
-    -p STRING: []byte is the payload type of the coachee service StripeWebhooks method.
+    -p STRING: string is the payload type of the coachee service StripeWebhooks method.
 
 Example:
-    `+os.Args[0]+` coachee stripe-webhooks --p "RmFjaWxpcyBzdW50IG1vbGVzdGlhZSBjb25zZWN0ZXR1ciBpdXN0byBhcGVyaWFtLg=="
+    `+os.Args[0]+` coachee stripe-webhooks --p "Facilis sunt molestiae consectetur iusto aperiam."
 `, os.Args[0])
 }
 

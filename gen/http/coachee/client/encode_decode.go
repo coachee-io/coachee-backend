@@ -39,9 +39,9 @@ func (c *Client) BuildStripeWebhooksRequest(ctx context.Context, v interface{}) 
 // coachee StripeWebhooks server.
 func EncodeStripeWebhooksRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
 	return func(req *http.Request, v interface{}) error {
-		p, ok := v.([]byte)
+		p, ok := v.(string)
 		if !ok {
-			return goahttp.ErrInvalidType("coachee", "StripeWebhooks", "[]byte", v)
+			return goahttp.ErrInvalidType("coachee", "StripeWebhooks", "string", v)
 		}
 		body := p
 		if err := encoder(req).Encode(&body); err != nil {

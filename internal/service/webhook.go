@@ -13,12 +13,12 @@ import (
 )
 
 // StripeWebhooks receives stripe webhooks
-func (s *Service) StripeWebhooks(ctx context.Context, data []byte) error {
-	l := s.logger.With().Str("service", "StripeWebhooks").Bytes("payload", data).Logger()
+func (s *Service) StripeWebhooks(ctx context.Context, rawJSON string) error {
+	l := s.logger.With().Str("service", "StripeWebhooks").Str("payload", rawJSON).Logger()
 
 	event := stripe.Event{}
 
-	if err := json.Unmarshal(data, event); err != nil {
+	if err := json.Unmarshal([]byte(rawJSON), event); err != nil {
 		l.Error().Err(err).Msg("failed to parse webhook body json")
 		return coachee.MakeInternal(err)
 	}
