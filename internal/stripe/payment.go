@@ -22,6 +22,7 @@ func (c *Client) CreatePaymentIntent(order *model.Order, customer *model.Custome
 		PaymentMethodTypes: stripe.StringSlice([]string{
 			"card",
 		}),
+		TransferGroup: stripe.String(fmt.Sprintf("ORDER%d", order.ID)),
 	}
 	param.AddMetadata("orderID", fmt.Sprintf("%d", order.ID))
 	param.AddMetadata("customerID", fmt.Sprintf("%d", order.CustomerID))
