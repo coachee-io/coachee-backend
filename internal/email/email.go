@@ -1,9 +1,15 @@
 package email
 
 import (
+	"coachee-backend/gen/coachee"
 	"context"
+	"errors"
+	"fmt"
 	"html/template"
-	"net/smtp"
+
+	"github.com/sendgrid/sendgrid-go/helpers/mail"
+
+	"github.com/sendgrid/sendgrid-go"
 
 	"github.com/caarlos0/env"
 )
@@ -19,18 +25,18 @@ const (
 )
 
 type config struct {
-	Path     string `env:"EMAIL_PATH" envDefault:"/web/tmpl/"`
-	Username string `env:"EMAIL_USERNAME,required"`
-	Password string `env:"EMAIL_PASSWORD,required"`
-	Host     string `env:"EMAIL_HOST" envDefault:"smtp.gmail.com"`
-	Address  string `env:"EMAIL_ADDRESS" envDefault:"smtp.gmail.com:587"`
+	Path      string `env:"EMAIL_PATH" envDefault:"/web/tmpl/"`
+	Key       string `env:"SENDGRID_API_KEY" envDefault:"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"`
+	FromEmail string `env:"FROM_EMAIL" envDefault:"admin@coachee.io"`
+	FromName  string `env:"FROM_NAME" envDefault:"coachee.io"`
 }
 
 type Client struct {
 	appCtx                    context.Context
 	config                    config
-	auth                      smtp.Auth
+	sendgrid                  *sendgrid.Client
 	hostname                  string
+	from                      *mail.Email
 	getWelcomeTemplate        func() (*template.Template, error)
 	getConfirmBookingTemplate func() (*template.Template, error)
 	getForgotPasswordTemplate func() (*template.Template, error)
@@ -39,8 +45,7 @@ type Client struct {
 // NewClient initializes a new email client
 func NewClient(ctx context.Context, hostname string) (*Client, error) {
 	client := &Client{
-		appCtx:   ctx,
-		hostname: hostname,
+		appCtx: ctx,
 	}
 
 	err := env.Parse(&client.config)
@@ -48,7 +53,9 @@ func NewClient(ctx context.Context, hostname string) (*Client, error) {
 		return nil, err
 	}
 
-	client.auth = smtp.PlainAuth("", client.config.Username, client.config.Password, client.config.Host)
+	client.sendgrid = sendgrid.NewSendClient(client.config.Key)
+	client.hostname = hostname
+	client.from = mail.NewEmail(client.config.FromName, client.config.FromEmail)
 
 	confirmBookingPath := client.config.Path + confirmBooking
 	copyrightPath := client.config.Path + copyright
@@ -86,10 +93,17 @@ func NewClient(ctx context.Context, hostname string) (*Client, error) {
 }
 
 func (c *Client) sendEmail(to, subject, body string) error {
-	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
-	toH := "To: " + to + "\n"
-	sub := "Subject: " + subject + "\n"
-	msg := []byte(sub + toH + mime + body)
-
-	return smtp.SendMail(c.config.Address, c.auth, c.config.Username, []string{to}, msg)
+	toEmail := mail.NewEmail("", to)
+	html := mail.NewContent("text/html", body)
+	message := mail.NewV3MailInit(c.from, subject, toEmail, html)
+	res, err := c.sendgrid.Send(message)
+	if err != nil {
+		return err
+	}
+	if res.StatusCode > 299 {
+		err = coachee.MakeValidation(errors.New(fmt.Sprintf("Code: %d Error: %s", res.StatusCode, res.Body)))
+		return err
+	}
+	fmt.Println(res)
+	return nil
 }

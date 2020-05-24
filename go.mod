@@ -11,6 +11,8 @@ require (
 	github.com/jinzhu/gorm v1.9.11
 	github.com/pborman/uuid v1.2.0
 	github.com/rs/zerolog v1.17.2
+	github.com/sendgrid/rest v2.4.1+incompatible // indirect
+	github.com/sendgrid/sendgrid-go v3.5.0+incompatible
 	github.com/stretchr/testify v1.3.0
 	github.com/stripe/stripe-go v68.4.0+incompatible
 	goa.design/goa/v3 v3.0.9
