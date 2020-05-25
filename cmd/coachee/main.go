@@ -34,6 +34,7 @@ func main() {
 		pubKey        = flag.String("pub-key", "pk_test_bmGuB7UJfIeeeofOouGHeJcd00MQjvjYVL", "pub key")
 		adminEmail    = flag.String("admin", "test@test.com", "admin email")
 		adminPassword = flag.String("pass", "rucalindo19", "admin password")
+		hostName      = flag.String("host-name", "https://flamboyant-bohr-46e743.netlify.app", "website url")
 	)
 	flag.Parse()
 
@@ -76,7 +77,7 @@ func main() {
 	stripeClient := stripe.NewClient(appCtx, *stripeKey)
 
 	// InitializeMailClient
-	emailClient, err := email.NewClient(appCtx, *domainF)
+	emailClient, err := email.NewClient(appCtx, *hostName)
 	if err != nil {
 		panic(err)
 	}
