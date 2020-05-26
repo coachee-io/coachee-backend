@@ -25,21 +25,22 @@ const (
 
 // Coach represents all information relative to the coach
 type Coach struct {
-	ID          uint `gorm:"primary_key"`
-	FirstName   string
-	LastName    string
-	Email       string `gorm:"not null;unique"`
-	Password    string
-	Phone       string
-	StripeID    string
-	Tags        string
-	Description string `sql:"TYPE:text"`
-	City        string
-	Country     string
-	PictureUrl  string
-	Status      CoachStatus
-	Vat         string
-	IntroCall   time.Time
+	ID                uint `gorm:"primary_key"`
+	FirstName         string
+	LastName          string
+	Email             string `gorm:"not null;unique"`
+	Password          string
+	Phone             string
+	StripeID          string
+	Tags              string
+	Description       string `sql:"TYPE:text"`
+	City              string
+	Country           string
+	PictureUrl        string
+	Status            CoachStatus
+	Vat               string
+	IntroCall         time.Time
+	FirstCallDuration int32
 
 	Availability   Availabilities `sql:"TYPE:json"`
 	Certifications Certifications `sql:"TYPE:json"`

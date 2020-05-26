@@ -86,11 +86,12 @@ var coachResult = Type("coach", func() {
 	Attribute("city", String)
 	Attribute("country", String)
 	Attribute("pictureURL", String)
+	Attribute("firstCallDuration", Int32)
 	Attribute("certifications", ArrayOf(certification))
 	Attribute("programs", ArrayOf(program))
 	Attribute("availability", ArrayOf(availability))
 
-	Required("id", "firstName", "lastName", "tags", "description", "city", "country", "pictureURL")
+	Required("id", "firstName", "lastName", "tags", "description", "city", "country", "pictureURL", "firstCallDuration")
 })
 
 var fullCoach = Type("fullCoach", func() {
@@ -108,13 +109,14 @@ var fullCoach = Type("fullCoach", func() {
 	Attribute("status", String)
 	Attribute("vat", String)
 	Attribute("introCall", Int)
+	Attribute("firstCallDuration", Int32)
 
 	Attribute("availability", ArrayOf(availability))
 	Attribute("certifications", ArrayOf(certification))
 	Attribute("programs", ArrayOf(program))
 
 	Required("id", "firstName", "lastName", "email", "phone", "stripeID", "tags", "description", "city",
-		"country", "pictureURL", "status", "vat", "introCall", "availability", "certifications", "programs")
+		"country", "pictureURL", "status", "vat", "introCall", "availability", "certifications", "programs", "firstCallDuration")
 })
 
 var customer = Type("baseClient", func() {
@@ -349,6 +351,7 @@ var _ = Service("coachee", func() {
 			Attribute("pictureURL", String)
 			Attribute("vat", String)
 			Attribute("status", String)
+			Attribute("firstCallDuration", Int32)
 
 			Required("token", "id")
 		})

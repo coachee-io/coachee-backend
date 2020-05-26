@@ -10,6 +10,8 @@ import (
 	"time"
 )
 
+const firstCallDuration = 30
+
 // GetCoaches returns an array of coaches according to a tag and pagination
 func (s *Service) GetCoaches(ctx context.Context, p *coachee.GetCoachesPayload) ([]*coachee.Coach, error) {
 	var limit, page uint
@@ -114,6 +116,7 @@ func (s *Service) CreateCoach(ctx context.Context, p *coachee.CreateCoachPayload
 		Status:             model.StatusRegistered,
 		Vat:                vat,
 		IntroCall:          time.Unix(int64(p.IntroCall), 0),
+		FirstCallDuration:  firstCallDuration,
 		TextAvailability:   textAvailability,
 		TextCertifications: p.TextCertifications,
 		TextPrograms:       p.TextPrograms,
@@ -169,6 +172,9 @@ func (s *Service) UpdateCoach(ctx context.Context, p *coachee.UpdateCoachPayload
 	}
 	if p.Vat != nil {
 		coach.Vat = *p.Vat
+	}
+	if p.FirstCallDuration != nil {
+		coach.FirstCallDuration = *p.FirstCallDuration
 	}
 	if p.Status != nil {
 		coach.Status = model.CoachStatus(*p.Status)

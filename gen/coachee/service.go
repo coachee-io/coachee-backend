@@ -100,17 +100,18 @@ type GetCoachPayload struct {
 
 // Coach is the result type of the coachee service GetCoach method.
 type Coach struct {
-	ID             uint
-	FirstName      string
-	LastName       string
-	Tags           string
-	Description    string
-	City           string
-	Country        string
-	PictureURL     string
-	Certifications []*Certification
-	Programs       []*Program
-	Availability   []*Availability
+	ID                uint
+	FirstName         string
+	LastName          string
+	Tags              string
+	Description       string
+	City              string
+	Country           string
+	PictureURL        string
+	FirstCallDuration int32
+	Certifications    []*Certification
+	Programs          []*Program
+	Availability      []*Availability
 }
 
 // AdminGetCoachPayload is the payload type of the coachee service
@@ -123,23 +124,24 @@ type AdminGetCoachPayload struct {
 
 // FullCoach is the result type of the coachee service AdminGetCoach method.
 type FullCoach struct {
-	ID             uint
-	FirstName      string
-	LastName       string
-	Email          string
-	Phone          string
-	StripeID       string
-	Tags           string
-	Description    string
-	City           string
-	Country        string
-	PictureURL     string
-	Status         string
-	Vat            string
-	IntroCall      int
-	Availability   []*Availability
-	Certifications []*Certification
-	Programs       []*Program
+	ID                uint
+	FirstName         string
+	LastName          string
+	Email             string
+	Phone             string
+	StripeID          string
+	Tags              string
+	Description       string
+	City              string
+	Country           string
+	PictureURL        string
+	Status            string
+	Vat               string
+	IntroCall         int
+	FirstCallDuration int32
+	Availability      []*Availability
+	Certifications    []*Certification
+	Programs          []*Program
 }
 
 // LenCoachesPayload is the payload type of the coachee service LenCoaches
@@ -202,21 +204,22 @@ type FinalizeCoachPasswordRecoveryFlowPayload struct {
 // method.
 type UpdateCoachPayload struct {
 	// JWT token used to perform authorization
-	Token       string
-	ID          uint
-	FirstName   *string
-	LastName    *string
-	Email       *string
-	Phone       *string
-	Tags        *string
-	Description *string
-	City        *string
-	Country     *string
-	IntroCall   *uint
-	StripeID    *string
-	PictureURL  *string
-	Vat         *string
-	Status      *string
+	Token             string
+	ID                uint
+	FirstName         *string
+	LastName          *string
+	Email             *string
+	Phone             *string
+	Tags              *string
+	Description       *string
+	City              *string
+	Country           *string
+	IntroCall         *uint
+	StripeID          *string
+	PictureURL        *string
+	Vat               *string
+	Status            *string
+	FirstCallDuration *int32
 }
 
 // CreateCertificationPayload is the payload type of the coachee service

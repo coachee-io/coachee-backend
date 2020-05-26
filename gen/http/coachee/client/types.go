@@ -54,19 +54,20 @@ type FinalizeCoachPasswordRecoveryFlowRequestBody struct {
 // UpdateCoachRequestBody is the type of the "coachee" service "UpdateCoach"
 // endpoint HTTP request body.
 type UpdateCoachRequestBody struct {
-	FirstName   *string `form:"firstName,omitempty" json:"firstName,omitempty" xml:"firstName,omitempty"`
-	LastName    *string `form:"lastName,omitempty" json:"lastName,omitempty" xml:"lastName,omitempty"`
-	Email       *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
-	Phone       *string `form:"phone,omitempty" json:"phone,omitempty" xml:"phone,omitempty"`
-	Tags        *string `form:"tags,omitempty" json:"tags,omitempty" xml:"tags,omitempty"`
-	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
-	City        *string `form:"city,omitempty" json:"city,omitempty" xml:"city,omitempty"`
-	Country     *string `form:"country,omitempty" json:"country,omitempty" xml:"country,omitempty"`
-	IntroCall   *uint   `form:"introCall,omitempty" json:"introCall,omitempty" xml:"introCall,omitempty"`
-	StripeID    *string `form:"stripeID,omitempty" json:"stripeID,omitempty" xml:"stripeID,omitempty"`
-	PictureURL  *string `form:"pictureURL,omitempty" json:"pictureURL,omitempty" xml:"pictureURL,omitempty"`
-	Vat         *string `form:"vat,omitempty" json:"vat,omitempty" xml:"vat,omitempty"`
-	Status      *string `form:"status,omitempty" json:"status,omitempty" xml:"status,omitempty"`
+	FirstName         *string `form:"firstName,omitempty" json:"firstName,omitempty" xml:"firstName,omitempty"`
+	LastName          *string `form:"lastName,omitempty" json:"lastName,omitempty" xml:"lastName,omitempty"`
+	Email             *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
+	Phone             *string `form:"phone,omitempty" json:"phone,omitempty" xml:"phone,omitempty"`
+	Tags              *string `form:"tags,omitempty" json:"tags,omitempty" xml:"tags,omitempty"`
+	Description       *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
+	City              *string `form:"city,omitempty" json:"city,omitempty" xml:"city,omitempty"`
+	Country           *string `form:"country,omitempty" json:"country,omitempty" xml:"country,omitempty"`
+	IntroCall         *uint   `form:"introCall,omitempty" json:"introCall,omitempty" xml:"introCall,omitempty"`
+	StripeID          *string `form:"stripeID,omitempty" json:"stripeID,omitempty" xml:"stripeID,omitempty"`
+	PictureURL        *string `form:"pictureURL,omitempty" json:"pictureURL,omitempty" xml:"pictureURL,omitempty"`
+	Vat               *string `form:"vat,omitempty" json:"vat,omitempty" xml:"vat,omitempty"`
+	Status            *string `form:"status,omitempty" json:"status,omitempty" xml:"status,omitempty"`
+	FirstCallDuration *int32  `form:"firstCallDuration,omitempty" json:"firstCallDuration,omitempty" xml:"firstCallDuration,omitempty"`
 }
 
 // CreateCertificationRequestBody is the type of the "coachee" service
@@ -146,39 +147,41 @@ type GetCoachesResponseBody []*CoachResponse
 // GetCoachResponseBody is the type of the "coachee" service "GetCoach"
 // endpoint HTTP response body.
 type GetCoachResponseBody struct {
-	ID             *uint                        `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
-	FirstName      *string                      `form:"firstName,omitempty" json:"firstName,omitempty" xml:"firstName,omitempty"`
-	LastName       *string                      `form:"lastName,omitempty" json:"lastName,omitempty" xml:"lastName,omitempty"`
-	Tags           *string                      `form:"tags,omitempty" json:"tags,omitempty" xml:"tags,omitempty"`
-	Description    *string                      `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
-	City           *string                      `form:"city,omitempty" json:"city,omitempty" xml:"city,omitempty"`
-	Country        *string                      `form:"country,omitempty" json:"country,omitempty" xml:"country,omitempty"`
-	PictureURL     *string                      `form:"pictureURL,omitempty" json:"pictureURL,omitempty" xml:"pictureURL,omitempty"`
-	Certifications []*CertificationResponseBody `form:"certifications,omitempty" json:"certifications,omitempty" xml:"certifications,omitempty"`
-	Programs       []*ProgramResponseBody       `form:"programs,omitempty" json:"programs,omitempty" xml:"programs,omitempty"`
-	Availability   []*AvailabilityResponseBody  `form:"availability,omitempty" json:"availability,omitempty" xml:"availability,omitempty"`
+	ID                *uint                        `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	FirstName         *string                      `form:"firstName,omitempty" json:"firstName,omitempty" xml:"firstName,omitempty"`
+	LastName          *string                      `form:"lastName,omitempty" json:"lastName,omitempty" xml:"lastName,omitempty"`
+	Tags              *string                      `form:"tags,omitempty" json:"tags,omitempty" xml:"tags,omitempty"`
+	Description       *string                      `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
+	City              *string                      `form:"city,omitempty" json:"city,omitempty" xml:"city,omitempty"`
+	Country           *string                      `form:"country,omitempty" json:"country,omitempty" xml:"country,omitempty"`
+	PictureURL        *string                      `form:"pictureURL,omitempty" json:"pictureURL,omitempty" xml:"pictureURL,omitempty"`
+	FirstCallDuration *int32                       `form:"firstCallDuration,omitempty" json:"firstCallDuration,omitempty" xml:"firstCallDuration,omitempty"`
+	Certifications    []*CertificationResponseBody `form:"certifications,omitempty" json:"certifications,omitempty" xml:"certifications,omitempty"`
+	Programs          []*ProgramResponseBody       `form:"programs,omitempty" json:"programs,omitempty" xml:"programs,omitempty"`
+	Availability      []*AvailabilityResponseBody  `form:"availability,omitempty" json:"availability,omitempty" xml:"availability,omitempty"`
 }
 
 // AdminGetCoachResponseBody is the type of the "coachee" service
 // "AdminGetCoach" endpoint HTTP response body.
 type AdminGetCoachResponseBody struct {
-	ID             *uint                        `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
-	FirstName      *string                      `form:"firstName,omitempty" json:"firstName,omitempty" xml:"firstName,omitempty"`
-	LastName       *string                      `form:"lastName,omitempty" json:"lastName,omitempty" xml:"lastName,omitempty"`
-	Email          *string                      `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
-	Phone          *string                      `form:"phone,omitempty" json:"phone,omitempty" xml:"phone,omitempty"`
-	StripeID       *string                      `form:"stripeID,omitempty" json:"stripeID,omitempty" xml:"stripeID,omitempty"`
-	Tags           *string                      `form:"tags,omitempty" json:"tags,omitempty" xml:"tags,omitempty"`
-	Description    *string                      `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
-	City           *string                      `form:"city,omitempty" json:"city,omitempty" xml:"city,omitempty"`
-	Country        *string                      `form:"country,omitempty" json:"country,omitempty" xml:"country,omitempty"`
-	PictureURL     *string                      `form:"pictureURL,omitempty" json:"pictureURL,omitempty" xml:"pictureURL,omitempty"`
-	Status         *string                      `form:"status,omitempty" json:"status,omitempty" xml:"status,omitempty"`
-	Vat            *string                      `form:"vat,omitempty" json:"vat,omitempty" xml:"vat,omitempty"`
-	IntroCall      *int                         `form:"introCall,omitempty" json:"introCall,omitempty" xml:"introCall,omitempty"`
-	Availability   []*AvailabilityResponseBody  `form:"availability,omitempty" json:"availability,omitempty" xml:"availability,omitempty"`
-	Certifications []*CertificationResponseBody `form:"certifications,omitempty" json:"certifications,omitempty" xml:"certifications,omitempty"`
-	Programs       []*ProgramResponseBody       `form:"programs,omitempty" json:"programs,omitempty" xml:"programs,omitempty"`
+	ID                *uint                        `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	FirstName         *string                      `form:"firstName,omitempty" json:"firstName,omitempty" xml:"firstName,omitempty"`
+	LastName          *string                      `form:"lastName,omitempty" json:"lastName,omitempty" xml:"lastName,omitempty"`
+	Email             *string                      `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
+	Phone             *string                      `form:"phone,omitempty" json:"phone,omitempty" xml:"phone,omitempty"`
+	StripeID          *string                      `form:"stripeID,omitempty" json:"stripeID,omitempty" xml:"stripeID,omitempty"`
+	Tags              *string                      `form:"tags,omitempty" json:"tags,omitempty" xml:"tags,omitempty"`
+	Description       *string                      `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
+	City              *string                      `form:"city,omitempty" json:"city,omitempty" xml:"city,omitempty"`
+	Country           *string                      `form:"country,omitempty" json:"country,omitempty" xml:"country,omitempty"`
+	PictureURL        *string                      `form:"pictureURL,omitempty" json:"pictureURL,omitempty" xml:"pictureURL,omitempty"`
+	Status            *string                      `form:"status,omitempty" json:"status,omitempty" xml:"status,omitempty"`
+	Vat               *string                      `form:"vat,omitempty" json:"vat,omitempty" xml:"vat,omitempty"`
+	IntroCall         *int                         `form:"introCall,omitempty" json:"introCall,omitempty" xml:"introCall,omitempty"`
+	FirstCallDuration *int32                       `form:"firstCallDuration,omitempty" json:"firstCallDuration,omitempty" xml:"firstCallDuration,omitempty"`
+	Availability      []*AvailabilityResponseBody  `form:"availability,omitempty" json:"availability,omitempty" xml:"availability,omitempty"`
+	Certifications    []*CertificationResponseBody `form:"certifications,omitempty" json:"certifications,omitempty" xml:"certifications,omitempty"`
+	Programs          []*ProgramResponseBody       `form:"programs,omitempty" json:"programs,omitempty" xml:"programs,omitempty"`
 }
 
 // LoginCoachResponseBody is the type of the "coachee" service "LoginCoach"
@@ -2514,17 +2517,18 @@ type AdminLoginUnauthorizedResponseBody struct {
 
 // CoachResponse is used to define fields on response body types.
 type CoachResponse struct {
-	ID             *uint                    `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
-	FirstName      *string                  `form:"firstName,omitempty" json:"firstName,omitempty" xml:"firstName,omitempty"`
-	LastName       *string                  `form:"lastName,omitempty" json:"lastName,omitempty" xml:"lastName,omitempty"`
-	Tags           *string                  `form:"tags,omitempty" json:"tags,omitempty" xml:"tags,omitempty"`
-	Description    *string                  `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
-	City           *string                  `form:"city,omitempty" json:"city,omitempty" xml:"city,omitempty"`
-	Country        *string                  `form:"country,omitempty" json:"country,omitempty" xml:"country,omitempty"`
-	PictureURL     *string                  `form:"pictureURL,omitempty" json:"pictureURL,omitempty" xml:"pictureURL,omitempty"`
-	Certifications []*CertificationResponse `form:"certifications,omitempty" json:"certifications,omitempty" xml:"certifications,omitempty"`
-	Programs       []*ProgramResponse       `form:"programs,omitempty" json:"programs,omitempty" xml:"programs,omitempty"`
-	Availability   []*AvailabilityResponse  `form:"availability,omitempty" json:"availability,omitempty" xml:"availability,omitempty"`
+	ID                *uint                    `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	FirstName         *string                  `form:"firstName,omitempty" json:"firstName,omitempty" xml:"firstName,omitempty"`
+	LastName          *string                  `form:"lastName,omitempty" json:"lastName,omitempty" xml:"lastName,omitempty"`
+	Tags              *string                  `form:"tags,omitempty" json:"tags,omitempty" xml:"tags,omitempty"`
+	Description       *string                  `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
+	City              *string                  `form:"city,omitempty" json:"city,omitempty" xml:"city,omitempty"`
+	Country           *string                  `form:"country,omitempty" json:"country,omitempty" xml:"country,omitempty"`
+	PictureURL        *string                  `form:"pictureURL,omitempty" json:"pictureURL,omitempty" xml:"pictureURL,omitempty"`
+	FirstCallDuration *int32                   `form:"firstCallDuration,omitempty" json:"firstCallDuration,omitempty" xml:"firstCallDuration,omitempty"`
+	Certifications    []*CertificationResponse `form:"certifications,omitempty" json:"certifications,omitempty" xml:"certifications,omitempty"`
+	Programs          []*ProgramResponse       `form:"programs,omitempty" json:"programs,omitempty" xml:"programs,omitempty"`
+	Availability      []*AvailabilityResponse  `form:"availability,omitempty" json:"availability,omitempty" xml:"availability,omitempty"`
 }
 
 // CertificationResponse is used to define fields on response body types.
@@ -2671,19 +2675,20 @@ func NewFinalizeCoachPasswordRecoveryFlowRequestBody(p *coachee.FinalizeCoachPas
 // the "UpdateCoach" endpoint of the "coachee" service.
 func NewUpdateCoachRequestBody(p *coachee.UpdateCoachPayload) *UpdateCoachRequestBody {
 	body := &UpdateCoachRequestBody{
-		FirstName:   p.FirstName,
-		LastName:    p.LastName,
-		Email:       p.Email,
-		Phone:       p.Phone,
-		Tags:        p.Tags,
-		Description: p.Description,
-		City:        p.City,
-		Country:     p.Country,
-		IntroCall:   p.IntroCall,
-		StripeID:    p.StripeID,
-		PictureURL:  p.PictureURL,
-		Vat:         p.Vat,
-		Status:      p.Status,
+		FirstName:         p.FirstName,
+		LastName:          p.LastName,
+		Email:             p.Email,
+		Phone:             p.Phone,
+		Tags:              p.Tags,
+		Description:       p.Description,
+		City:              p.City,
+		Country:           p.Country,
+		IntroCall:         p.IntroCall,
+		StripeID:          p.StripeID,
+		PictureURL:        p.PictureURL,
+		Vat:               p.Vat,
+		Status:            p.Status,
+		FirstCallDuration: p.FirstCallDuration,
 	}
 	return body
 }
@@ -2868,14 +2873,15 @@ func NewGetCoachesCoachOK(body []*CoachResponse) []*coachee.Coach {
 	v := make([]*coachee.Coach, len(body))
 	for i, val := range body {
 		v[i] = &coachee.Coach{
-			ID:          *val.ID,
-			FirstName:   *val.FirstName,
-			LastName:    *val.LastName,
-			Tags:        *val.Tags,
-			Description: *val.Description,
-			City:        *val.City,
-			Country:     *val.Country,
-			PictureURL:  *val.PictureURL,
+			ID:                *val.ID,
+			FirstName:         *val.FirstName,
+			LastName:          *val.LastName,
+			Tags:              *val.Tags,
+			Description:       *val.Description,
+			City:              *val.City,
+			Country:           *val.Country,
+			PictureURL:        *val.PictureURL,
+			FirstCallDuration: *val.FirstCallDuration,
 		}
 		if val.Certifications != nil {
 			v[i].Certifications = make([]*coachee.Certification, len(val.Certifications))
@@ -2973,14 +2979,15 @@ func NewGetCoachesUnauthorized(body *GetCoachesUnauthorizedResponseBody) *goa.Se
 // from a HTTP "OK" response.
 func NewGetCoachCoachOK(body *GetCoachResponseBody) *coachee.Coach {
 	v := &coachee.Coach{
-		ID:          *body.ID,
-		FirstName:   *body.FirstName,
-		LastName:    *body.LastName,
-		Tags:        *body.Tags,
-		Description: *body.Description,
-		City:        *body.City,
-		Country:     *body.Country,
-		PictureURL:  *body.PictureURL,
+		ID:                *body.ID,
+		FirstName:         *body.FirstName,
+		LastName:          *body.LastName,
+		Tags:              *body.Tags,
+		Description:       *body.Description,
+		City:              *body.City,
+		Country:           *body.Country,
+		PictureURL:        *body.PictureURL,
+		FirstCallDuration: *body.FirstCallDuration,
 	}
 	if body.Certifications != nil {
 		v.Certifications = make([]*coachee.Certification, len(body.Certifications))
@@ -3077,20 +3084,21 @@ func NewGetCoachUnauthorized(body *GetCoachUnauthorizedResponseBody) *goa.Servic
 // endpoint result from a HTTP "OK" response.
 func NewAdminGetCoachFullCoachOK(body *AdminGetCoachResponseBody) *coachee.FullCoach {
 	v := &coachee.FullCoach{
-		ID:          *body.ID,
-		FirstName:   *body.FirstName,
-		LastName:    *body.LastName,
-		Email:       *body.Email,
-		Phone:       *body.Phone,
-		StripeID:    *body.StripeID,
-		Tags:        *body.Tags,
-		Description: *body.Description,
-		City:        *body.City,
-		Country:     *body.Country,
-		PictureURL:  *body.PictureURL,
-		Status:      *body.Status,
-		Vat:         *body.Vat,
-		IntroCall:   *body.IntroCall,
+		ID:                *body.ID,
+		FirstName:         *body.FirstName,
+		LastName:          *body.LastName,
+		Email:             *body.Email,
+		Phone:             *body.Phone,
+		StripeID:          *body.StripeID,
+		Tags:              *body.Tags,
+		Description:       *body.Description,
+		City:              *body.City,
+		Country:           *body.Country,
+		PictureURL:        *body.PictureURL,
+		Status:            *body.Status,
+		Vat:               *body.Vat,
+		IntroCall:         *body.IntroCall,
+		FirstCallDuration: *body.FirstCallDuration,
 	}
 	v.Availability = make([]*coachee.Availability, len(body.Availability))
 	for i, val := range body.Availability {
@@ -4725,6 +4733,9 @@ func ValidateGetCoachResponseBody(body *GetCoachResponseBody) (err error) {
 	if body.PictureURL == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("pictureURL", "body"))
 	}
+	if body.FirstCallDuration == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("firstCallDuration", "body"))
+	}
 	for _, e := range body.Certifications {
 		if e != nil {
 			if err2 := ValidateCertificationResponseBody(e); err2 != nil {
@@ -4802,6 +4813,9 @@ func ValidateAdminGetCoachResponseBody(body *AdminGetCoachResponseBody) (err err
 	}
 	if body.Programs == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("programs", "body"))
+	}
+	if body.FirstCallDuration == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("firstCallDuration", "body"))
 	}
 	for _, e := range body.Availability {
 		if e != nil {
@@ -7936,6 +7950,9 @@ func ValidateCoachResponse(body *CoachResponse) (err error) {
 	}
 	if body.PictureURL == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("pictureURL", "body"))
+	}
+	if body.FirstCallDuration == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("firstCallDuration", "body"))
 	}
 	for _, e := range body.Certifications {
 		if e != nil {
