@@ -2,6 +2,7 @@ package main
 
 import (
 	"coachee-backend/gen/coachee"
+	"coachee-backend/internal/config"
 	"coachee-backend/internal/email"
 	"coachee-backend/internal/model"
 	"coachee-backend/internal/repository/mysql"
@@ -25,18 +26,18 @@ func main() {
 	// Define command line flags, add any other flag required to configure the
 	// service.
 	var (
-		hostF         = flag.String("host", "development", "Server host (valid values: development)")
-		domainF       = flag.String("domain", "", "Host domain name (overrides host domain specified in service design)")
-		httpPortF     = flag.String("http-port", "", "HTTP port (overrides host HTTP port specified in service design)")
-		secureF       = flag.Bool("secure", false, "Use secure scheme (https or grpcs)")
-		dbgF          = flag.Bool("debug", false, "Log request and response bodies")
-		stripeKey     = flag.String("stripe-key", "sk_test_yKV7Mo9kSpokxpFvwxKRtbyd00knjXTpJh", "stripe key")
-		pubKey        = flag.String("pub-key", "pk_test_bmGuB7UJfIeeeofOouGHeJcd00MQjvjYVL", "pub key")
-		adminEmail    = flag.String("admin", "test@test.com", "admin email")
-		adminPassword = flag.String("pass", "rucalindo19", "admin password")
-		hostName      = flag.String("host-name", "https://flamboyant-bohr-46e743.netlify.app", "website url")
+		hostF     = flag.String("host", "development", "Server host (valid values: development)")
+		domainF   = flag.String("domain", "", "Host domain name (overrides host domain specified in service design)")
+		httpPortF = flag.String("http-port", "", "HTTP port (overrides host HTTP port specified in service design)")
+		secureF   = flag.Bool("secure", false, "Use secure scheme (https or grpcs)")
+		dbgF      = flag.Bool("debug", false, "Log request and response bodies")
 	)
 	flag.Parse()
+
+	var conf config.Config
+	if err := conf.Parse(); err != nil {
+		panic(conf)
+	}
 
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 	// Default level for this example is info, unless debug flag is present
@@ -74,10 +75,10 @@ func main() {
 	coachRecoveryRepository := mysql.NewCoachRecoveryRepository(conn)
 
 	// Initialize stripe client
-	stripeClient := stripe.NewClient(appCtx, *stripeKey)
+	stripeClient := stripe.NewClient(appCtx, conf.Main.StripeKey)
 
 	// InitializeMailClient
-	emailClient, err := email.NewClient(appCtx, *hostName)
+	emailClient, err := email.NewClient(appCtx, conf.Email)
 	if err != nil {
 		panic(err)
 	}
@@ -90,9 +91,9 @@ func main() {
 		CoachRecovery: coachRecoveryRepository,
 		Stripe:        stripeClient,
 		Email:         emailClient,
-		PubKey:        *pubKey,
-		AdminEmail:    *adminEmail,
-		AdminPassword: *adminPassword,
+		PubKey:        conf.Main.PubKey,
+		AdminEmail:    conf.Main.AdminEmail,
+		AdminPassword: conf.Main.AdminPassword,
 	}
 
 	// Initialize the services.
