@@ -4,11 +4,8 @@ services:
     image: mysql:5.7.
     restart: always
     hostname: "mysql"
-    environment:
-      - MYSQL_USER=coachee_user
-      - MYSQL_PASSWORD=coachee_pass
-      - MYSQL_DATABASE=coachee_db
-      - MYSQL_ROOT_PASSWORD=coachee_pass
+    env_file:
+      - ./.env
     volumes:
       - ./db/init:/docker-entrypoint-initdb.d
   coachee:
@@ -19,11 +16,8 @@ services:
     restart: always
     depends_on:
       - mysql
-    environment:
-      - DB_HOST=mysql
-      - DB_USER=coachee_user
-      - DB_PASSWORD=coachee_pass
-      - DB_NAME=coachee_db
+    env_file:
+      - ./.env
     ports:
       - "127.0.0.1:8080:8080"
     command: -http-port 8080 -domain 0.0.0.0
