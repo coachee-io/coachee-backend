@@ -15,11 +15,11 @@ type config struct {
 	Debug         bool          `env:"DEBUG" envDefault:"false"`
 	RetryInterval time.Duration `env:"DB_RETRY_INTERVAL" envDefault:"1s"`
 	RetryAttempts int           `env:"DB_RETRY_ATTEMPTS" envDefault:"6"`
-	User          string        `env:"DB_USER,required"`
-	Password      string        `env:"DB_PASSWORD,required"`
-	Host          string        `env:"DB_HOST,required"`
+	User          string        `env:"DB_USER"`
+	Password      string        `env:"DB_PASSWORD"`
+	Host          string        `env:"DB_HOST"`
 	Port          int           `env:"DB_PORT" envDefault:"3306"`
-	Database      string        `env:"DB_NAME,required"`
+	Database      string        `env:"DB_NAME"`
 	Url           string        `env:"DB_URL"`
 }
 
