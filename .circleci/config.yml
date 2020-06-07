@@ -77,8 +77,8 @@ workflows:
       - deploy_production:
           requires:
             - build
-            filters:
-              tags:
-                only: /^v.*/
-              branches:
-                ignore: /.*/
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
