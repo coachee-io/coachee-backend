@@ -20,6 +20,7 @@ type config struct {
 	Host          string        `env:"DB_HOST,required"`
 	Port          int           `env:"DB_PORT" envDefault:"3306"`
 	Database      string        `env:"DB_NAME,required"`
+	Url           string        `env:"DB_URL"`
 }
 
 func Connect(ctx context.Context) (*gorm.DB, error) {
@@ -31,13 +32,15 @@ func Connect(ctx context.Context) (*gorm.DB, error) {
 	}
 
 	// sample url: billing:perkbox@tcp(mysql:3306)/billing?parseTime=true
-	url := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=true", cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Database)
+	if cfg.Url == "" {
+		cfg.Url = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=true", cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Database)
+	}
 	// all fields are required, port defaults to 3306
-	if url == ":tcp(:3306)/?parseTime=true" {
+	if cfg.Url == ":tcp(:3306)/?parseTime=true" {
 		return nil, fmt.Errorf("missing required url for mysql connection")
 	}
 
-	db, err := gorm.Open("mysql", url)
+	db, err := gorm.Open("mysql", cfg.Url)
 	if err != nil {
 		return nil, err
 	}
