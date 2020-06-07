@@ -14,8 +14,6 @@ services:
       dockerfile: Dockerfile
     image: pmdcosta/coachee:latest
     restart: always
-    depends_on:
-      - mysql
     env_file:
       - ./.env
     ports:
