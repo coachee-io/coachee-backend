@@ -37,7 +37,7 @@ jobs:
       # specify any bash command here prefixed with `run: `
       - run: go get -v -t -d ./...
       - run: go test -v ./...
-  deploy:
+  deploy_staging:
     machine:
       enabled: true
     steps:
@@ -49,15 +49,36 @@ jobs:
           name: Deploy Over SSH
           command: |
             ssh -vvv -o StrictHostKeyChecking=no $SSH_USER@$STAGING_SSH_HOST 'cd coachee.io/coachee-backend/ && git pull && make refresh'
+  deploy_production:
+    machine:
+      enabled: true
+    steps:
+      - add_ssh_keys
+      - run:
+          name: fix host authenticity for production server
+          command: ssh-keyscan $PRODUCTION_SSH_HOST >> ~/.ssh/known_hosts
+      - run:
+          name: Deploy Over SSH
+          command: |
+            ssh -vvv -o StrictHostKeyChecking=no $SSH_USER@$PRODUCTION_SSH_HOST 'cd coachee.io/coachee-backend/ && git pull && make refresh'
+
 
 workflows:
   version: 2
   build_and_test:
     jobs:
       - build
-      - deploy:
+      - deploy_staging:
           requires:
             - build
           filters:
             branches:
               only: master
+      - deploy_production:
+          requires:
+            - build
+            filters:
+              tags:
+                only: /^v.*/
+              branches:
+                ignore: /.*/
