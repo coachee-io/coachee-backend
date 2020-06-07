@@ -76,7 +76,12 @@ workflows:
               only: master
   production_deploy:
     jobs:
-      - build
+      - build:
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
       - deploy_production:
           requires:
             - build
