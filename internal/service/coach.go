@@ -76,6 +76,11 @@ func (s *Service) LenCoaches(ctx context.Context, p *coachee.LenCoachesPayload) 
 // CreateCoaches creates a base coach
 func (s *Service) CreateCoach(ctx context.Context, p *coachee.CreateCoachPayload) (uint, error) {
 	l := s.logger.With().Str("service", "CreateCoach").Logger()
+	if !p.AcceptTerms {
+		msg := "In order to proceed, please read and accept terms and conditions"
+		l.Info().Msg(msg)
+		return 0, coachee.MakeValidation(errors.New(msg))
+	}
 
 	var city, country, vat, textAvailability string
 	if p.City != nil {

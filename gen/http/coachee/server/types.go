@@ -30,6 +30,7 @@ type CreateCoachRequestBody struct {
 	TextPrograms       *string `form:"textPrograms,omitempty" json:"textPrograms,omitempty" xml:"textPrograms,omitempty"`
 	TextAvailability   *string `form:"textAvailability,omitempty" json:"textAvailability,omitempty" xml:"textAvailability,omitempty"`
 	Vat                *string `form:"vat,omitempty" json:"vat,omitempty" xml:"vat,omitempty"`
+	AcceptTerms        *bool   `form:"acceptTerms,omitempty" json:"acceptTerms,omitempty" xml:"acceptTerms,omitempty"`
 }
 
 // LoginCoachRequestBody is the type of the "coachee" service "LoginCoach"
@@ -93,11 +94,12 @@ type CreateAvailabilityRequestBody struct {
 // CreateCustomerRequestBody is the type of the "coachee" service
 // "CreateCustomer" endpoint HTTP request body.
 type CreateCustomerRequestBody struct {
-	Email     *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
-	FirstName *string `form:"firstName,omitempty" json:"firstName,omitempty" xml:"firstName,omitempty"`
-	LastName  *string `form:"lastName,omitempty" json:"lastName,omitempty" xml:"lastName,omitempty"`
-	BirthDate *int64  `form:"birthDate,omitempty" json:"birthDate,omitempty" xml:"birthDate,omitempty"`
-	Password  *string `form:"password,omitempty" json:"password,omitempty" xml:"password,omitempty"`
+	Email       *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
+	FirstName   *string `form:"firstName,omitempty" json:"firstName,omitempty" xml:"firstName,omitempty"`
+	LastName    *string `form:"lastName,omitempty" json:"lastName,omitempty" xml:"lastName,omitempty"`
+	BirthDate   *int64  `form:"birthDate,omitempty" json:"birthDate,omitempty" xml:"birthDate,omitempty"`
+	Password    *string `form:"password,omitempty" json:"password,omitempty" xml:"password,omitempty"`
+	AcceptTerms *bool   `form:"acceptTerms,omitempty" json:"acceptTerms,omitempty" xml:"acceptTerms,omitempty"`
 }
 
 // CustomerLoginRequestBody is the type of the "coachee" service
@@ -4639,6 +4641,7 @@ func NewCreateCoachPayload(body *CreateCoachRequestBody) *coachee.CreateCoachPay
 		TextPrograms:       *body.TextPrograms,
 		TextAvailability:   body.TextAvailability,
 		Vat:                body.Vat,
+		AcceptTerms:        *body.AcceptTerms,
 	}
 	return v
 }
@@ -4769,11 +4772,12 @@ func NewDeleteAvailabilityPayload(id uint, avID string, token string) *coachee.D
 // payload.
 func NewCreateCustomerPayload(body *CreateCustomerRequestBody) *coachee.CreateCustomerPayload {
 	v := &coachee.CreateCustomerPayload{
-		Email:     *body.Email,
-		FirstName: *body.FirstName,
-		LastName:  *body.LastName,
-		BirthDate: *body.BirthDate,
-		Password:  *body.Password,
+		Email:       *body.Email,
+		FirstName:   *body.FirstName,
+		LastName:    *body.LastName,
+		BirthDate:   *body.BirthDate,
+		Password:    *body.Password,
+		AcceptTerms: *body.AcceptTerms,
 	}
 	return v
 }
@@ -4877,6 +4881,9 @@ func ValidateCreateCoachRequestBody(body *CreateCoachRequestBody) (err error) {
 	}
 	if body.TextPrograms == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("textPrograms", "body"))
+	}
+	if body.AcceptTerms == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("acceptTerms", "body"))
 	}
 	return
 }
@@ -5001,6 +5008,9 @@ func ValidateCreateCustomerRequestBody(body *CreateCustomerRequestBody) (err err
 	}
 	if body.Password == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("password", "body"))
+	}
+	if body.AcceptTerms == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("acceptTerms", "body"))
 	}
 	return
 }

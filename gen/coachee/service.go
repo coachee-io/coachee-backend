@@ -167,6 +167,7 @@ type CreateCoachPayload struct {
 	TextPrograms       string
 	TextAvailability   *string
 	Vat                *string
+	AcceptTerms        bool
 }
 
 // LoginCoachPayload is the payload type of the coachee service LoginCoach
@@ -280,11 +281,12 @@ type DeleteAvailabilityPayload struct {
 // CreateCustomerPayload is the payload type of the coachee service
 // CreateCustomer method.
 type CreateCustomerPayload struct {
-	Email     string
-	FirstName string
-	LastName  string
-	BirthDate int64
-	Password  string
+	Email       string
+	FirstName   string
+	LastName    string
+	BirthDate   int64
+	Password    string
+	AcceptTerms bool
 }
 
 // CreateCustomerResult is the result type of the coachee service

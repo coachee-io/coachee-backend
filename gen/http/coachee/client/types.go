@@ -30,6 +30,7 @@ type CreateCoachRequestBody struct {
 	TextPrograms       string  `form:"textPrograms" json:"textPrograms" xml:"textPrograms"`
 	TextAvailability   *string `form:"textAvailability,omitempty" json:"textAvailability,omitempty" xml:"textAvailability,omitempty"`
 	Vat                *string `form:"vat,omitempty" json:"vat,omitempty" xml:"vat,omitempty"`
+	AcceptTerms        bool    `form:"acceptTerms" json:"acceptTerms" xml:"acceptTerms"`
 }
 
 // LoginCoachRequestBody is the type of the "coachee" service "LoginCoach"
@@ -93,11 +94,12 @@ type CreateAvailabilityRequestBody struct {
 // CreateCustomerRequestBody is the type of the "coachee" service
 // "CreateCustomer" endpoint HTTP request body.
 type CreateCustomerRequestBody struct {
-	Email     string `form:"email" json:"email" xml:"email"`
-	FirstName string `form:"firstName" json:"firstName" xml:"firstName"`
-	LastName  string `form:"lastName" json:"lastName" xml:"lastName"`
-	BirthDate int64  `form:"birthDate" json:"birthDate" xml:"birthDate"`
-	Password  string `form:"password" json:"password" xml:"password"`
+	Email       string `form:"email" json:"email" xml:"email"`
+	FirstName   string `form:"firstName" json:"firstName" xml:"firstName"`
+	LastName    string `form:"lastName" json:"lastName" xml:"lastName"`
+	BirthDate   int64  `form:"birthDate" json:"birthDate" xml:"birthDate"`
+	Password    string `form:"password" json:"password" xml:"password"`
+	AcceptTerms bool   `form:"acceptTerms" json:"acceptTerms" xml:"acceptTerms"`
 }
 
 // CustomerLoginRequestBody is the type of the "coachee" service
@@ -2637,6 +2639,7 @@ func NewCreateCoachRequestBody(p *coachee.CreateCoachPayload) *CreateCoachReques
 		TextPrograms:       p.TextPrograms,
 		TextAvailability:   p.TextAvailability,
 		Vat:                p.Vat,
+		AcceptTerms:        p.AcceptTerms,
 	}
 	return body
 }
@@ -2728,11 +2731,12 @@ func NewCreateAvailabilityRequestBody(p *coachee.CreateAvailabilityPayload) *Cre
 // of the "CreateCustomer" endpoint of the "coachee" service.
 func NewCreateCustomerRequestBody(p *coachee.CreateCustomerPayload) *CreateCustomerRequestBody {
 	body := &CreateCustomerRequestBody{
-		Email:     p.Email,
-		FirstName: p.FirstName,
-		LastName:  p.LastName,
-		BirthDate: p.BirthDate,
-		Password:  p.Password,
+		Email:       p.Email,
+		FirstName:   p.FirstName,
+		LastName:    p.LastName,
+		BirthDate:   p.BirthDate,
+		Password:    p.Password,
+		AcceptTerms: p.AcceptTerms,
 	}
 	return body
 }

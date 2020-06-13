@@ -13,6 +13,11 @@ import (
 // CreateCustomer creates a new customer and returns a jwt
 func (s *Service) CreateCustomer(ctx context.Context, p *coachee.CreateCustomerPayload) (res *coachee.CreateCustomerResult, err error) {
 	l := s.logger.With().Str("service", "CreateClient").Logger()
+	if !p.AcceptTerms {
+		msg := "In order to proceed, please read and accept terms and conditions"
+		l.Info().Msg(msg)
+		return nil, coachee.MakeValidation(errors.New(msg))
+	}
 
 	if len(p.Password) < 8 {
 		msg := "password needs to be longer than 8 characters"

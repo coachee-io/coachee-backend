@@ -252,9 +252,10 @@ var _ = Service("coachee", func() {
 			Attribute("textPrograms", String)
 			Attribute("textAvailability", String)
 			Attribute("vat", String)
+			Attribute("acceptTerms", Boolean)
 
 			Required("firstName", "lastName", "email", "password", "phone", "tags", "description", "introCall",
-				"textCertifications", "textPrograms")
+				"textCertifications", "textPrograms", "acceptTerms")
 		})
 
 		Result(UInt)
@@ -502,8 +503,9 @@ var _ = Service("coachee", func() {
 			Attribute("lastName", String)
 			Attribute("birthDate", Int64)
 			Attribute("password", String)
+			Attribute("acceptTerms", Boolean)
 
-			Required("email", "firstName", "lastName", "birthDate", "password")
+			Required("email", "firstName", "lastName", "birthDate", "password", "acceptTerms")
 		})
 
 		Result(func() {
