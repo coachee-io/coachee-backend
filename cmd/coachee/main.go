@@ -9,6 +9,7 @@ import (
 	"coachee-backend/internal/repository/mysql/connector"
 	"coachee-backend/internal/service"
 	"coachee-backend/internal/stripe"
+	"coachee-backend/pkg/slack"
 	"context"
 	"flag"
 	"fmt"
@@ -77,7 +78,7 @@ func main() {
 	// Initialize stripe client
 	stripeClient := stripe.NewClient(appCtx, conf.Main.StripeKey)
 
-	// InitializeMailClient
+	// Initialize Mail Client
 	emailClient, err := email.NewClient(appCtx, conf.Email)
 	if err != nil {
 		panic(err)
@@ -91,13 +92,14 @@ func main() {
 		CoachRecovery: coachRecoveryRepository,
 		Stripe:        stripeClient,
 		Email:         emailClient,
+		Slack:         slack.NewMessenger(conf.Main.SlackWebhook),
 		PubKey:        conf.Main.PubKey,
 		AdminEmail:    conf.Main.AdminEmail,
 		AdminPassword: conf.Main.AdminPassword,
 	}
 
 	// Initialize the services.
-	coacheeSvc, err := service.NewCoachee(appCtx, svc)
+	coacheeSvc, err := service.NewCoachee(svc)
 	if err != nil {
 		panic("failed to start service: " + err.Error())
 	}

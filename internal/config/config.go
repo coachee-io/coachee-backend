@@ -22,6 +22,7 @@ type Main struct {
 	PubKey        string `env:"STRIPE_PUB_KEY" envDefault:"pk_test_bmGuB7UJfIeeeofOouGHeJcd00MQjvjYVL"`
 	AdminEmail    string `env:"ADMIN_EMAIL" envDefault:"test@test.com"`
 	AdminPassword string `env:"ADMIN_PASSWORD" envDefault:"rucalindo19"`
+	SlackWebhook  string `env:"SLACK_WEBHOOK,required"`
 }
 
 // Parse parses the environment variables into the config struct

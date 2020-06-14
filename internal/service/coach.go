@@ -5,8 +5,10 @@ import (
 	"coachee-backend/internal/auth"
 	"coachee-backend/internal/model"
 	"coachee-backend/internal/repository"
+	"coachee-backend/pkg/slack"
 	"context"
 	"errors"
+	"fmt"
 	"time"
 )
 
@@ -131,6 +133,11 @@ func (s *Service) CreateCoach(ctx context.Context, p *coachee.CreateCoachPayload
 	if err != nil {
 		s.logger.Error().Err(err).Msg("failed to create coach")
 		return 0, err
+	}
+
+	msg := fmt.Sprintf("Coach %d %s %s has signed up.", coach.ID, coach.FirstName, coach.LastName)
+	if err := s.slack.Post(slack.SimpleMessage(msg)); err != nil {
+		l.Error().Err(err).Msg("failed to send slack message")
 	}
 
 	return coach.ID, err

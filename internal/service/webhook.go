@@ -3,6 +3,7 @@ package service
 import (
 	"coachee-backend/gen/coachee"
 	"coachee-backend/internal/model"
+	"coachee-backend/pkg/slack"
 	"context"
 	"encoding/json"
 	"errors"
@@ -84,6 +85,13 @@ func (s *Service) StripeWebhooks(ctx context.Context, mapJSON map[string]interfa
 
 		if err := tx.Commit(); err != nil {
 			l.Error().Err(err).Msg("failed to commit transaction")
+			return coachee.MakeInternal(err)
+		}
+
+		msg := fmt.Sprintf("Order %d. Customer %s %s bought programme %s from coach %s.",
+			order.ID, customer.FirstName, customer.LastName, programme, coachName)
+		if err := s.slack.Post(slack.SimpleMessage(msg)); err != nil {
+			l.Error().Err(err).Msg("failed to send slack message")
 			return coachee.MakeInternal(err)
 		}
 

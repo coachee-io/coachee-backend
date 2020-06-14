@@ -5,7 +5,6 @@ import (
 	"coachee-backend/internal/auth"
 	"coachee-backend/internal/model"
 	"coachee-backend/internal/repository"
-	"context"
 	"os"
 
 	"github.com/rs/zerolog"
@@ -22,12 +21,13 @@ type Service struct {
 	recoveryRepository      repository.Recovery
 	coachRecoveryRepository repository.CoachRecovery
 
-	stripe         Stripe
-	email          Email
-	publishableKey string
+	stripe Stripe
+	email  Email
+	slack  Slack
 
-	adminEmail string
-	password   string
+	publishableKey string
+	adminEmail     string
+	password       string
 }
 
 // Stripe is the interface for the stripe client
@@ -46,6 +46,10 @@ type Email interface {
 	SendCoachPasswordRecoveryEmail(to, token string) error
 }
 
+type Slack interface {
+	Post(message []byte) error
+}
+
 type Config struct {
 	Coach         repository.Coach
 	Customer      repository.Customer
@@ -54,13 +58,14 @@ type Config struct {
 	CoachRecovery repository.CoachRecovery
 	Stripe        Stripe
 	Email         Email
+	Slack         Slack
 	PubKey        string
 	AdminEmail    string
 	AdminPassword string
 }
 
 // NewCoachee returns the coachee service implementation.
-func NewCoachee(ctx context.Context, config Config) (*Service, error) {
+func NewCoachee(config Config) (*Service, error) {
 
 	log := zerolog.New(os.Stderr).With().Timestamp().Str("component", "service").Logger()
 
@@ -79,6 +84,7 @@ func NewCoachee(ctx context.Context, config Config) (*Service, error) {
 		coachRecoveryRepository: config.CoachRecovery,
 		stripe:                  config.Stripe,
 		email:                   config.Email,
+		slack:                   config.Slack,
 		publishableKey:          config.PubKey,
 		adminEmail:              config.AdminEmail,
 		password:                string(hashedPass),
