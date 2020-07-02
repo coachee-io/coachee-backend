@@ -225,6 +225,11 @@ func (s *Service) RegisterStripeExpress(ctx context.Context, p *coachee.Register
 		return coachee.MakeInternal(err)
 	}
 
+	msg := fmt.Sprintf("Coach %d has finalized the registration.", p.ID)
+	if err := s.slack.Post(slack.SimpleMessage(msg)); err != nil {
+		l.Error().Err(err).Msg("failed to send stripe message")
+	}
+
 	return nil
 }
 
