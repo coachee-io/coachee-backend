@@ -97,7 +97,6 @@ type CreateCustomerRequestBody struct {
 	Email       string `form:"email" json:"email" xml:"email"`
 	FirstName   string `form:"firstName" json:"firstName" xml:"firstName"`
 	LastName    string `form:"lastName" json:"lastName" xml:"lastName"`
-	BirthDate   int64  `form:"birthDate" json:"birthDate" xml:"birthDate"`
 	Password    string `form:"password" json:"password" xml:"password"`
 	AcceptTerms bool   `form:"acceptTerms" json:"acceptTerms" xml:"acceptTerms"`
 }
@@ -2734,7 +2733,6 @@ func NewCreateCustomerRequestBody(p *coachee.CreateCustomerPayload) *CreateCusto
 		Email:       p.Email,
 		FirstName:   p.FirstName,
 		LastName:    p.LastName,
-		BirthDate:   p.BirthDate,
 		Password:    p.Password,
 		AcceptTerms: p.AcceptTerms,
 	}

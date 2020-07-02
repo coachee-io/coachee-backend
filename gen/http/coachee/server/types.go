@@ -97,7 +97,6 @@ type CreateCustomerRequestBody struct {
 	Email       *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
 	FirstName   *string `form:"firstName,omitempty" json:"firstName,omitempty" xml:"firstName,omitempty"`
 	LastName    *string `form:"lastName,omitempty" json:"lastName,omitempty" xml:"lastName,omitempty"`
-	BirthDate   *int64  `form:"birthDate,omitempty" json:"birthDate,omitempty" xml:"birthDate,omitempty"`
 	Password    *string `form:"password,omitempty" json:"password,omitempty" xml:"password,omitempty"`
 	AcceptTerms *bool   `form:"acceptTerms,omitempty" json:"acceptTerms,omitempty" xml:"acceptTerms,omitempty"`
 }
@@ -4775,7 +4774,6 @@ func NewCreateCustomerPayload(body *CreateCustomerRequestBody) *coachee.CreateCu
 		Email:       *body.Email,
 		FirstName:   *body.FirstName,
 		LastName:    *body.LastName,
-		BirthDate:   *body.BirthDate,
 		Password:    *body.Password,
 		AcceptTerms: *body.AcceptTerms,
 	}
@@ -5002,9 +5000,6 @@ func ValidateCreateCustomerRequestBody(body *CreateCustomerRequestBody) (err err
 	}
 	if body.LastName == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("lastName", "body"))
-	}
-	if body.BirthDate == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("birthDate", "body"))
 	}
 	if body.Password == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("password", "body"))

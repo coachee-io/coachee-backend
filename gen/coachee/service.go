@@ -284,7 +284,6 @@ type CreateCustomerPayload struct {
 	Email       string
 	FirstName   string
 	LastName    string
-	BirthDate   int64
 	Password    string
 	AcceptTerms bool
 }

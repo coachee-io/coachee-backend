@@ -501,11 +501,10 @@ var _ = Service("coachee", func() {
 			Attribute("email", String)
 			Attribute("firstName", String)
 			Attribute("lastName", String)
-			Attribute("birthDate", Int64)
 			Attribute("password", String)
 			Attribute("acceptTerms", Boolean)
 
-			Required("email", "firstName", "lastName", "birthDate", "password", "acceptTerms")
+			Required("email", "firstName", "lastName", "password", "acceptTerms")
 		})
 
 		Result(func() {

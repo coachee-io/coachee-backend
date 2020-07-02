@@ -35,7 +35,6 @@ func (s *Service) CreateCustomer(ctx context.Context, p *coachee.CreateCustomerP
 		FirstName: p.FirstName,
 		LastName:  p.LastName,
 		Email:     p.Email,
-		BirthDate: time.Unix(p.BirthDate, 0),
 		Password:  string(hashedPass),
 	}
 

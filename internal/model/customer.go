@@ -14,7 +14,6 @@ type Customer struct {
 	FirstName string
 	LastName  string
 	Email     string `gorm:"not null;unique"`
-	BirthDate time.Time
 	Password  string
 
 	CreatedAt time.Time
@@ -28,7 +27,6 @@ func (c *Customer) Validate() error {
 	}
 	return validation.ValidateStruct(c,
 		validation.Field(&c.Email, is.Email, validation.Required),
-		validation.Field(&c.BirthDate, validation.Required),
 		validation.Field(&c.FirstName, validation.Required),
 		validation.Field(&c.LastName, validation.Required),
 		validation.Field(&c.Password, validation.Required))

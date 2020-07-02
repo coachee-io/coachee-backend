@@ -5,7 +5,6 @@ import (
 	"coachee-backend/internal/repository"
 	"coachee-backend/internal/repository/mysql"
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/require"
 )
@@ -16,7 +15,6 @@ func testCustomer() *model.Customer {
 		FirstName: "Lize",
 		LastName:  "Viveiros",
 		Email:     "email@email.com",
-		BirthDate: time.Date(1991, 8, 29, 0, 0, 0, 0, time.UTC),
 		Password:  "lepassword",
 	}
 }
@@ -46,7 +44,6 @@ func TestCustomerRepository_GetByID(t *testing.T) {
 	require.Nil(t, err)
 	client2.UpdatedAt = client.UpdatedAt
 	client2.CreatedAt = client.CreatedAt
-	client2.BirthDate = client.BirthDate
 	require.Equal(t, client, client2)
 }
 
@@ -64,7 +61,6 @@ func TestCustomerRepository_GetByEmail(t *testing.T) {
 	require.Nil(t, err)
 	client2.UpdatedAt = client.UpdatedAt
 	client2.CreatedAt = client.CreatedAt
-	client2.BirthDate = client.BirthDate
 	require.Equal(t, client, client2)
 }
 
@@ -86,6 +82,5 @@ func TestCustomerRepository_Update(t *testing.T) {
 	require.Nil(t, err)
 	client2.UpdatedAt = client.UpdatedAt
 	client2.CreatedAt = client.CreatedAt
-	client2.BirthDate = client.BirthDate
 	require.Equal(t, client, client2)
 }
