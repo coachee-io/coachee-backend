@@ -41,6 +41,7 @@ type Coach struct {
 	Vat               string
 	IntroCall         time.Time
 	FirstCallDuration int32
+	VideoURL          string
 
 	Availability   Availabilities `sql:"TYPE:json"`
 	Certifications Certifications `sql:"TYPE:json"`

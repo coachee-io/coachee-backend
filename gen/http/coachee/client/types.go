@@ -69,6 +69,7 @@ type UpdateCoachRequestBody struct {
 	Vat               *string `form:"vat,omitempty" json:"vat,omitempty" xml:"vat,omitempty"`
 	Status            *string `form:"status,omitempty" json:"status,omitempty" xml:"status,omitempty"`
 	FirstCallDuration *int32  `form:"firstCallDuration,omitempty" json:"firstCallDuration,omitempty" xml:"firstCallDuration,omitempty"`
+	VideoURL          *string `form:"videoURL,omitempty" json:"videoURL,omitempty" xml:"videoURL,omitempty"`
 }
 
 // CreateCertificationRequestBody is the type of the "coachee" service
@@ -160,6 +161,7 @@ type GetCoachResponseBody struct {
 	Certifications    []*CertificationResponseBody `form:"certifications,omitempty" json:"certifications,omitempty" xml:"certifications,omitempty"`
 	Programs          []*ProgramResponseBody       `form:"programs,omitempty" json:"programs,omitempty" xml:"programs,omitempty"`
 	Availability      []*AvailabilityResponseBody  `form:"availability,omitempty" json:"availability,omitempty" xml:"availability,omitempty"`
+	VideoURL          *string                      `form:"videoURL,omitempty" json:"videoURL,omitempty" xml:"videoURL,omitempty"`
 }
 
 // AdminGetCoachResponseBody is the type of the "coachee" service
@@ -180,6 +182,7 @@ type AdminGetCoachResponseBody struct {
 	Vat               *string                      `form:"vat,omitempty" json:"vat,omitempty" xml:"vat,omitempty"`
 	IntroCall         *int                         `form:"introCall,omitempty" json:"introCall,omitempty" xml:"introCall,omitempty"`
 	FirstCallDuration *int32                       `form:"firstCallDuration,omitempty" json:"firstCallDuration,omitempty" xml:"firstCallDuration,omitempty"`
+	VideoURL          *string                      `form:"videoURL,omitempty" json:"videoURL,omitempty" xml:"videoURL,omitempty"`
 	Availability      []*AvailabilityResponseBody  `form:"availability,omitempty" json:"availability,omitempty" xml:"availability,omitempty"`
 	Certifications    []*CertificationResponseBody `form:"certifications,omitempty" json:"certifications,omitempty" xml:"certifications,omitempty"`
 	Programs          []*ProgramResponseBody       `form:"programs,omitempty" json:"programs,omitempty" xml:"programs,omitempty"`
@@ -2530,6 +2533,7 @@ type CoachResponse struct {
 	Certifications    []*CertificationResponse `form:"certifications,omitempty" json:"certifications,omitempty" xml:"certifications,omitempty"`
 	Programs          []*ProgramResponse       `form:"programs,omitempty" json:"programs,omitempty" xml:"programs,omitempty"`
 	Availability      []*AvailabilityResponse  `form:"availability,omitempty" json:"availability,omitempty" xml:"availability,omitempty"`
+	VideoURL          *string                  `form:"videoURL,omitempty" json:"videoURL,omitempty" xml:"videoURL,omitempty"`
 }
 
 // CertificationResponse is used to define fields on response body types.
@@ -2691,6 +2695,7 @@ func NewUpdateCoachRequestBody(p *coachee.UpdateCoachPayload) *UpdateCoachReques
 		Vat:               p.Vat,
 		Status:            p.Status,
 		FirstCallDuration: p.FirstCallDuration,
+		VideoURL:          p.VideoURL,
 	}
 	return body
 }
@@ -2884,6 +2889,7 @@ func NewGetCoachesCoachOK(body []*CoachResponse) []*coachee.Coach {
 			Country:           *val.Country,
 			PictureURL:        *val.PictureURL,
 			FirstCallDuration: *val.FirstCallDuration,
+			VideoURL:          *val.VideoURL,
 		}
 		if val.Certifications != nil {
 			v[i].Certifications = make([]*coachee.Certification, len(val.Certifications))
@@ -2990,6 +2996,7 @@ func NewGetCoachCoachOK(body *GetCoachResponseBody) *coachee.Coach {
 		Country:           *body.Country,
 		PictureURL:        *body.PictureURL,
 		FirstCallDuration: *body.FirstCallDuration,
+		VideoURL:          *body.VideoURL,
 	}
 	if body.Certifications != nil {
 		v.Certifications = make([]*coachee.Certification, len(body.Certifications))
@@ -3101,6 +3108,7 @@ func NewAdminGetCoachFullCoachOK(body *AdminGetCoachResponseBody) *coachee.FullC
 		Vat:               *body.Vat,
 		IntroCall:         *body.IntroCall,
 		FirstCallDuration: *body.FirstCallDuration,
+		VideoURL:          *body.VideoURL,
 	}
 	v.Availability = make([]*coachee.Availability, len(body.Availability))
 	for i, val := range body.Availability {
@@ -4738,6 +4746,9 @@ func ValidateGetCoachResponseBody(body *GetCoachResponseBody) (err error) {
 	if body.FirstCallDuration == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("firstCallDuration", "body"))
 	}
+	if body.VideoURL == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("videoURL", "body"))
+	}
 	for _, e := range body.Certifications {
 		if e != nil {
 			if err2 := ValidateCertificationResponseBody(e); err2 != nil {
@@ -4818,6 +4829,9 @@ func ValidateAdminGetCoachResponseBody(body *AdminGetCoachResponseBody) (err err
 	}
 	if body.FirstCallDuration == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("firstCallDuration", "body"))
+	}
+	if body.VideoURL == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("videoURL", "body"))
 	}
 	for _, e := range body.Availability {
 		if e != nil {
@@ -7955,6 +7969,9 @@ func ValidateCoachResponse(body *CoachResponse) (err error) {
 	}
 	if body.FirstCallDuration == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("firstCallDuration", "body"))
+	}
+	if body.VideoURL == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("videoURL", "body"))
 	}
 	for _, e := range body.Certifications {
 		if e != nil {

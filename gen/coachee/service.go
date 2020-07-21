@@ -112,6 +112,7 @@ type Coach struct {
 	Certifications    []*Certification
 	Programs          []*Program
 	Availability      []*Availability
+	VideoURL          string
 }
 
 // AdminGetCoachPayload is the payload type of the coachee service
@@ -139,6 +140,7 @@ type FullCoach struct {
 	Vat               string
 	IntroCall         int
 	FirstCallDuration int32
+	VideoURL          string
 	Availability      []*Availability
 	Certifications    []*Certification
 	Programs          []*Program
@@ -221,6 +223,7 @@ type UpdateCoachPayload struct {
 	Vat               *string
 	Status            *string
 	FirstCallDuration *int32
+	VideoURL          *string
 }
 
 // CreateCertificationPayload is the payload type of the coachee service
