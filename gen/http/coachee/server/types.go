@@ -70,6 +70,7 @@ type UpdateCoachRequestBody struct {
 	Status            *string `form:"status,omitempty" json:"status,omitempty" xml:"status,omitempty"`
 	FirstCallDuration *int32  `form:"firstCallDuration,omitempty" json:"firstCallDuration,omitempty" xml:"firstCallDuration,omitempty"`
 	VideoURL          *string `form:"videoURL,omitempty" json:"videoURL,omitempty" xml:"videoURL,omitempty"`
+	CardDescription   *string `form:"cardDescription,omitempty" json:"cardDescription,omitempty" xml:"cardDescription,omitempty"`
 }
 
 // CreateCertificationRequestBody is the type of the "coachee" service
@@ -162,6 +163,7 @@ type GetCoachResponseBody struct {
 	Programs          []*ProgramResponseBody       `form:"programs,omitempty" json:"programs,omitempty" xml:"programs,omitempty"`
 	Availability      []*AvailabilityResponseBody  `form:"availability,omitempty" json:"availability,omitempty" xml:"availability,omitempty"`
 	VideoURL          string                       `form:"videoURL" json:"videoURL" xml:"videoURL"`
+	CardDescription   string                       `form:"cardDescription" json:"cardDescription" xml:"cardDescription"`
 }
 
 // AdminGetCoachResponseBody is the type of the "coachee" service
@@ -183,6 +185,7 @@ type AdminGetCoachResponseBody struct {
 	IntroCall         int                          `form:"introCall" json:"introCall" xml:"introCall"`
 	FirstCallDuration int32                        `form:"firstCallDuration" json:"firstCallDuration" xml:"firstCallDuration"`
 	VideoURL          string                       `form:"videoURL" json:"videoURL" xml:"videoURL"`
+	CardDescription   string                       `form:"cardDescription" json:"cardDescription" xml:"cardDescription"`
 	Availability      []*AvailabilityResponseBody  `form:"availability" json:"availability" xml:"availability"`
 	Certifications    []*CertificationResponseBody `form:"certifications" json:"certifications" xml:"certifications"`
 	Programs          []*ProgramResponseBody       `form:"programs" json:"programs" xml:"programs"`
@@ -2534,6 +2537,7 @@ type CoachResponse struct {
 	Programs          []*ProgramResponse       `form:"programs,omitempty" json:"programs,omitempty" xml:"programs,omitempty"`
 	Availability      []*AvailabilityResponse  `form:"availability,omitempty" json:"availability,omitempty" xml:"availability,omitempty"`
 	VideoURL          string                   `form:"videoURL" json:"videoURL" xml:"videoURL"`
+	CardDescription   string                   `form:"cardDescription" json:"cardDescription" xml:"cardDescription"`
 }
 
 // CertificationResponse is used to define fields on response body types.
@@ -2640,6 +2644,7 @@ func NewGetCoachesResponseBody(res []*coachee.Coach) GetCoachesResponseBody {
 			PictureURL:        val.PictureURL,
 			FirstCallDuration: val.FirstCallDuration,
 			VideoURL:          val.VideoURL,
+			CardDescription:   val.CardDescription,
 		}
 		if val.Certifications != nil {
 			body[i].Certifications = make([]*CertificationResponse, len(val.Certifications))
@@ -2677,6 +2682,7 @@ func NewGetCoachResponseBody(res *coachee.Coach) *GetCoachResponseBody {
 		PictureURL:        res.PictureURL,
 		FirstCallDuration: res.FirstCallDuration,
 		VideoURL:          res.VideoURL,
+		CardDescription:   res.CardDescription,
 	}
 	if res.Certifications != nil {
 		body.Certifications = make([]*CertificationResponseBody, len(res.Certifications))
@@ -2719,6 +2725,7 @@ func NewAdminGetCoachResponseBody(res *coachee.FullCoach) *AdminGetCoachResponse
 		IntroCall:         res.IntroCall,
 		FirstCallDuration: res.FirstCallDuration,
 		VideoURL:          res.VideoURL,
+		CardDescription:   res.CardDescription,
 	}
 	if res.Availability != nil {
 		body.Availability = make([]*AvailabilityResponseBody, len(res.Availability))
@@ -4706,6 +4713,7 @@ func NewUpdateCoachPayload(body *UpdateCoachRequestBody, id uint, token string) 
 		Status:            body.Status,
 		FirstCallDuration: body.FirstCallDuration,
 		VideoURL:          body.VideoURL,
+		CardDescription:   body.CardDescription,
 	}
 	v.ID = id
 	v.Token = token

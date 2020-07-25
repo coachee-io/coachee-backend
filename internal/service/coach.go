@@ -197,6 +197,9 @@ func (s *Service) UpdateCoach(ctx context.Context, p *coachee.UpdateCoachPayload
 	if p.VideoURL != nil {
 		coach.VideoURL = *p.VideoURL
 	}
+	if p.CardDescription != nil {
+		coach.CardDescription = *p.CardDescription
+	}
 
 	err := s.coachRepository.Update(repository.DefaultNoTransaction, coach)
 	if err != nil {

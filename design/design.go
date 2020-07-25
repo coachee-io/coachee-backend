@@ -91,9 +91,10 @@ var coachResult = Type("coach", func() {
 	Attribute("programs", ArrayOf(program))
 	Attribute("availability", ArrayOf(availability))
 	Attribute("videoURL", String)
+	Attribute("cardDescription", String)
 
 	Required("id", "firstName", "lastName", "tags", "description", "city", "country", "pictureURL",
-		"firstCallDuration", "videoURL")
+		"firstCallDuration", "videoURL", "cardDescription")
 })
 
 var fullCoach = Type("fullCoach", func() {
@@ -113,6 +114,7 @@ var fullCoach = Type("fullCoach", func() {
 	Attribute("introCall", Int)
 	Attribute("firstCallDuration", Int32)
 	Attribute("videoURL", String)
+	Attribute("cardDescription", String)
 
 	Attribute("availability", ArrayOf(availability))
 	Attribute("certifications", ArrayOf(certification))
@@ -120,7 +122,7 @@ var fullCoach = Type("fullCoach", func() {
 
 	Required("id", "firstName", "lastName", "email", "phone", "stripeID", "tags", "description", "city",
 		"country", "pictureURL", "status", "vat", "introCall", "availability", "certifications", "programs", "firstCallDuration",
-		"videoURL")
+		"videoURL", "cardDescription")
 })
 
 var customer = Type("baseClient", func() {
@@ -358,6 +360,7 @@ var _ = Service("coachee", func() {
 			Attribute("status", String)
 			Attribute("firstCallDuration", Int32)
 			Attribute("videoURL", String)
+			Attribute("cardDescription", String)
 
 			Required("token", "id")
 		})

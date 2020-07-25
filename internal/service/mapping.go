@@ -31,10 +31,11 @@ func CoachToPayload(c *model.Coach) *coachee.Coach {
 		Country:           c.Country,
 		PictureURL:        c.PictureUrl,
 		FirstCallDuration: c.FirstCallDuration,
-		VideoURL:          c.VideoURL,
 		Certifications:    CertificationsToPayload(c.Certifications),
 		Programs:          ProgramsToPayload(c.Programs),
 		Availability:      AvailabilitiesToPayload(c.Availability),
+		VideoURL:          c.VideoURL,
+		CardDescription:   c.CardDescription,
 	}
 }
 
@@ -60,6 +61,7 @@ func FullCoachToPayload(c *model.Coach) *coachee.FullCoach {
 		IntroCall:         int(c.IntroCall.Unix()),
 		FirstCallDuration: c.FirstCallDuration,
 		VideoURL:          c.VideoURL,
+		CardDescription:   c.CardDescription,
 		Availability:      AvailabilitiesToPayload(c.Availability),
 		Certifications:    CertificationsToPayload(c.Certifications),
 		Programs:          ProgramsToPayload(c.Programs),
