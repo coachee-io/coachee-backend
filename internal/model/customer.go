@@ -9,12 +9,14 @@ import (
 )
 
 type Customer struct {
-	ID        uint `gorm:"primary_key"`
-	StripeID  string
-	FirstName string
-	LastName  string
-	Email     string `gorm:"not null;unique"`
-	Password  string
+	ID         uint `gorm:"primary_key"`
+	StripeID   string
+	FirstName  string
+	LastName   string
+	Email      string `gorm:"not null;unique"`
+	Password   string
+	Reason     string
+	Newsletter bool
 
 	CreatedAt time.Time
 	UpdatedAt time.Time

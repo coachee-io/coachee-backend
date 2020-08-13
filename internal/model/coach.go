@@ -132,6 +132,13 @@ type Program struct {
 	Description      string
 	TotalPrice       uint // in cents
 	TaxPercent       uint // per 10000
+	ExtraSessions    []Session
+}
+
+// Session is a program extra session
+type Session struct {
+	NumberOfSessions uint
+	Duration         uint // in minutes
 }
 
 // Certification represents a coach certification
@@ -179,6 +186,17 @@ func (Program) New(p *coachee.Program) *Program {
 		return nil
 	}
 
+	var extra []Session
+	for _, s := range p.ExtraSessions {
+		if s == nil {
+			continue
+		}
+		extra = append(extra, Session{
+			NumberOfSessions: s.Sessions,
+			Duration:         s.Duration,
+		})
+	}
+
 	return &Program{
 		ID:               uuid.New(),
 		Name:             p.Name,
@@ -187,6 +205,7 @@ func (Program) New(p *coachee.Program) *Program {
 		Description:      p.Description,
 		TotalPrice:       p.TotalPrice,
 		TaxPercent:       p.TaxPercent,
+		ExtraSessions:    extra,
 	}
 }
 

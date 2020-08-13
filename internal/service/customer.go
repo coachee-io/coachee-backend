@@ -32,10 +32,12 @@ func (s *Service) CreateCustomer(ctx context.Context, p *coachee.CreateCustomerP
 	}
 
 	client := &model.Customer{
-		FirstName: p.FirstName,
-		LastName:  p.LastName,
-		Email:     p.Email,
-		Password:  string(hashedPass),
+		FirstName:  p.FirstName,
+		LastName:   p.LastName,
+		Email:      p.Email,
+		Password:   string(hashedPass),
+		Reason:     p.Reason,
+		Newsletter: p.Newsletter,
 	}
 
 	err = client.Validate()

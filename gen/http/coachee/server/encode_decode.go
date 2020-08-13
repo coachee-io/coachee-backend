@@ -3039,6 +3039,26 @@ func marshalCoacheeProgramToProgramResponse(v *coachee.Program) *ProgramResponse
 		TotalPrice:  v.TotalPrice,
 		TaxPercent:  v.TaxPercent,
 	}
+	if v.ExtraSessions != nil {
+		res.ExtraSessions = make([]*SessionResponse, len(v.ExtraSessions))
+		for i, val := range v.ExtraSessions {
+			res.ExtraSessions[i] = marshalCoacheeSessionToSessionResponse(val)
+		}
+	}
+
+	return res
+}
+
+// marshalCoacheeSessionToSessionResponse builds a value of type
+// *SessionResponse from a value of type *coachee.Session.
+func marshalCoacheeSessionToSessionResponse(v *coachee.Session) *SessionResponse {
+	if v == nil {
+		return nil
+	}
+	res := &SessionResponse{
+		Sessions: v.Sessions,
+		Duration: v.Duration,
+	}
 
 	return res
 }
@@ -3093,6 +3113,26 @@ func marshalCoacheeProgramToProgramResponseBody(v *coachee.Program) *ProgramResp
 		TotalPrice:  v.TotalPrice,
 		TaxPercent:  v.TaxPercent,
 	}
+	if v.ExtraSessions != nil {
+		res.ExtraSessions = make([]*SessionResponseBody, len(v.ExtraSessions))
+		for i, val := range v.ExtraSessions {
+			res.ExtraSessions[i] = marshalCoacheeSessionToSessionResponseBody(val)
+		}
+	}
+
+	return res
+}
+
+// marshalCoacheeSessionToSessionResponseBody builds a value of type
+// *SessionResponseBody from a value of type *coachee.Session.
+func marshalCoacheeSessionToSessionResponseBody(v *coachee.Session) *SessionResponseBody {
+	if v == nil {
+		return nil
+	}
+	res := &SessionResponseBody{
+		Sessions: v.Sessions,
+		Duration: v.Duration,
+	}
 
 	return res
 }
@@ -3140,6 +3180,26 @@ func unmarshalProgramRequestBodyToCoacheeProgram(v *ProgramRequestBody) *coachee
 		Description: *v.Description,
 		TotalPrice:  *v.TotalPrice,
 		TaxPercent:  *v.TaxPercent,
+	}
+	if v.ExtraSessions != nil {
+		res.ExtraSessions = make([]*coachee.Session, len(v.ExtraSessions))
+		for i, val := range v.ExtraSessions {
+			res.ExtraSessions[i] = unmarshalSessionRequestBodyToCoacheeSession(val)
+		}
+	}
+
+	return res
+}
+
+// unmarshalSessionRequestBodyToCoacheeSession builds a value of type
+// *coachee.Session from a value of type *SessionRequestBody.
+func unmarshalSessionRequestBodyToCoacheeSession(v *SessionRequestBody) *coachee.Session {
+	if v == nil {
+		return nil
+	}
+	res := &coachee.Session{
+		Sessions: *v.Sessions,
+		Duration: *v.Duration,
 	}
 
 	return res

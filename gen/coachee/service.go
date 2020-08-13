@@ -292,6 +292,8 @@ type CreateCustomerPayload struct {
 	LastName    string
 	Password    string
 	AcceptTerms bool
+	Reason      string
+	Newsletter  bool
 }
 
 // CreateCustomerResult is the result type of the coachee service
@@ -385,13 +387,20 @@ type Certification struct {
 
 // represents a coach's programs
 type Program struct {
-	ID          *string
-	Name        string
-	Sessions    uint
-	Duration    uint
-	Description string
-	TotalPrice  uint
-	TaxPercent  uint
+	ID            *string
+	Name          string
+	Sessions      uint
+	Duration      uint
+	Description   string
+	TotalPrice    uint
+	TaxPercent    uint
+	ExtraSessions []*Session
+}
+
+// represents a coach's programs's extra session
+type Session struct {
+	Sessions uint
+	Duration uint
 }
 
 // represents a coach availability

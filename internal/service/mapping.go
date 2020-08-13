@@ -114,14 +114,23 @@ func ProgramToPayload(p *model.Program) *coachee.Program {
 		return nil
 	}
 
+	var extra []*coachee.Session
+	for _, s := range p.ExtraSessions {
+		extra = append(extra, &coachee.Session{
+			Sessions: s.NumberOfSessions,
+			Duration: s.Duration,
+		})
+	}
+
 	return &coachee.Program{
-		ID:          &p.ID,
-		Name:        p.Name,
-		Sessions:    p.NumberOfSessions,
-		Duration:    p.Duration,
-		Description: p.Description,
-		TotalPrice:  p.TotalPrice,
-		TaxPercent:  p.TaxPercent,
+		ID:            &p.ID,
+		Name:          p.Name,
+		Sessions:      p.NumberOfSessions,
+		Duration:      p.Duration,
+		Description:   p.Description,
+		TotalPrice:    p.TotalPrice,
+		TaxPercent:    p.TaxPercent,
+		ExtraSessions: extra,
 	}
 }
 

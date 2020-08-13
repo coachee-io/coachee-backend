@@ -71,8 +71,18 @@ var program = Type("program", func() {
 	Attribute("description", String)
 	Attribute("totalPrice", UInt)
 	Attribute("taxPercent", UInt)
+	Attribute("extraSessions", ArrayOf(session))
 
 	Required("name", "sessions", "duration", "description", "totalPrice", "taxPercent")
+})
+
+var session = Type("session", func() {
+	Description("represents a coach's programs's extra session")
+
+	Attribute("sessions", UInt)
+	Attribute("duration", UInt)
+
+	Required("sessions", "duration")
 })
 
 var coachResult = Type("coach", func() {
@@ -511,8 +521,10 @@ var _ = Service("coachee", func() {
 			Attribute("lastName", String)
 			Attribute("password", String)
 			Attribute("acceptTerms", Boolean)
+			Attribute("reason", String)
+			Attribute("newsletter", Boolean)
 
-			Required("email", "firstName", "lastName", "password", "acceptTerms")
+			Required("email", "firstName", "lastName", "password", "acceptTerms", "reason", "newsletter")
 		})
 
 		Result(func() {

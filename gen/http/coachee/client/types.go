@@ -101,6 +101,8 @@ type CreateCustomerRequestBody struct {
 	LastName    string `form:"lastName" json:"lastName" xml:"lastName"`
 	Password    string `form:"password" json:"password" xml:"password"`
 	AcceptTerms bool   `form:"acceptTerms" json:"acceptTerms" xml:"acceptTerms"`
+	Reason      string `form:"reason" json:"reason" xml:"reason"`
+	Newsletter  bool   `form:"newsletter" json:"newsletter" xml:"newsletter"`
 }
 
 // CustomerLoginRequestBody is the type of the "coachee" service
@@ -2552,13 +2554,20 @@ type CertificationResponse struct {
 
 // ProgramResponse is used to define fields on response body types.
 type ProgramResponse struct {
-	ID          *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
-	Name        *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
-	Sessions    *uint   `form:"sessions,omitempty" json:"sessions,omitempty" xml:"sessions,omitempty"`
-	Duration    *uint   `form:"duration,omitempty" json:"duration,omitempty" xml:"duration,omitempty"`
-	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
-	TotalPrice  *uint   `form:"totalPrice,omitempty" json:"totalPrice,omitempty" xml:"totalPrice,omitempty"`
-	TaxPercent  *uint   `form:"taxPercent,omitempty" json:"taxPercent,omitempty" xml:"taxPercent,omitempty"`
+	ID            *string            `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	Name          *string            `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	Sessions      *uint              `form:"sessions,omitempty" json:"sessions,omitempty" xml:"sessions,omitempty"`
+	Duration      *uint              `form:"duration,omitempty" json:"duration,omitempty" xml:"duration,omitempty"`
+	Description   *string            `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
+	TotalPrice    *uint              `form:"totalPrice,omitempty" json:"totalPrice,omitempty" xml:"totalPrice,omitempty"`
+	TaxPercent    *uint              `form:"taxPercent,omitempty" json:"taxPercent,omitempty" xml:"taxPercent,omitempty"`
+	ExtraSessions []*SessionResponse `form:"extraSessions,omitempty" json:"extraSessions,omitempty" xml:"extraSessions,omitempty"`
+}
+
+// SessionResponse is used to define fields on response body types.
+type SessionResponse struct {
+	Sessions *uint `form:"sessions,omitempty" json:"sessions,omitempty" xml:"sessions,omitempty"`
+	Duration *uint `form:"duration,omitempty" json:"duration,omitempty" xml:"duration,omitempty"`
 }
 
 // AvailabilityResponse is used to define fields on response body types.
@@ -2582,13 +2591,20 @@ type CertificationResponseBody struct {
 
 // ProgramResponseBody is used to define fields on response body types.
 type ProgramResponseBody struct {
-	ID          *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
-	Name        *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
-	Sessions    *uint   `form:"sessions,omitempty" json:"sessions,omitempty" xml:"sessions,omitempty"`
-	Duration    *uint   `form:"duration,omitempty" json:"duration,omitempty" xml:"duration,omitempty"`
-	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
-	TotalPrice  *uint   `form:"totalPrice,omitempty" json:"totalPrice,omitempty" xml:"totalPrice,omitempty"`
-	TaxPercent  *uint   `form:"taxPercent,omitempty" json:"taxPercent,omitempty" xml:"taxPercent,omitempty"`
+	ID            *string                `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	Name          *string                `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	Sessions      *uint                  `form:"sessions,omitempty" json:"sessions,omitempty" xml:"sessions,omitempty"`
+	Duration      *uint                  `form:"duration,omitempty" json:"duration,omitempty" xml:"duration,omitempty"`
+	Description   *string                `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
+	TotalPrice    *uint                  `form:"totalPrice,omitempty" json:"totalPrice,omitempty" xml:"totalPrice,omitempty"`
+	TaxPercent    *uint                  `form:"taxPercent,omitempty" json:"taxPercent,omitempty" xml:"taxPercent,omitempty"`
+	ExtraSessions []*SessionResponseBody `form:"extraSessions,omitempty" json:"extraSessions,omitempty" xml:"extraSessions,omitempty"`
+}
+
+// SessionResponseBody is used to define fields on response body types.
+type SessionResponseBody struct {
+	Sessions *uint `form:"sessions,omitempty" json:"sessions,omitempty" xml:"sessions,omitempty"`
+	Duration *uint `form:"duration,omitempty" json:"duration,omitempty" xml:"duration,omitempty"`
 }
 
 // AvailabilityResponseBody is used to define fields on response body types.
@@ -2612,13 +2628,20 @@ type CertificationRequestBody struct {
 
 // ProgramRequestBody is used to define fields on request body types.
 type ProgramRequestBody struct {
-	ID          *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
-	Name        string  `form:"name" json:"name" xml:"name"`
-	Sessions    uint    `form:"sessions" json:"sessions" xml:"sessions"`
-	Duration    uint    `form:"duration" json:"duration" xml:"duration"`
-	Description string  `form:"description" json:"description" xml:"description"`
-	TotalPrice  uint    `form:"totalPrice" json:"totalPrice" xml:"totalPrice"`
-	TaxPercent  uint    `form:"taxPercent" json:"taxPercent" xml:"taxPercent"`
+	ID            *string               `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	Name          string                `form:"name" json:"name" xml:"name"`
+	Sessions      uint                  `form:"sessions" json:"sessions" xml:"sessions"`
+	Duration      uint                  `form:"duration" json:"duration" xml:"duration"`
+	Description   string                `form:"description" json:"description" xml:"description"`
+	TotalPrice    uint                  `form:"totalPrice" json:"totalPrice" xml:"totalPrice"`
+	TaxPercent    uint                  `form:"taxPercent" json:"taxPercent" xml:"taxPercent"`
+	ExtraSessions []*SessionRequestBody `form:"extraSessions,omitempty" json:"extraSessions,omitempty" xml:"extraSessions,omitempty"`
+}
+
+// SessionRequestBody is used to define fields on request body types.
+type SessionRequestBody struct {
+	Sessions uint `form:"sessions" json:"sessions" xml:"sessions"`
+	Duration uint `form:"duration" json:"duration" xml:"duration"`
 }
 
 // BaseClientResponseBody is used to define fields on response body types.
@@ -2745,6 +2768,8 @@ func NewCreateCustomerRequestBody(p *coachee.CreateCustomerPayload) *CreateCusto
 		LastName:    p.LastName,
 		Password:    p.Password,
 		AcceptTerms: p.AcceptTerms,
+		Reason:      p.Reason,
+		Newsletter:  p.Newsletter,
 	}
 	return body
 }
@@ -8075,6 +8100,24 @@ func ValidateProgramResponse(body *ProgramResponse) (err error) {
 	if body.TaxPercent == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("taxPercent", "body"))
 	}
+	for _, e := range body.ExtraSessions {
+		if e != nil {
+			if err2 := ValidateSessionResponse(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	return
+}
+
+// ValidateSessionResponse runs the validations defined on sessionResponse
+func ValidateSessionResponse(body *SessionResponse) (err error) {
+	if body.Sessions == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("sessions", "body"))
+	}
+	if body.Duration == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("duration", "body"))
+	}
 	return
 }
 
@@ -8170,6 +8213,25 @@ func ValidateProgramResponseBody(body *ProgramResponseBody) (err error) {
 	}
 	if body.TaxPercent == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("taxPercent", "body"))
+	}
+	for _, e := range body.ExtraSessions {
+		if e != nil {
+			if err2 := ValidateSessionResponseBody(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	return
+}
+
+// ValidateSessionResponseBody runs the validations defined on
+// sessionResponseBody
+func ValidateSessionResponseBody(body *SessionResponseBody) (err error) {
+	if body.Sessions == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("sessions", "body"))
+	}
+	if body.Duration == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("duration", "body"))
 	}
 	return
 }
