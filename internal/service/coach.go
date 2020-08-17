@@ -51,6 +51,11 @@ func (s *Service) GetCoach(ctx context.Context, p *coachee.GetCoachPayload) (*co
 		s.logger.Error().Err(err).Uint("id", p.ID).Msg("failed to retrieve coach")
 		return nil, err
 	}
+
+	if coach.Status != model.StatusActive {
+		return nil, coachee.MakeNotFound(fmt.Errorf("record not found"))
+	}
+
 	return CoachToPayload(coach), nil
 }
 
