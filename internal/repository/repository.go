@@ -50,3 +50,10 @@ type CoachRecovery interface {
 	Create(transaction Transaction, client *model.CoachRecovery) error
 	GetByID(transaction Transaction, id string) (*model.CoachRecovery, error)
 }
+
+// Newsletter is the repository to store emails for the newsletter
+type Newsletter interface {
+	Begin() Transaction
+
+	Create(transaction Transaction, client *model.Newsletter) error
+}

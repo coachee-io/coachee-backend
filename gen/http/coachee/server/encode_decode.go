@@ -3006,6 +3006,116 @@ func EncodeAdminLoginError(encoder func(context.Context, http.ResponseWriter) go
 	}
 }
 
+// EncodeRegisterNewsletterEmailResponse returns an encoder for responses
+// returned by the coachee RegisterNewsletterEmail endpoint.
+func EncodeRegisterNewsletterEmailResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		w.WriteHeader(http.StatusOK)
+		return nil
+	}
+}
+
+// DecodeRegisterNewsletterEmailRequest returns a decoder for requests sent to
+// the coachee RegisterNewsletterEmail endpoint.
+func DecodeRegisterNewsletterEmailRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			body RegisterNewsletterEmailRequestBody
+			err  error
+		)
+		err = decoder(r).Decode(&body)
+		if err != nil {
+			if err == io.EOF {
+				return nil, goa.MissingPayloadError()
+			}
+			return nil, goa.DecodePayloadError(err.Error())
+		}
+		err = ValidateRegisterNewsletterEmailRequestBody(&body)
+		if err != nil {
+			return nil, err
+		}
+		payload := NewRegisterNewsletterEmailPayload(&body)
+
+		return payload, nil
+	}
+}
+
+// EncodeRegisterNewsletterEmailError returns an encoder for errors returned by
+// the RegisterNewsletterEmail coachee endpoint.
+func EncodeRegisterNewsletterEmailError(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder, formatter func(err error) goahttp.Statuser) func(context.Context, http.ResponseWriter, error) error {
+	encodeError := goahttp.ErrorEncoder(encoder, formatter)
+	return func(ctx context.Context, w http.ResponseWriter, v error) error {
+		en, ok := v.(ErrorNamer)
+		if !ok {
+			return encodeError(ctx, w, v)
+		}
+		switch en.ErrorName() {
+		case "internal":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewRegisterNewsletterEmailInternalResponseBody(res)
+			}
+			w.Header().Set("goa-error", "internal")
+			w.WriteHeader(http.StatusInternalServerError)
+			return enc.Encode(body)
+		case "transient":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewRegisterNewsletterEmailTransientResponseBody(res)
+			}
+			w.Header().Set("goa-error", "transient")
+			w.WriteHeader(http.StatusInternalServerError)
+			return enc.Encode(body)
+		case "notFound":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewRegisterNewsletterEmailNotFoundResponseBody(res)
+			}
+			w.Header().Set("goa-error", "notFound")
+			w.WriteHeader(http.StatusNotFound)
+			return enc.Encode(body)
+		case "validation":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewRegisterNewsletterEmailValidationResponseBody(res)
+			}
+			w.Header().Set("goa-error", "validation")
+			w.WriteHeader(http.StatusBadRequest)
+			return enc.Encode(body)
+		case "unauthorized":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewRegisterNewsletterEmailUnauthorizedResponseBody(res)
+			}
+			w.Header().Set("goa-error", "unauthorized")
+			w.WriteHeader(http.StatusUnauthorized)
+			return enc.Encode(body)
+		default:
+			return encodeError(ctx, w, v)
+		}
+	}
+}
+
 // marshalCoacheeCertificationToCertificationResponse builds a value of type
 // *CertificationResponse from a value of type *coachee.Certification.
 func marshalCoacheeCertificationToCertificationResponse(v *coachee.Certification) *CertificationResponse {

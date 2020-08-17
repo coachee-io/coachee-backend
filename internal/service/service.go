@@ -20,6 +20,7 @@ type Service struct {
 	orderRepository         repository.Order
 	recoveryRepository      repository.Recovery
 	coachRecoveryRepository repository.CoachRecovery
+	newsletterRepository    repository.Newsletter
 
 	stripe Stripe
 	email  Email
@@ -56,6 +57,7 @@ type Config struct {
 	Order         repository.Order
 	Recovery      repository.Recovery
 	CoachRecovery repository.CoachRecovery
+	Newsletter    repository.Newsletter
 	Stripe        Stripe
 	Email         Email
 	Slack         Slack
@@ -82,6 +84,7 @@ func NewCoachee(config Config) (*Service, error) {
 		orderRepository:         config.Order,
 		recoveryRepository:      config.Recovery,
 		coachRecoveryRepository: config.CoachRecovery,
+		newsletterRepository:    config.Newsletter,
 		stripe:                  config.Stripe,
 		email:                   config.Email,
 		slack:                   config.Slack,

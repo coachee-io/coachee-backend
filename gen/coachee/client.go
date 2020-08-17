@@ -40,10 +40,11 @@ type Client struct {
 	CreateOrderEndpoint                       goa.Endpoint
 	RegisterStripeExpressEndpoint             goa.Endpoint
 	AdminLoginEndpoint                        goa.Endpoint
+	RegisterNewsletterEmailEndpoint           goa.Endpoint
 }
 
 // NewClient initializes a "coachee" service client given the endpoints.
-func NewClient(stripeWebhooks, getCoaches, getCoach, adminGetCoach, lenCoaches, createCoach, loginCoach, startCoachPasswordRecoveryFlow, checkCoachPasswordRecoveryToken, finalizeCoachPasswordRecoveryFlow, updateCoach, createCertification, deleteCertification, createProgram, deleteProgram, createAvailability, deleteAvailability, createCustomer, customerLogin, startPasswordRecoveryFlow, checkPasswordRecoveryToken, finalizePasswordRecoveryFlow, createOrder, registerStripeExpress, adminLogin goa.Endpoint) *Client {
+func NewClient(stripeWebhooks, getCoaches, getCoach, adminGetCoach, lenCoaches, createCoach, loginCoach, startCoachPasswordRecoveryFlow, checkCoachPasswordRecoveryToken, finalizeCoachPasswordRecoveryFlow, updateCoach, createCertification, deleteCertification, createProgram, deleteProgram, createAvailability, deleteAvailability, createCustomer, customerLogin, startPasswordRecoveryFlow, checkPasswordRecoveryToken, finalizePasswordRecoveryFlow, createOrder, registerStripeExpress, adminLogin, registerNewsletterEmail goa.Endpoint) *Client {
 	return &Client{
 		StripeWebhooksEndpoint:                    stripeWebhooks,
 		GetCoachesEndpoint:                        getCoaches,
@@ -70,6 +71,7 @@ func NewClient(stripeWebhooks, getCoaches, getCoach, adminGetCoach, lenCoaches, 
 		CreateOrderEndpoint:                       createOrder,
 		RegisterStripeExpressEndpoint:             registerStripeExpress,
 		AdminLoginEndpoint:                        adminLogin,
+		RegisterNewsletterEmailEndpoint:           registerNewsletterEmail,
 	}
 }
 
@@ -272,4 +274,11 @@ func (c *Client) AdminLogin(ctx context.Context, p *AdminLoginPayload) (res *Adm
 		return
 	}
 	return ires.(*AdminLoginResult), nil
+}
+
+// RegisterNewsletterEmail calls the "RegisterNewsletterEmail" endpoint of the
+// "coachee" service.
+func (c *Client) RegisterNewsletterEmail(ctx context.Context, p *RegisterNewsletterEmailPayload) (err error) {
+	_, err = c.RegisterNewsletterEmailEndpoint(ctx, p)
+	return
 }

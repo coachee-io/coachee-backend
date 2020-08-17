@@ -41,6 +41,7 @@ type Endpoints struct {
 	CreateOrder                       goa.Endpoint
 	RegisterStripeExpress             goa.Endpoint
 	AdminLogin                        goa.Endpoint
+	RegisterNewsletterEmail           goa.Endpoint
 }
 
 // NewEndpoints wraps the methods of the "coachee" service with endpoints.
@@ -73,6 +74,7 @@ func NewEndpoints(s Service) *Endpoints {
 		CreateOrder:                       NewCreateOrderEndpoint(s, a.JWTAuth),
 		RegisterStripeExpress:             NewRegisterStripeExpressEndpoint(s),
 		AdminLogin:                        NewAdminLoginEndpoint(s),
+		RegisterNewsletterEmail:           NewRegisterNewsletterEmailEndpoint(s),
 	}
 }
 
@@ -103,6 +105,7 @@ func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.CreateOrder = m(e.CreateOrder)
 	e.RegisterStripeExpress = m(e.RegisterStripeExpress)
 	e.AdminLogin = m(e.AdminLogin)
+	e.RegisterNewsletterEmail = m(e.RegisterNewsletterEmail)
 }
 
 // NewStripeWebhooksEndpoint returns an endpoint function that calls the method
@@ -418,5 +421,14 @@ func NewAdminLoginEndpoint(s Service) goa.Endpoint {
 	return func(ctx context.Context, req interface{}) (interface{}, error) {
 		p := req.(*AdminLoginPayload)
 		return s.AdminLogin(ctx, p)
+	}
+}
+
+// NewRegisterNewsletterEmailEndpoint returns an endpoint function that calls
+// the method "RegisterNewsletterEmail" of service "coachee".
+func NewRegisterNewsletterEmailEndpoint(s Service) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*RegisterNewsletterEmailPayload)
+		return nil, s.RegisterNewsletterEmail(ctx, p)
 	}
 }

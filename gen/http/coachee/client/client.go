@@ -117,6 +117,10 @@ type Client struct {
 	// endpoint.
 	AdminLoginDoer goahttp.Doer
 
+	// RegisterNewsletterEmail Doer is the HTTP client used to make requests to the
+	// RegisterNewsletterEmail endpoint.
+	RegisterNewsletterEmailDoer goahttp.Doer
+
 	// RestoreResponseBody controls whether the response bodies are reset after
 	// decoding so they can be read again.
 	RestoreResponseBody bool
@@ -162,6 +166,7 @@ func NewClient(
 		CreateOrderDoer:                       doer,
 		RegisterStripeExpressDoer:             doer,
 		AdminLoginDoer:                        doer,
+		RegisterNewsletterEmailDoer:           doer,
 		RestoreResponseBody:                   restoreBody,
 		scheme:                                scheme,
 		host:                                  host,
@@ -770,6 +775,31 @@ func (c *Client) AdminLogin() goa.Endpoint {
 
 		if err != nil {
 			return nil, goahttp.ErrRequestError("coachee", "AdminLogin", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// RegisterNewsletterEmail returns an endpoint that makes HTTP requests to the
+// coachee service RegisterNewsletterEmail server.
+func (c *Client) RegisterNewsletterEmail() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeRegisterNewsletterEmailRequest(c.encoder)
+		decodeResponse = DecodeRegisterNewsletterEmailResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildRegisterNewsletterEmailRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.RegisterNewsletterEmailDoer.Do(req)
+
+		if err != nil {
+			return nil, goahttp.ErrRequestError("coachee", "RegisterNewsletterEmail", err)
 		}
 		return decodeResponse(resp)
 	}

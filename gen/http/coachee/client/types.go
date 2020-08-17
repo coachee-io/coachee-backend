@@ -145,6 +145,12 @@ type AdminLoginRequestBody struct {
 	Password string `form:"password" json:"password" xml:"password"`
 }
 
+// RegisterNewsletterEmailRequestBody is the type of the "coachee" service
+// "RegisterNewsletterEmail" endpoint HTTP request body.
+type RegisterNewsletterEmailRequestBody struct {
+	Email string `form:"email" json:"email" xml:"email"`
+}
+
 // GetCoachesResponseBody is the type of the "coachee" service "GetCoaches"
 // endpoint HTTP response body.
 type GetCoachesResponseBody []*CoachResponse
@@ -2524,6 +2530,101 @@ type AdminLoginUnauthorizedResponseBody struct {
 	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
 }
 
+// RegisterNewsletterEmailInternalResponseBody is the type of the "coachee"
+// service "RegisterNewsletterEmail" endpoint HTTP response body for the
+// "internal" error.
+type RegisterNewsletterEmailInternalResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// RegisterNewsletterEmailTransientResponseBody is the type of the "coachee"
+// service "RegisterNewsletterEmail" endpoint HTTP response body for the
+// "transient" error.
+type RegisterNewsletterEmailTransientResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// RegisterNewsletterEmailNotFoundResponseBody is the type of the "coachee"
+// service "RegisterNewsletterEmail" endpoint HTTP response body for the
+// "notFound" error.
+type RegisterNewsletterEmailNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// RegisterNewsletterEmailValidationResponseBody is the type of the "coachee"
+// service "RegisterNewsletterEmail" endpoint HTTP response body for the
+// "validation" error.
+type RegisterNewsletterEmailValidationResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// RegisterNewsletterEmailUnauthorizedResponseBody is the type of the "coachee"
+// service "RegisterNewsletterEmail" endpoint HTTP response body for the
+// "unauthorized" error.
+type RegisterNewsletterEmailUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
 // CoachResponse is used to define fields on response body types.
 type CoachResponse struct {
 	ID                *uint                    `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
@@ -2830,6 +2931,15 @@ func NewAdminLoginRequestBody(p *coachee.AdminLoginPayload) *AdminLoginRequestBo
 	body := &AdminLoginRequestBody{
 		Email:    p.Email,
 		Password: p.Password,
+	}
+	return body
+}
+
+// NewRegisterNewsletterEmailRequestBody builds the HTTP request body from the
+// payload of the "RegisterNewsletterEmail" endpoint of the "coachee" service.
+func NewRegisterNewsletterEmailRequestBody(p *coachee.RegisterNewsletterEmailPayload) *RegisterNewsletterEmailRequestBody {
+	body := &RegisterNewsletterEmailRequestBody{
+		Email: p.Email,
 	}
 	return body
 }
@@ -4738,6 +4848,76 @@ func NewAdminLoginValidation(body *AdminLoginValidationResponseBody) *goa.Servic
 // NewAdminLoginUnauthorized builds a coachee service AdminLogin endpoint
 // unauthorized error.
 func NewAdminLoginUnauthorized(body *AdminLoginUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewRegisterNewsletterEmailInternal builds a coachee service
+// RegisterNewsletterEmail endpoint internal error.
+func NewRegisterNewsletterEmailInternal(body *RegisterNewsletterEmailInternalResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewRegisterNewsletterEmailTransient builds a coachee service
+// RegisterNewsletterEmail endpoint transient error.
+func NewRegisterNewsletterEmailTransient(body *RegisterNewsletterEmailTransientResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewRegisterNewsletterEmailNotFound builds a coachee service
+// RegisterNewsletterEmail endpoint notFound error.
+func NewRegisterNewsletterEmailNotFound(body *RegisterNewsletterEmailNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewRegisterNewsletterEmailValidation builds a coachee service
+// RegisterNewsletterEmail endpoint validation error.
+func NewRegisterNewsletterEmailValidation(body *RegisterNewsletterEmailValidationResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+	return v
+}
+
+// NewRegisterNewsletterEmailUnauthorized builds a coachee service
+// RegisterNewsletterEmail endpoint unauthorized error.
+func NewRegisterNewsletterEmailUnauthorized(body *RegisterNewsletterEmailUnauthorizedResponseBody) *goa.ServiceError {
 	v := &goa.ServiceError{
 		Name:      *body.Name,
 		ID:        *body.ID,
@@ -7959,6 +8139,126 @@ func ValidateAdminLoginValidationResponseBody(body *AdminLoginValidationResponse
 // ValidateAdminLoginUnauthorizedResponseBody runs the validations defined on
 // AdminLogin_unauthorized_Response_Body
 func ValidateAdminLoginUnauthorizedResponseBody(body *AdminLoginUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateRegisterNewsletterEmailInternalResponseBody runs the validations
+// defined on RegisterNewsletterEmail_internal_Response_Body
+func ValidateRegisterNewsletterEmailInternalResponseBody(body *RegisterNewsletterEmailInternalResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateRegisterNewsletterEmailTransientResponseBody runs the validations
+// defined on RegisterNewsletterEmail_transient_Response_Body
+func ValidateRegisterNewsletterEmailTransientResponseBody(body *RegisterNewsletterEmailTransientResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateRegisterNewsletterEmailNotFoundResponseBody runs the validations
+// defined on RegisterNewsletterEmail_notFound_Response_Body
+func ValidateRegisterNewsletterEmailNotFoundResponseBody(body *RegisterNewsletterEmailNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateRegisterNewsletterEmailValidationResponseBody runs the validations
+// defined on RegisterNewsletterEmail_validation_Response_Body
+func ValidateRegisterNewsletterEmailValidationResponseBody(body *RegisterNewsletterEmailValidationResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateRegisterNewsletterEmailUnauthorizedResponseBody runs the validations
+// defined on RegisterNewsletterEmail_unauthorized_Response_Body
+func ValidateRegisterNewsletterEmailUnauthorizedResponseBody(body *RegisterNewsletterEmailUnauthorizedResponseBody) (err error) {
 	if body.Name == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
 	}

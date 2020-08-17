@@ -135,3 +135,8 @@ func RegisterStripeExpressCoacheePath(id uint) string {
 func AdminLoginCoacheePath() string {
 	return "/admin/login"
 }
+
+// RegisterNewsletterEmailCoacheePath returns the URL path to the coachee service RegisterNewsletterEmail HTTP endpoint.
+func RegisterNewsletterEmailCoacheePath() string {
+	return "/newsletter"
+}

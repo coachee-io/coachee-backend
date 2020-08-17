@@ -145,6 +145,12 @@ type AdminLoginRequestBody struct {
 	Password *string `form:"password,omitempty" json:"password,omitempty" xml:"password,omitempty"`
 }
 
+// RegisterNewsletterEmailRequestBody is the type of the "coachee" service
+// "RegisterNewsletterEmail" endpoint HTTP request body.
+type RegisterNewsletterEmailRequestBody struct {
+	Email *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
+}
+
 // GetCoachesResponseBody is the type of the "coachee" service "GetCoaches"
 // endpoint HTTP response body.
 type GetCoachesResponseBody []*CoachResponse
@@ -2524,6 +2530,101 @@ type AdminLoginUnauthorizedResponseBody struct {
 	Fault bool `form:"fault" json:"fault" xml:"fault"`
 }
 
+// RegisterNewsletterEmailInternalResponseBody is the type of the "coachee"
+// service "RegisterNewsletterEmail" endpoint HTTP response body for the
+// "internal" error.
+type RegisterNewsletterEmailInternalResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// RegisterNewsletterEmailTransientResponseBody is the type of the "coachee"
+// service "RegisterNewsletterEmail" endpoint HTTP response body for the
+// "transient" error.
+type RegisterNewsletterEmailTransientResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// RegisterNewsletterEmailNotFoundResponseBody is the type of the "coachee"
+// service "RegisterNewsletterEmail" endpoint HTTP response body for the
+// "notFound" error.
+type RegisterNewsletterEmailNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// RegisterNewsletterEmailValidationResponseBody is the type of the "coachee"
+// service "RegisterNewsletterEmail" endpoint HTTP response body for the
+// "validation" error.
+type RegisterNewsletterEmailValidationResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// RegisterNewsletterEmailUnauthorizedResponseBody is the type of the "coachee"
+// service "RegisterNewsletterEmail" endpoint HTTP response body for the
+// "unauthorized" error.
+type RegisterNewsletterEmailUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
 // CoachResponse is used to define fields on response body types.
 type CoachResponse struct {
 	ID                uint                     `form:"id" json:"id" xml:"id"`
@@ -4627,6 +4728,81 @@ func NewAdminLoginUnauthorizedResponseBody(res *goa.ServiceError) *AdminLoginUna
 	return body
 }
 
+// NewRegisterNewsletterEmailInternalResponseBody builds the HTTP response body
+// from the result of the "RegisterNewsletterEmail" endpoint of the "coachee"
+// service.
+func NewRegisterNewsletterEmailInternalResponseBody(res *goa.ServiceError) *RegisterNewsletterEmailInternalResponseBody {
+	body := &RegisterNewsletterEmailInternalResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewRegisterNewsletterEmailTransientResponseBody builds the HTTP response
+// body from the result of the "RegisterNewsletterEmail" endpoint of the
+// "coachee" service.
+func NewRegisterNewsletterEmailTransientResponseBody(res *goa.ServiceError) *RegisterNewsletterEmailTransientResponseBody {
+	body := &RegisterNewsletterEmailTransientResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewRegisterNewsletterEmailNotFoundResponseBody builds the HTTP response body
+// from the result of the "RegisterNewsletterEmail" endpoint of the "coachee"
+// service.
+func NewRegisterNewsletterEmailNotFoundResponseBody(res *goa.ServiceError) *RegisterNewsletterEmailNotFoundResponseBody {
+	body := &RegisterNewsletterEmailNotFoundResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewRegisterNewsletterEmailValidationResponseBody builds the HTTP response
+// body from the result of the "RegisterNewsletterEmail" endpoint of the
+// "coachee" service.
+func NewRegisterNewsletterEmailValidationResponseBody(res *goa.ServiceError) *RegisterNewsletterEmailValidationResponseBody {
+	body := &RegisterNewsletterEmailValidationResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewRegisterNewsletterEmailUnauthorizedResponseBody builds the HTTP response
+// body from the result of the "RegisterNewsletterEmail" endpoint of the
+// "coachee" service.
+func NewRegisterNewsletterEmailUnauthorizedResponseBody(res *goa.ServiceError) *RegisterNewsletterEmailUnauthorizedResponseBody {
+	body := &RegisterNewsletterEmailUnauthorizedResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
 // NewGetCoachesPayload builds a coachee service GetCoaches endpoint payload.
 func NewGetCoachesPayload(tag *string, limit *uint, page *uint, showAll *bool) *coachee.GetCoachesPayload {
 	return &coachee.GetCoachesPayload{
@@ -4888,6 +5064,15 @@ func NewAdminLoginPayload(body *AdminLoginRequestBody) *coachee.AdminLoginPayloa
 	return v
 }
 
+// NewRegisterNewsletterEmailPayload builds a coachee service
+// RegisterNewsletterEmail endpoint payload.
+func NewRegisterNewsletterEmailPayload(body *RegisterNewsletterEmailRequestBody) *coachee.RegisterNewsletterEmailPayload {
+	v := &coachee.RegisterNewsletterEmailPayload{
+		Email: *body.Email,
+	}
+	return v
+}
+
 // ValidateCreateCoachRequestBody runs the validations defined on
 // CreateCoachRequestBody
 func ValidateCreateCoachRequestBody(body *CreateCoachRequestBody) (err error) {
@@ -5119,6 +5304,15 @@ func ValidateAdminLoginRequestBody(body *AdminLoginRequestBody) (err error) {
 	}
 	if body.Password == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("password", "body"))
+	}
+	return
+}
+
+// ValidateRegisterNewsletterEmailRequestBody runs the validations defined on
+// RegisterNewsletterEmailRequestBody
+func ValidateRegisterNewsletterEmailRequestBody(body *RegisterNewsletterEmailRequestBody) (err error) {
+	if body.Email == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("email", "body"))
 	}
 	return
 }

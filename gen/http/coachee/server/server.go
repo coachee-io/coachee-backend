@@ -44,6 +44,7 @@ type Server struct {
 	CreateOrder                       http.Handler
 	RegisterStripeExpress             http.Handler
 	AdminLogin                        http.Handler
+	RegisterNewsletterEmail           http.Handler
 }
 
 // ErrorNamer is an interface implemented by generated error structs that
@@ -104,6 +105,7 @@ func New(
 			{"CreateOrder", "POST", "/orders"},
 			{"RegisterStripeExpress", "POST", "/coaches/{id}/stripe"},
 			{"AdminLogin", "POST", "/admin/login"},
+			{"RegisterNewsletterEmail", "POST", "/newsletter"},
 		},
 		StripeWebhooks:                    NewStripeWebhooksHandler(e.StripeWebhooks, mux, decoder, encoder, errhandler, formatter),
 		GetCoaches:                        NewGetCoachesHandler(e.GetCoaches, mux, decoder, encoder, errhandler, formatter),
@@ -130,6 +132,7 @@ func New(
 		CreateOrder:                       NewCreateOrderHandler(e.CreateOrder, mux, decoder, encoder, errhandler, formatter),
 		RegisterStripeExpress:             NewRegisterStripeExpressHandler(e.RegisterStripeExpress, mux, decoder, encoder, errhandler, formatter),
 		AdminLogin:                        NewAdminLoginHandler(e.AdminLogin, mux, decoder, encoder, errhandler, formatter),
+		RegisterNewsletterEmail:           NewRegisterNewsletterEmailHandler(e.RegisterNewsletterEmail, mux, decoder, encoder, errhandler, formatter),
 	}
 }
 
@@ -163,6 +166,7 @@ func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.CreateOrder = m(s.CreateOrder)
 	s.RegisterStripeExpress = m(s.RegisterStripeExpress)
 	s.AdminLogin = m(s.AdminLogin)
+	s.RegisterNewsletterEmail = m(s.RegisterNewsletterEmail)
 }
 
 // Mount configures the mux to serve the coachee endpoints.
@@ -192,6 +196,7 @@ func Mount(mux goahttp.Muxer, h *Server) {
 	MountCreateOrderHandler(mux, h.CreateOrder)
 	MountRegisterStripeExpressHandler(mux, h.RegisterStripeExpress)
 	MountAdminLoginHandler(mux, h.AdminLogin)
+	MountRegisterNewsletterEmailHandler(mux, h.RegisterNewsletterEmail)
 }
 
 // MountStripeWebhooksHandler configures the mux to serve the "coachee" service
@@ -1502,6 +1507,60 @@ func NewAdminLoginHandler(
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "AdminLogin")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "coachee")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+
+		res, err := endpoint(ctx, payload)
+
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountRegisterNewsletterEmailHandler configures the mux to serve the
+// "coachee" service "RegisterNewsletterEmail" endpoint.
+func MountRegisterNewsletterEmailHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("POST", "/newsletter", f)
+}
+
+// NewRegisterNewsletterEmailHandler creates a HTTP handler which loads the
+// HTTP request and calls the "coachee" service "RegisterNewsletterEmail"
+// endpoint.
+func NewRegisterNewsletterEmailHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeRegisterNewsletterEmailRequest(mux, decoder)
+		encodeResponse = EncodeRegisterNewsletterEmailResponse(encoder)
+		encodeError    = EncodeRegisterNewsletterEmailError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "RegisterNewsletterEmail")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "coachee")
 		payload, err := decodeRequest(r)
 		if err != nil {

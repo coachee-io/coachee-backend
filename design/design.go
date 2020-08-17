@@ -672,4 +672,19 @@ var _ = Service("coachee", func() {
 			Response(StatusOK)
 		})
 	})
+
+	Method("RegisterNewsletterEmail", func() {
+		Description("registers an email to our newsletter")
+		Payload(func() {
+			Attribute("email", String)
+
+			Required("email")
+		})
+
+		HTTP(func() {
+			POST("/newsletter")
+			Response(StatusOK)
+		})
+	})
+
 })

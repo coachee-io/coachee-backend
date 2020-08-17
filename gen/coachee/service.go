@@ -66,6 +66,8 @@ type Service interface {
 	RegisterStripeExpress(context.Context, *RegisterStripeExpressPayload) (err error)
 	// logs in a customer and returns a jwt
 	AdminLogin(context.Context, *AdminLoginPayload) (res *AdminLoginResult, err error)
+	// registers an email to our newsletter
+	RegisterNewsletterEmail(context.Context, *RegisterNewsletterEmailPayload) (err error)
 }
 
 // Auther defines the authorization functions to be implemented by the service.
@@ -82,7 +84,7 @@ const ServiceName = "coachee"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [25]string{"StripeWebhooks", "GetCoaches", "GetCoach", "AdminGetCoach", "LenCoaches", "CreateCoach", "LoginCoach", "StartCoachPasswordRecoveryFlow", "CheckCoachPasswordRecoveryToken", "FinalizeCoachPasswordRecoveryFlow", "UpdateCoach", "CreateCertification", "DeleteCertification", "CreateProgram", "DeleteProgram", "CreateAvailability", "DeleteAvailability", "CreateCustomer", "CustomerLogin", "StartPasswordRecoveryFlow", "CheckPasswordRecoveryToken", "FinalizePasswordRecoveryFlow", "CreateOrder", "RegisterStripeExpress", "AdminLogin"}
+var MethodNames = [26]string{"StripeWebhooks", "GetCoaches", "GetCoach", "AdminGetCoach", "LenCoaches", "CreateCoach", "LoginCoach", "StartCoachPasswordRecoveryFlow", "CheckCoachPasswordRecoveryToken", "FinalizeCoachPasswordRecoveryFlow", "UpdateCoach", "CreateCertification", "DeleteCertification", "CreateProgram", "DeleteProgram", "CreateAvailability", "DeleteAvailability", "CreateCustomer", "CustomerLogin", "StartPasswordRecoveryFlow", "CheckPasswordRecoveryToken", "FinalizePasswordRecoveryFlow", "CreateOrder", "RegisterStripeExpress", "AdminLogin", "RegisterNewsletterEmail"}
 
 // GetCoachesPayload is the payload type of the coachee service GetCoaches
 // method.
@@ -373,6 +375,12 @@ type AdminLoginPayload struct {
 type AdminLoginResult struct {
 	Token  string
 	Expiry int64
+}
+
+// RegisterNewsletterEmailPayload is the payload type of the coachee service
+// RegisterNewsletterEmail method.
+type RegisterNewsletterEmailPayload struct {
+	Email string
 }
 
 // represents a coach certification
